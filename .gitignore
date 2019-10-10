@@ -1,0 +1,7 @@
+/.idea/
+/HaskellAdventure-master/.stack-work/
+*.iml
+*.o
+*.hi
+*.exe
+TextAdventure
