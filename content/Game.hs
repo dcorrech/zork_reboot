@@ -65,16 +65,15 @@ readScene (Scene i description actions n e s w conditionals) =
                             return newScene
                         else if (fixdel(line) `elem` actions) -- THIS WILL BE CHANGED TO SOMETHING WITH THE PARSER, SO THAT I CAN GRAB THE INDEX OF THE CONDITIONAL SCENE BASED ON THE INPUT AND AVAILABLE ACTIONS
                             then do
-                            putStrLn ("You do a thing.")
-                            let index = getListIndex line actions
-                            conditionalScene <- readScene (conditionals!!index)
-                            return conditionalScene
+                                let index = getListIndex line actions
+                                conditionalScene <- readScene (conditionals!!index)
+                                return conditionalScene
                             else if (fixdel(line) `elem` masterVerbs) 
                                 then do
                                 putStrLn ("You can't do that here.")
                                 currentScene <- readScene (Scene i description actions n e s w conditionals)
                                 return currentScene 
-                                else if (fixdel(line) == "quit")
+                                else if (fixdel(line) == "quit" || (fixdel(line) == "exit"))
                                     then do
                                         putStrLn("You have quit the game. Goodbye!")
                                         exitSuccess
