@@ -8,6 +8,14 @@ import System.IO
 import System.Exit
 import Scenes
 
+import NaturalLanguageLexer
+import NaturalLanguageParser
+
+--Remove
+import TestUtils
+
+import Data.List.Split
+
 masterVerbs = []
 masterNouns = []
 
@@ -34,6 +42,8 @@ readScene (Scene i description actions n e s w conditionals) =
     do
         putStrLn(description ++ " What do you do?")
         line <- getLine
+        let sentences = parseLine line
+        print sentences
         if (fixdel(line) `elem` ["N","n","north","North"])
             then do
                 newScene <- readScene n
@@ -99,6 +109,12 @@ readScene DeathScene = -- EVENTUALLY INCLUDE POINT VALUE HERE
             else do
                 putStrLn("Okay, bye!")
                 exitSuccess
+
+parseLine :: [Char] -> [Sentence]
+parseLine [] = []
+parseLine line = parseSentence tokenMatches
+    where processedLine = Data.List.Split.splitOneOf "' ', '\t'" line
+          tokenMatches = lexInput dummyPossibleTokens processedLine
 
 getListIndex e lst = indexHelper e lst 0
 
