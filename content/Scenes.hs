@@ -64,7 +64,7 @@ sceneSouth = Scene 3 "There is a wooden door in front of you. It looks heavy and
         (InspectedScene "There is nothing special about the wall here. It's just dirty." sceneSouth), 
         (InspectedScene "There is nothing special about the floor here. It's just dirty carpet." sceneSouth), 
         (InspectedScene "There is nothing special about the carpet here. It's just dirty." sceneSouth),
-        firstDoorScene,
+        (InspectedScene "You open the door." firstDoorScene),
         firstDoorScene, 
         (InspectedScene "You kick at the door to no avail. It's heavy and closed." sceneSouth),
         (InspectedScene "The door does no budge under your weight." sceneSouth)]
@@ -80,7 +80,7 @@ sceneWest = Scene 4 "There is a boarded up window in front of you. There are scr
         (InspectedScene "The carpet is stained brown and red, but seems firmly secured to the ground." sceneWest),
         (SceneError "The boards are firmly nailed to the window. You cannot pull them off with your bare hands." sceneWest),
         (SceneError "The boards are firmly nailed to the window. You cannot pull them off with your bare hands." sceneWest)]
-firstDoorScene = Scene 5 "You open the door, revealing a long hallway ahead of you, spreading out to the south. To the north is the door you just opened." 
+firstDoorScene = Scene 5 "A long hallway stretches ahead of you, spreading out to the south. To the north is a door." 
     ["look", "inspect door", "inspect doorknob", "inspect wall", "inspect floor", "inspect carpet", "peel carpet", "close door", "slam door", "force door", "turn doorknob", "kick door"] -- GONNA NEED TO ADD SOME KIND OF FLAG FOR WHETHER THE DOOR IS OPEN OR NOT
     sceneSouth (EmptyScene firstDoorScene) hallSouth (EmptyScene firstDoorScene) 
     [firstDoorScene,
@@ -143,14 +143,16 @@ stairsSouth = Scene 9 "This staircase descends into darkness, where you hear fai
 
 -- AREA 3 SCENES TBA ** WILL ADD EXTRA ACTION OPTIONS TO AREA 5 ONCE WE GET ITEMS IN. 
 hallEast = Scene 10 "The faint yellow light from the east gets brighter as you walk further down this hall. To the south is a closed door, and further east is an open passage to another room, where the yellow light is coming from." 
-    ["look", "inspect wall", "inspect floor", "inspect carpet", "inspect door", "peel carpet", "open door", "kick door", "turn doorknob"]
+    ["look", "inspect wall", "inspect floor", "inspect carpet", "inspect door", "inspect doorknob", "peel carpet", "open door", "kick door", "turn doorknob"]
     (EmptyScene hallEast) roomEast roomSouthEast hallSouth 
     [hallEast,
         (InspectedScene "There is nothing special about this wall." hallEast),
         (InspectedScene "There is nothing special about the floor here." hallEast),
         (InspectedScene "There is nothing special about the carpet." hallEast),
-        (InspectedScene "" hallEast),
-        (SceneError "You cannot peel the carpet." hallEast)]
+        (InspectedScene "There is nothing special about the door." hallEast),
+        (InspectedScene "There is nothing special about the doorknob." hallEast),
+        (SceneError "You cannot peel the carpet." hallEast),
+        (InspectedScene "You open the door, revealing " hallEast)]
 roomSouthEast = Scene 16 "" 
     [] 
     hallEast (EmptyScene roomSouthEast) (EmptyScene roomSouthEast) stairsSouth 
