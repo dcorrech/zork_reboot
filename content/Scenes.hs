@@ -65,7 +65,7 @@ sceneSouth = Scene 3 "There is a wooden door in front of you. It looks heavy and
         (InspectedScene "There is nothing special about the floor here. It's just dirty carpet." sceneSouth), 
         (InspectedScene "There is nothing special about the carpet here. It's just dirty." sceneSouth),
         (InspectedScene "You open the door." firstDoorScene),
-        firstDoorScene, 
+        (InspectedScene "You turn the doorknob, opening the door." firstDoorScene),
         (InspectedScene "You kick at the door to no avail. It's heavy and closed." sceneSouth),
         (InspectedScene "The door does no budge under your weight." sceneSouth)]
 sceneWest = Scene 4 "There is a boarded up window in front of you. There are scratches on the boards, and the dim light in the room is filtering in from the cracks between the boards here." 
@@ -141,10 +141,10 @@ stairsSouth = Scene 9 "This staircase descends into darkness, where you hear fai
         (InspectedScene "The wall is cool, and feels like stone, a big change from the scratched up wooden walls from before." stairsSouth),
         (InspectedScene "The floor of the staircase is wet, and moves further downwards." stairsSouth)]
 
--- AREA 3 SCENES TBA ** WILL ADD EXTRA ACTION OPTIONS TO AREA 5 ONCE WE GET ITEMS IN. 
+-- AREA 3 SCENES ** WILL ADD EXTRA ACTION OPTIONS TO AREA 5 ONCE WE GET ITEMS IN. 
 hallEast = Scene 10 "The faint yellow light from the east gets brighter as you walk further down this hall. To the south is a closed door, and further east is an open passage to another room, where the yellow light is coming from." 
     ["look", "inspect wall", "inspect floor", "inspect carpet", "inspect door", "inspect doorknob", "peel carpet", "open door", "kick door", "turn doorknob"]
-    (EmptyScene hallEast) roomEast roomSouthEast hallSouth 
+    (EmptyScene hallEast) roomEast (SceneError "You can't walk through a closed door." hallEast) hallSouth 
     [hallEast,
         (InspectedScene "There is nothing special about this wall." hallEast),
         (InspectedScene "There is nothing special about the floor here." hallEast),
@@ -152,11 +152,42 @@ hallEast = Scene 10 "The faint yellow light from the east gets brighter as you w
         (InspectedScene "There is nothing special about the door." hallEast),
         (InspectedScene "There is nothing special about the doorknob." hallEast),
         (SceneError "You cannot peel the carpet." hallEast),
-        (InspectedScene "You open the door, revealing " hallEast)]
-roomSouthEast = Scene 16 "" 
-    [] 
-    hallEast (EmptyScene roomSouthEast) (EmptyScene roomSouthEast) stairsSouth 
-    []
+        (InspectedScene "You open the door." roomSouthEast)]
+roomSouthEast = Scene 16 "This room has the same yellow light that was spreading into the hall. You see a table in the center of the room, and a staircase going down to the west." -- ADD ITEMS HERE LATER 
+    ["look", "inspect wall", "inspect floor", "inspect carpet", "inspect door", "inspect doorknob", "inspect table", "peel carpet", "close door", "slam door", "force door", "kick door", "turn doorknob"]
+    hallEast (EmptyScene roomSouthEast) centerRoomSouthEast stairsSouth 
+    [roomSouthEast,
+        (InspectedScene "There is nothing special about this wall." roomSouthEast),
+        (InspectedScene "There is nothing special about the floor here." roomSouthEast),
+        (InspectedScene "There is nothing special about the carpet." roomSouthEast),
+        (InspectedScene "There is nothing special about the door." roomSouthEast),
+        (InspectedScene "There is nothing special about the doorknob." roomSouthEast),
+        (InspectedScene "The table is metal, and bolted to the ground. On it is a blood-stained hammer." centerRoomSouthEast),
+        (SceneError "You cannot peel the carpet." roomSouthEast),
+        (InspectedScene "The door doesn't close." roomSouthEast),
+        (InspectedScene "You slam the door shut. The sound of it reverberates through the room." roomSouthEastDeath),
+        (InspectedScene "You slam the door shut. The sound of it reverberates through the room." roomSouthEastDeath),
+        (InspectedScene "The door is very heavy, you feel a sharp pain on your foot, but can still move. What was the point of that?" roomSouthEast),
+        (InspectedScene "The doorknob turns freely." roomSouthEast)]
+centerRoomSouthEast = Scene 18 "At the center of this room, you see a table. A path back to the hall opens up to the north, and there is a staircase going down to the west."
+["look", "inspect wall", "inspect floor", "inspect carpet", "inspect door", "inspect doorknob", "inspect table", "inspect hammer","peel carpet", "close door", "slam door", "force door", "kick door", "turn doorknob", "take hammer"]
+    hallEast (EmptyScene centerRoomSouthEast) (EmptyScene centerRoomSouthEast) stairsSouth
+    [centerRoomSouthEast,
+        (InspectedScene "There is nothing special about this wall." centerRoomSouthEast),
+        (InspectedScene "There is nothing special about the floor here." centerRoomSouthEast),
+        (InspectedScene "There is nothing special about the carpet." centerRoomSouthEast),
+        (InspectedScene "There is nothing special about the door." centerRoomSouthEast),
+        (InspectedScene "There is nothing special about the doorknob." centerRoomSouthEast),
+        (InspectedScene "The table is metal, and bolted to the ground. On it is a blood-stained hammer." centerRoomSouthEast),
+        (InspectedScene "The hammer is hefty, and has blood stains on its head." centerRoomSouthEast),
+        (SceneError "You cannot peel the carpet." centerRoomSouthEast),
+        (InspectedScene "The door doesn't close." centerRoomSouthEast),
+        (InspectedScene "You slam the door shut. The sound of it reverberates through the room." roomSouthEastDeath),
+        (InspectedScene "You slam the door shut. The sound of it reverberates through the room." roomSouthEastDeath),
+        (InspectedScene "The door is very heavy, you feel a sharp pain on your foot, but can still move. What was the point of that?" centerRoomSouthEast),
+        (InspectedScene "The doorknob turns freely." centerRoomSouthEast),
+        (InspectedScene "You take the hammer." centerRoomSouthEast)]
+roomSouthEastDeath = InspectedScene "All too quickly, you feel an icy cold sensation rising from your feet up to your throat as you see dark tentacles materializing from the shadows, shooting up the hallway and enveloping you. You barely have a second to think before you feel an undeniable madness stirring in your mind as the tentacles shoot into your mouth, and then there is just all-possessing cold and darkness." DeathScene
 
 -- AREA 4 SCENES TBA ** Dead end with lots of chances of dying. Change name of roomEast/roomSouthEast when we figure out what exactly will happen in these rooms.
 roomEast = Scene 17 "" 
