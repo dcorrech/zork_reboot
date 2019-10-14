@@ -19,6 +19,9 @@ import Data.List.Split
 masterVerbs = []
 masterNouns = []
 
+-- ALLTODOs for Game:
+-- TODO: Remove ^? characters that show up when entering delete.
+
 
 -- Takes a given SceneMap, starts and ends the game. Adapted from play function by David Poole (2019) given in Assignment 3.
 play :: SceneMap -> IO SceneMap
