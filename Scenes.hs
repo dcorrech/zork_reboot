@@ -17,9 +17,13 @@ instance Show SceneMap where
     show (EmptyScene parent) = show parent
     show (SceneError msg parent) = show msg
 
+-- SceneComponents allow players to interact with scene; Integer is conditionalIndex Strings are objects present in the scene, while Strings are the verbs used to interact with Strings
+data SceneComponent = Component Integer String
+                deriving (Show, Eq)
+
 -- AREA 1 SCENES
 zorkMapStart = Scene 0 "You are in a dusty, dimly lit room. The paint on the wall is chipping away, and a dirty carpet covers the ground. To the South of the room, you see a worn wooden door. To the West, there is a boarded-up window." 
-    ["look", "inspect floor", "inspect carpet", "inspect wall"] 
+    ["look", "inspect floor", "inspect carpet", "inspect wall"]
     sceneNorth sceneEast sceneSouth sceneWest 
     [zorkMapStart,
     (InspectedScene "The carpet is stained brown and red, but seems firmly secured to the ground." zorkMapStart),
@@ -39,7 +43,7 @@ sceneNorth = Scene 1 "The North wall of the room is barren, and the paint looks 
         (InspectedScene "The carpet is rough and wet in some places, but seems firmly secured to the ground." sceneNorth),
         (InspectedScene "The paint is dry and flaky. Peeling it reveals more layers interspersed with red splotches." sceneNorth)]
 sceneEast = Scene 2 "The East wall of the room has scratches on it, chipping away the paint more than the other walls." 
-    ["look", "inpect wall", "inspect paint", "inspect floor", "inspect carpet", "look", "touch wall", "touch paint", "touch floor"] 
+    ["look", "inpect wall", "inspect paint", "inspect floor", "inspect carpet", "look", "touch wall", "touch paint", "touch floor", "touch carpet"] 
     sceneNorth (EmptyScene sceneEast) sceneSouth zorkMapStart 
     [sceneEast,
         (InspectedScene "You can see that the wall has various layers of paint, some peeling away faster than others." sceneEast),
@@ -49,6 +53,7 @@ sceneEast = Scene 2 "The East wall of the room has scratches on it, chipping awa
         (InspectedScene "The wall is hard and rough, with paint peeling off of it." sceneEast),
         (InspectedScene "The paint is dry and flaky, you easily peel it off, revealing writing scratched onto the wall. It reads 'THEY HUNGER'. " sceneEast),
         (InspectedScene "The floor is covered in a carpet with brown and reddish stains." sceneEast),
+        (InspectedScene "The carpet is rough and wet in some places, but seems firmly secured to the ground." sceneEast),
         (InspectedScene "The carpet is rough and wet in some places, but seems firmly secured to the ground." sceneEast)]
 sceneSouth = Scene 3 "There is a wooden door in front of you. It looks heavy and old." 
     ["look", "inspect door", "inspect doorknob", "inspect wall", "inspect floor", "inspect carpet", "open door", "turn doorknob", "kick door", "push door"] 
@@ -73,8 +78,8 @@ sceneWest = Scene 4 "There is a boarded up window in front of you. There are scr
         (InspectedScene "The boards look firmly nailed to the window, and have bloody scratches on them." sceneWest),
         (InspectedScene "The floor is covered in a carpet with brown and reddish stains." sceneWest),
         (InspectedScene "The carpet is stained brown and red, but seems firmly secured to the ground." sceneWest),
-        (InspectedScene "The boards are firmly nailed to the window. You cannot pull them off with your bare hands." sceneWest),
-        (InspectedScene "The boards are firmly nailed to the window. You cannot pull them off with your bare hands." sceneWest)]
+        (SceneError "The boards are firmly nailed to the window. You cannot pull them off with your bare hands." sceneWest),
+        (SceneError "The boards are firmly nailed to the window. You cannot pull them off with your bare hands." sceneWest)]
 firstDoorScene = Scene 5 "You open the door, revealing a long hallway ahead of you, spreading out to the south. To the north is the door you just opened." 
     ["look", "inspect door", "inspect doorknob", "inspect wall", "inspect floor", "inspect carpet", "peel carpet", "close door", "slam door", "force door", "turn doorknob", "kick door"] -- GONNA NEED TO ADD SOME KIND OF FLAG FOR WHETHER THE DOOR IS OPEN OR NOT
     sceneSouth (EmptyScene firstDoorScene) hallSouth (EmptyScene firstDoorScene) 
@@ -84,7 +89,7 @@ firstDoorScene = Scene 5 "You open the door, revealing a long hallway ahead of y
         (InspectedScene "The walls here are bare and wooden, with no paint, but there are bloody scratches leading deeper into the hall." firstDoorScene),
         (InspectedScene "The same carpet extends into the hallway in front of you. It is frayed and stained." firstDoorScene),
         (InspectedScene "The carpet here is dirty and frayed." firstDoorScene),
-        (InspectedScene "The carpet here is slightly looser, but you still cannot peel it." firstDoorScene),
+        (SceneError "The carpet here is slightly looser, but you still cannot peel it." firstDoorScene),
         (InspectedScene "The door does not close when you use a regular amount of strength" firstDoorScene),
         (InspectedScene "You slam the door shut. The sound of it reverberates down the hallway." firstDoorSceneDeath),
         (InspectedScene "You slam the door shut. The sound of it reverberates down the hallway." firstDoorSceneDeath),
@@ -137,10 +142,15 @@ stairsSouth = Scene 9 "This staircase descends into darkness, where you hear fai
         (InspectedScene "The floor of the staircase is wet, and moves further downwards." stairsSouth)]
 
 -- AREA 3 SCENES TBA ** WILL ADD EXTRA ACTION OPTIONS TO AREA 5 ONCE WE GET ITEMS IN. 
-hallEast = Scene 10 "There is** " 
-    [] 
+hallEast = Scene 10 "The faint yellow light from the east gets brighter as you walk further down this hall. To the south is a closed door, and further east is an open passage to another room, where the yellow light is coming from." 
+    ["look", "inspect wall", "inspect floor", "inspect carpet", "inspect door", "peel carpet", "open door", "kick door", "turn doorknob"]
     (EmptyScene hallEast) roomEast roomSouthEast hallSouth 
-    []
+    [hallEast,
+        (InspectedScene "There is nothing special about this wall." hallEast),
+        (InspectedScene "There is nothing special about the floor here." hallEast),
+        (InspectedScene "There is nothing special about the carpet." hallEast),
+        (InspectedScene "" hallEast),
+        (SceneError "You cannot peel the carpet." hallEast)]
 roomSouthEast = Scene 16 "" 
     [] 
     hallEast (EmptyScene roomSouthEast) (EmptyScene roomSouthEast) stairsSouth 
@@ -219,7 +229,3 @@ windowScene = Scene 15 "As you approach the window, you hear rustling on the oth
         (InspectedScene "The boards on the window feel firmly nailed together." windowScene),
         (InspectedScene "You cannot pull the boards out with your bare hands." windowScene),
         (InspectedScene "You cannot pull the boards out with your bare hands." windowScene)]
-
--- SceneComponents allow players to interact with scene; Integer is conditionalIndex Strings are objects present in the scene, while Strings are the verbs used to interact with Strings
--- data SceneComponent = Component Integer String
---                 deriving (Show, Eq)

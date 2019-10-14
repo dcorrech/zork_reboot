@@ -34,34 +34,34 @@ readScene (Scene i description actions n e s w conditionals) =
     do
         putStrLn(description ++ " What do you do?")
         line <- getLine
-        if (line `elem` ["N","n","north","North"])
+        if (fixdel(line) `elem` ["N","n","north","North"])
             then do
                 newScene <- readScene n
                 return newScene
-            else if (line `elem` ["E","e","east","East"])
+            else if (fixdel(line) `elem` ["E","e","east","East"])
                 then do
                     newScene <- readScene e
                     return newScene
-                else if (line `elem` ["S","s","south","South"])
+                else if (fixdel(line) `elem` ["S","s","south","South"])
                     then do
                         newScene <- readScene s
                         return newScene
-                    else if (line `elem` ["W","w","west","West"])
+                    else if (fixdel(line) `elem` ["W","w","west","West"])
                         then do
                             newScene <- readScene w
                             return newScene
-                        else if (line `elem` actions) -- THIS WILL BE CHANGED TO SOMETHING WITH THE PARSER, SO THAT I CAN GRAB THE INDEX OF THE CONDITIONAL SCENE BASED ON THE INPUT AND AVAILABLE ACTIONS
+                        else if (fixdel(line) `elem` actions) -- THIS WILL BE CHANGED TO SOMETHING WITH THE PARSER, SO THAT I CAN GRAB THE INDEX OF THE CONDITIONAL SCENE BASED ON THE INPUT AND AVAILABLE ACTIONS
                             then do
                             putStrLn ("You do a thing.")
                             let index = getListIndex line actions
                             conditionalScene <- readScene (conditionals!!index)
                             return conditionalScene
-                            else if (line `elem` masterVerbs) 
+                            else if (fixdel(line) `elem` masterVerbs) 
                                 then do
                                 putStrLn ("You can't do that here.")
                                 currentScene <- readScene (Scene i description actions n e s w conditionals)
                                 return currentScene 
-                                else if (line == "quit")
+                                else if (fixdel(line) == "quit")
                                     then do
                                         putStrLn("You have quit the game. Goodbye!")
                                         exitSuccess
@@ -105,6 +105,23 @@ getListIndex e lst = indexHelper e lst 0
 indexHelper e (h:t) acc
     | e == h = acc
     | otherwise = indexHelper e t (acc+1)
+
+-- fixdel :: [t] -> [t]
+-- Returns str without instances of \DEL or characters directly preceding \DEL
+fixdel str = delhelper str []
+
+-- helper :: [t] -> [t] -> [t]
+-- Uses accumulator str to remove elements of string that are followed by \DEL
+delhelper [] str = str
+delhelper (h1:t1) str
+   | (h1 == '\DEL') = delhelper t1 (removelast str)
+   | otherwise = delhelper t1 (str ++ [h1])
+
+-- removelast [t] -> [t] -> [t]
+-- Removes last element of a list
+removelast (h:t)
+   | t == [] = t
+   | otherwise = h:(removelast t)
 
 
 -- Starts game, based on go function by David Poole (2019) for Assignment 3
