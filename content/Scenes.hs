@@ -231,3 +231,13 @@ windowScene = Scene 15 "As you approach the window, you hear rustling on the oth
         (InspectedScene "The boards on the window feel firmly nailed together." windowScene),
         (InspectedScene "You cannot pull the boards out with your bare hands." windowScene),
         (InspectedScene "You cannot pull the boards out with your bare hands." windowScene)]
+
+allVerbTokens :: [Token]
+allVerbTokens [(TokenVerb "look" ["look", "inspect", "see", "view", "observe", "search", "examine"),
+               (TokenVerb "touch" ["touch", "feel", "rub"]),
+               (TokenVerb "peel" ["peel", "pull", "scratch", "rip"])]
+
+allNounTokens :: [Token]
+allNounTokens [(TokenNoun "floor" ["floor", "ground", "carpet"),
+               (TokenNoun "wall" ["wall"]),
+               (TokenNoun "paint" ["paint"])]
