@@ -47,8 +47,8 @@ generateSentencesTest2 = TestCase (assertEqual "for (generateSentences [verbsInD
 
 generateSentencesTest3 = TestCase (assertEqual "for (generateSentences [verbsInDummyList]),"
                                       [Word (TokenVerb "verb1" ["verb1","synonym"]),
-                                        Word (TokenVerb "verb2" ["verb2","synonym"]),
-                                        Word (TokenVerb "verb3" ["verb3","synonym"])]
+                                       Word (TokenVerb "verb2" ["verb2","synonym"]),
+                                       Word (TokenVerb "verb3" ["verb3","synonym"])]
                                       (generateSentences [verbsInDummyList]))
 
 generateSentencesTest4 = TestCase (assertEqual "for (generateSentences [[dummyTokenVerb]. [dummyTokenNoun]]),"
