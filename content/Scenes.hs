@@ -4,6 +4,8 @@
 
 module Scenes where
 
+import NaturalLanguageLexer
+
 -- Scene includes String (description of scene), Integer is key/index of current scene, [String] for actions available in scene ** WILL CHANGE TO [SceneComponent when parser is good to go], and 4 SceneMap for the adjacent scenes (N/E/S/W), ** WILL ADD [String] is list of flags for the room
 data SceneMap = Scene Integer String [String] SceneMap SceneMap SceneMap SceneMap [SceneMap]
                 | EmptyScene SceneMap
@@ -26,11 +28,11 @@ zorkMapStart = Scene 0 "You are in a dusty, dimly lit room. The paint on the wal
     ["look", "inspect floor", "inspect carpet", "inspect wall"]
     sceneNorth sceneEast sceneSouth sceneWest 
     [zorkMapStart,
-    (InspectedScene "The carpet is stained brown and red, but seems firmly secured to the ground." zorkMapStart),
-    (InspectedScene "The floor is covered in a carpet with brown and reddish stains." zorkMapStart),
-    (InspectedScene "From here, you see nothing but dirt on the walls." zorkMapStart)]
+        (InspectedScene "The carpet is stained brown and red, but seems firmly secured to the ground." zorkMapStart),
+        (InspectedScene "The floor is covered in a carpet with brown and reddish stains." zorkMapStart),
+        (InspectedScene "From here, you see nothing but dirt on the walls." zorkMapStart)]
 sceneNorth = Scene 1 "The North wall of the room is barren, and the paint looks old." 
-    ["look", "inspect wall", "inspect paint", "inpect floor", "inpect carpet", "touch wall", "touch paint", "touch floor", "peel paint"] 
+    ["look", "inspect wall", "inspect paint", "inpect floor", "inspect carpet", "touch wall", "touch paint", "touch floor", "peel paint"]
     (EmptyScene sceneNorth) sceneEast zorkMapStart sceneWest 
     [sceneNorth, 
         (InspectedScene "There is a bit of paint peeling off the walls, revealing multiple layers of paint." sceneNorth),
@@ -43,7 +45,7 @@ sceneNorth = Scene 1 "The North wall of the room is barren, and the paint looks 
         (InspectedScene "The carpet is rough and wet in some places, but seems firmly secured to the ground." sceneNorth),
         (InspectedScene "The paint is dry and flaky. Peeling it reveals more layers interspersed with red splotches." sceneNorth)]
 sceneEast = Scene 2 "The East wall of the room has scratches on it, chipping away the paint more than the other walls." 
-    ["look", "inpect wall", "inspect paint", "inspect floor", "inspect carpet", "look", "touch wall", "touch paint", "touch floor", "touch carpet"] 
+    ["look", "inspect wall", "inspect paint", "inspect floor", "inspect carpet", "look", "touch wall", "touch paint", "touch floor", "touch carpet"]
     sceneNorth (EmptyScene sceneEast) sceneSouth zorkMapStart 
     [sceneEast,
         (InspectedScene "You can see that the wall has various layers of paint, some peeling away faster than others." sceneEast),
@@ -170,7 +172,7 @@ roomSouthEast = Scene 16 "This room has the same yellow light that was spreading
         (InspectedScene "The door is very heavy, you feel a sharp pain on your foot, but can still move. What was the point of that?" roomSouthEast),
         (InspectedScene "The doorknob turns freely." roomSouthEast)]
 centerRoomSouthEast = Scene 18 "At the center of this room, you see a table. A path back to the hall opens up to the north, and there is a staircase going down to the west."
-["look", "inspect wall", "inspect floor", "inspect carpet", "inspect door", "inspect doorknob", "inspect table", "inspect hammer","peel carpet", "close door", "slam door", "force door", "kick door", "turn doorknob", "take hammer"]
+    ["look", "inspect wall", "inspect floor", "inspect carpet", "inspect door", "inspect doorknob", "inspect table", "inspect hammer","peel carpet", "close door", "slam door", "force door", "kick door", "turn doorknob", "take hammer"]
     hallEast (EmptyScene centerRoomSouthEast) (EmptyScene centerRoomSouthEast) stairsSouth
     [centerRoomSouthEast,
         (InspectedScene "There is nothing special about this wall." centerRoomSouthEast),
@@ -263,12 +265,24 @@ windowScene = Scene 15 "As you approach the window, you hear rustling on the oth
         (InspectedScene "You cannot pull the boards out with your bare hands." windowScene),
         (InspectedScene "You cannot pull the boards out with your bare hands." windowScene)]
 
+allTokens :: [Token]
+allTokens = allVerbTokens ++ allNounTokens
+
 allVerbTokens :: [Token]
-allVerbTokens [(TokenVerb "look" ["look", "inspect", "see", "view", "observe", "search", "examine"),
-               (TokenVerb "touch" ["touch", "feel", "rub"]),
-               (TokenVerb "peel" ["peel", "pull", "scratch", "rip"])]
+allVerbTokens = [(TokenVerb "look" ["look", "inspect", "see", "view", "observe", "search", "examine"]),
+                 (TokenVerb "touch" ["touch", "feel", "rub"]),
+                 (TokenVerb "peel" ["peel", "scratch", "rip"]),
+                 (TokenVerb "open" ["open"]),
+                 (TokenVerb "close" ["open", "slam"]),
+                 (TokenVerb "force" ["force"]),
+                 (TokenVerb "take" ["take", "grab"]),
+                 (TokenVerb "turn" ["turn", "twist"]),
+                 (TokenVerb "kick" ["kick", "bodyslam", "hit"]),
+                 (TokenVerb "pull" ["pull"]),
+                 (TokenVerb "push" ["push"]),
+                 (TokenVerb "move" ["move", "slide"])]
 
 allNounTokens :: [Token]
-allNounTokens [(TokenNoun "floor" ["floor", "ground", "carpet"),
+allNounTokens = [(TokenNoun "floor" ["floor", "ground", "carpet"]),
                (TokenNoun "wall" ["wall"]),
                (TokenNoun "paint" ["paint"])]
