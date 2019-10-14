@@ -47,21 +47,3 @@ lexTokens :: [Token] -> [String] -> [(Maybe TokenMatch, [String])] -> [TokenMatc
 lexTokens potentialTokens words [] = lexInput potentialTokens words
 lexTokens potentialTokens words ((Nothing, _) : tokens) = lexTokens potentialTokens words tokens
 lexTokens potentialTokens words ((Just token, tokenWords) : tokens) = token : lexInput potentialTokens words
-
-
-
-
-
-
-
-
-
-
-
-
---TODO: Add to tokenize to reduce redundancy.
---matchToken :: Keyword -> Token -> Maybe TokenMatch
---matchToken word token
---    | (elem lowerCaseWord synonyms) = Just (TokenMatch word [token])
---    | otherwise                     = Nothing
---        where lowerCaseWord = map Data.Char.toLower word
