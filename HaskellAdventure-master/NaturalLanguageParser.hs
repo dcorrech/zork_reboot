@@ -1,3 +1,6 @@
+-- Adapted from Laurence Emms "What The Functional" Website on Haskell programming.
+-- See https://whatthefunctional.wordpress.com/2018/03/10/making-a-text-adventure-in-haskell-part-2/
+
 module NaturalLanguageParser (Sentence(..),
                               parseSentence,
                               generateSentences,
