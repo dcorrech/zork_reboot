@@ -60,3 +60,8 @@ allPossibleSimpleSentencesFromVerbNounDummyLists = [SimpleSentence (TokenVerb "v
                                                     SimpleSentence (TokenVerb "verb3" ["verb3","synonym"]) (TokenNoun "noun1" ["noun1","synonym"]),
                                                     SimpleSentence (TokenVerb "verb3" ["verb3","synonym"]) (TokenNoun "noun2" ["noun2","synonym"])]
 
+dummyWord :: Sentence
+dummyWord = (Word dummyTokenVerb)
+
+dummySimpleSentence :: Sentence
+dummySimpleSentence = (SimpleSentence dummyTokenVerb dummyTokenNoun)
