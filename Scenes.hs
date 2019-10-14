@@ -1,8 +1,8 @@
 -- Scenes.hs
 -- Copyright Damasia Maria Correch & Jeffrey Miiller 2019
 -- Starting point: a graph wih scenes, basically the map for players to explore
-import System.IO
-import System.Exit
+
+module Scenes where
 
 -- Scene includes String (description of scene), Integer is key/index of current scene, [String] for actions available in scene ** WILL CHANGE TO [SceneComponent when parser is good to go], and 4 SceneMap for the adjacent scenes (N/E/S/W), ** WILL ADD [String] is list of flags for the room
 data SceneMap = Scene Integer String [String] SceneMap SceneMap SceneMap SceneMap [SceneMap]
@@ -16,9 +16,6 @@ instance Show SceneMap where
     show (Scene i description actions n e s w cond) = show description
     show (EmptyScene parent) = show parent
     show (SceneError msg parent) = show msg
-
-masterVerbs = []
-masterNouns = []
 
 -- AREA 1 SCENES
 zorkMapStart = Scene 0 "You are in a dusty, dimly lit room. The paint on the wall is chipping away, and a dirty carpet covers the ground. To the South of the room, you see a worn wooden door. To the West, there is a boarded-up window." 
@@ -140,11 +137,20 @@ stairsSouth = Scene 9 "This staircase descends into darkness, where you hear fai
         (InspectedScene "The floor of the staircase is wet, and moves further downwards." stairsSouth)]
 
 -- AREA 3 SCENES TBA ** WILL ADD EXTRA ACTION OPTIONS TO AREA 5 ONCE WE GET ITEMS IN. 
-hallEast = Scene 10 "" [] (EmptyScene hallEast) roomEast roomSouthEast hallSouth []
-roomSouthEast = Scene 16 "" [] hallEast (EmptyScene roomSouthEast) (EmptyScene roomSouthEast) stairsSouth []
+hallEast = Scene 10 "There is** " 
+    [] 
+    (EmptyScene hallEast) roomEast roomSouthEast hallSouth 
+    []
+roomSouthEast = Scene 16 "" 
+    [] 
+    hallEast (EmptyScene roomSouthEast) (EmptyScene roomSouthEast) stairsSouth 
+    []
 
 -- AREA 4 SCENES TBA ** Dead end with lots of chances of dying. Change name of roomEast/roomSouthEast when we figure out what exactly will happen in these rooms.
-roomEast = Scene 17 "" [] (EmptyScene roomEast) (EmptyScene roomEast) (EmptyScene roomEast) hallEast []
+roomEast = Scene 17 "" 
+    [] 
+    (EmptyScene roomEast) (EmptyScene roomEast) (EmptyScene roomEast) hallEast 
+    []
 
 -- AREA 5
 boulderHall = Scene 11 "The bottom of the staircase flattens out, and you appear to have hit a dead end. There is a pile of boulders blocking the way forward, and the faintest light makes it through the cracks between the large rocks, providing enough light to see the formation, and the fact that this staircase is all made of stone, like a cavern." 
@@ -156,7 +162,7 @@ boulderHall = Scene 11 "The bottom of the staircase flattens out, and you appear
         (InspectedScene "The boulders are blocking the way forward. They look like the same kind of stone that the rest of this passage is made of, but there are no greenish veins running through them. They are stacked up to the ceiling, but thin beams of light filter through the cracks between them." boulderHall),
         (InspectedScene "The wall is cool and dry, but the greenish being that runs through it is wet and slimy." boulderHall),
         (InspectedScene "The stone of the floor is dry, but the greenish vein that runs through it is wet and feels slimy." boulderHall),
-        (InspectedScene "The boulders feel heavy and solid." boulderHall),
+        (InspectedScene "The boulders feel heavy and solid, and you feel your hand tingling as your touch them." boulderHall),
         (InspectedScene "Despite how study they look and feel, when you try moving the boulders, you do so effortlessly. They disintegrate at your touch, revealing a well-let passage leading into a room to the south." boulderLessHall)]
 boulderLessHall = Scene 12 ""
     ["look", "inspect wall", "inspect floor", "inspect boulders", "touch wall", "touch floor", "touch boulders"]
@@ -217,102 +223,3 @@ windowScene = Scene 15 "As you approach the window, you hear rustling on the oth
 -- SceneComponents allow players to interact with scene; Integer is conditionalIndex Strings are objects present in the scene, while Strings are the verbs used to interact with Strings
 -- data SceneComponent = Component Integer String
 --                 deriving (Show, Eq)
-
--- Takes a given SceneMap, starts and ends the game. Based on play function by David Poole (2019) given in Assignment 3.
-play :: SceneMap -> IO SceneMap
-play map = 
-    do
-        putStrLn "Start your adventure?"
-        ans <- getLine
-        if (ans `elem` ["y", "yes", "ye", "yeah", "sure", "oui"])
-            then do
-                putStrLn("Movement: type N to move north, E for east, S for south, W for west.")
-                putStrLn("You wake up in an unfamiliar place, dazed and disoriented.")
-                newmap <- readScene map
-                return newmap
-            else do
-                putStrLn ("Okay, bye!")
-                exitSuccess
-
--- Takes given SceneMap, prints description and advances user through the map. Based on askabout fucntion by David Poole (2019) given in Assignment 3.
-readScene :: SceneMap -> IO SceneMap
-readScene (Scene i description actions n e s w conditionals) =
-    do
-        putStrLn(description ++ " What do you do?")
-        line <- getLine
-        if (line `elem` ["N","n","north","North"])
-            then do
-                newScene <- readScene n
-                return newScene
-            else if (line `elem` ["E","e","east","East"])
-                then do
-                    newScene <- readScene e
-                    return newScene
-                else if (line `elem` ["S","s","south","South"])
-                    then do
-                        newScene <- readScene s
-                        return newScene
-                    else if (line `elem` ["W","w","west","West"])
-                        then do
-                            newScene <- readScene w
-                            return newScene
-                        else if (line `elem` actions) -- THIS WILL BE CHANGED TO SOMETHING WITH THE PARSER, SO THAT I CAN GRAB THE INDEX OF THE CONDITIONAL SCENE BASED ON THE INPUT AND AVAILABLE ACTIONS
-                            then do
-                            putStrLn ("You do a thing.")
-                            let index = getListIndex line actions
-                            conditionalScene <- readScene (conditionals!!index)
-                            return conditionalScene
-                            else if (line `elem` masterVerbs) 
-                                then do
-                                putStrLn ("You can't do that here.")
-                                currentScene <- readScene (Scene i description actions n e s w conditionals)
-                                return currentScene 
-                                else if (line == "quit")
-                                    then do
-                                        putStrLn("You have quit the game. Goodbye!")
-                                        exitSuccess
-                                    else do
-                                        putStrLn ("Command not recognized.")
-                                        currentScene <- readScene (Scene i description actions n e s w conditionals)
-                                        return currentScene                    
-
-readScene (SceneError errormsg parent) =
-    do
-        putStrLn(errormsg ++ " What do you do instead?")
-        parentScene <- readScene parent
-        return parentScene
-        
-
-readScene (EmptyScene parent) = 
-    do
-        putStrLn("There is no path this way. What do you do instead?")
-        parentScene <- readScene parent
-        return parentScene
-
-readScene (InspectedScene description parent) = 
-    do
-        putStrLn(description)
-        parentScene <- readScene parent
-        return parentScene
-
-readScene DeathScene = -- EVENTUALLY INCLUDE POINT VALUE HERE
-    do
-        putStrLn("You have died. Play again?")
-        line <- getLine
-        if (line `elem` ["y", "yes", "ye", "yeah", "sure", "oui"])
-            then do
-                play zorkMapStart
-            else do
-                putStrLn("Okay, bye!")
-                exitSuccess
-
-getListIndex e lst = indexHelper e lst 0 -- SOMETHING GOING OFF HERE
-
-indexHelper e (h:t) acc
-    | e == h = acc
-    | otherwise = indexHelper e t (acc+1)
-
-
--- Starts game, based on go function by David Poole (2019) for Assignment 3
-go :: IO SceneMap
-go = play zorkMapStart
