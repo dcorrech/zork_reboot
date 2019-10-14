@@ -6,7 +6,6 @@ import Test.HUnit
 
 ------- Tests ---------
 
---TODO: Swap order of test cases. (i.e. the first should be the expected, second should be the method result)
 tokenizeTest1 = TestCase (assertEqual "for (tokenize \"\" dummyTokenVerb),"
                                       Nothing
                                       (tokenize "" dummyTokenVerb))
