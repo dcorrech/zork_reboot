@@ -1,4 +1,8 @@
-module NaturalLanguageParser where
+module NaturalLanguageParser (Sentence(..),
+                              parseSentence,
+                              generateSentences,
+                              nounsInTokenList,
+                              verbsInTokenList) where
 
 import NaturalLanguageLexer
 
