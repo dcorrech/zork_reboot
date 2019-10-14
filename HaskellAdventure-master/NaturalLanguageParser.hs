@@ -8,10 +8,6 @@ data Sentence = InvalidSentence |
                 Word Token |
                 SimpleSentence Token Token deriving (Show, Eq)
 
---parseSentence :: [TokenMatch] -> [Sentence]
---parseSentence [(TokenMatch _ tokens1), (TokenMatch _ tokens2)]
---    = makeSentence []
-
 ------- Functions ---------
 
 parseSentence :: [TokenMatch] -> [Sentence]
