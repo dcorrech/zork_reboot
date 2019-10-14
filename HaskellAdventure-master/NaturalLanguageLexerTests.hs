@@ -8,75 +8,75 @@ import Test.HUnit
 
 --TODO: Swap order of test cases. (i.e. the first should be the expected, second should be the method result)
 tokenizeTest1 = TestCase (assertEqual "for (tokenize \"\" dummyTokenVerb),"
-                                      (tokenize "" dummyTokenVerb)
-                                      Nothing)
+                                      Nothing
+                                      (tokenize "" dummyTokenVerb))
 tokenizeTest2 = TestCase (assertEqual "for (tokenize \"\" dummyTokenNoun),"
-                                      (tokenize "" dummyTokenNoun)
-                                      Nothing)
+                                      Nothing
+                                      (tokenize "" dummyTokenNoun))
 tokenizeTest3 = TestCase (assertEqual "for (tokenize \"non-match\" dummyTokenVerb),"
-                                      (tokenize "non-match" dummyTokenVerb)
-                                      Nothing)
+                                      Nothing
+                                      (tokenize "non-match" dummyTokenVerb))
 tokenizeTest4 = TestCase (assertEqual "for (tokenize \"non-match\" dummyTokenNoun),"
-                                      (tokenize "non-match" dummyTokenNoun)
-                                      Nothing)
+                                      Nothing
+                                      (tokenize "non-match" dummyTokenNoun))
 tokenizeTest5 = TestCase (assertEqual "for (tokenize \"verb1\" dummyTokenVerb),"
-                                      (tokenize "verb1" dummyTokenVerb)
-                                      (Just (TokenMatch "verb1" [dummyTokenVerb])))
+                                      (Just (TokenMatch "verb1" [dummyTokenVerb]))
+                                      (tokenize "verb1" dummyTokenVerb))
 tokenizeTest6 = TestCase (assertEqual "for (tokenize \"noun1\" dummyTokenNoun),"
-                                      (tokenize "noun1" dummyTokenNoun)
-                                      (Just (TokenMatch "noun1" [dummyTokenNoun])))
+                                      (Just (TokenMatch "noun1" [dummyTokenNoun]))
+                                      (tokenize "noun1" dummyTokenNoun))
 
 -- Test if case-insensitive
 tokenizeTest7 = TestCase (assertEqual "for (tokenize \"vERb1\" dummyTokenVerb),"
-                                      (tokenize "vERb1" dummyTokenVerb)
-                                      (Just (TokenMatch "verb1" [dummyTokenVerb])))
+                                      (Just (TokenMatch "verb1" [dummyTokenVerb]))
+                                      (tokenize "vERb1" dummyTokenVerb))
 tokenizeTest8 = TestCase (assertEqual "for (tokenize \"nOuN1\" dummyTokenNoun),"
-                                      (tokenize "nOuN1" dummyTokenNoun)
-                                      (Just (TokenMatch "noun1" [dummyTokenNoun])))
+                                      (Just (TokenMatch "noun1" [dummyTokenNoun]))
+                                      (tokenize "nOuN1" dummyTokenNoun))
 
 joinTest1 = TestCase (assertEqual "for (join Nothing Nothing),"
-                                  (join Nothing Nothing)
-                                  Nothing)
+                                  Nothing
+                                  (join Nothing Nothing))
 joinTest2 = TestCase (assertEqual "for (join (Just dummyTokenNounMatch) Nothing),"
-                                  (join (Just dummyTokenNounMatch) Nothing)
-                                  (Just dummyTokenNounMatch))
+                                  (Just dummyTokenNounMatch)
+                                  (join (Just dummyTokenNounMatch) Nothing))
 joinTest3 = TestCase (assertEqual "for (join Nothing (Just dummyTokenNounMatch)),"
-                                  (join Nothing (Just dummyTokenNounMatch))
-                                  (Just dummyTokenNounMatch))
+                                  (Just dummyTokenNounMatch)
+                                  (join Nothing (Just dummyTokenNounMatch)))
 joinTest4 = TestCase (assertEqual "for (join (Just equivalentTokenNounMatch) (Just equivalentTokenVerbMatch)),"
-                                  (join (Just equivalentTokenNounMatch) (Just equivalentTokenVerbMatch))
-                                  (Just equivalentTokenJoinedMatch))
+                                  (Just equivalentTokenJoinedMatch)
+                                  (join (Just equivalentTokenNounMatch) (Just equivalentTokenVerbMatch)))
 
 lexerTest1 = TestCase (assertEqual "for (lexInput [] []),"
-                                   (lexInput [] [])
-                                   [])
+                                   []
+                                   (lexInput [] []))
 lexerTest2 = TestCase (assertEqual "for (lexInput dummyPossibleTokens []),"
-                                   (lexInput dummyPossibleTokens [])
-                                   [])
+                                   []
+                                   (lexInput dummyPossibleTokens []))
 lexerTest3 = TestCase (assertEqual "for (lexInput dummyPossibleTokens [\"no-match\"] []),"
-                                   (lexInput dummyPossibleTokens ["no-match"])
-                                   [])
+                                   []
+                                   (lexInput dummyPossibleTokens ["no-match"]))
 lexerTest4 = TestCase (assertEqual "for (lexInput dummyPossibleTokens [\"no-match\", \"no-match\"],"
-                                   (lexInput dummyPossibleTokens ["no-match", "no-match"])
-                                   [])
+                                   []
+                                   (lexInput dummyPossibleTokens ["no-match", "no-match"]))
 lexerTest5 = TestCase (assertEqual "for (lexInput dummyPossibleTokens [\"equal1\"]),"
-                                   (lexInput dummyPossibleTokens ["equal1"])
                                    [TokenMatch "equal1" [TokenNoun "equal1" ["equal1", "synonym"],
-                                                         TokenVerb "equal1" ["equal1", "synonym"]]])
+                                                         TokenVerb "equal1" ["equal1", "synonym"]]]
+                                   (lexInput dummyPossibleTokens ["equal1"]))
 lexerTest6 = TestCase (assertEqual "for (lexInput dummyPossibleTokens [\"noun1\", \"no-match\"]),"
-                                   (lexInput dummyPossibleTokens ["noun1", "no-match"])
-                                   [TokenMatch "noun1" [TokenNoun "noun1" ["noun1", "synonym"]]])
+                                   [TokenMatch "noun1" [TokenNoun "noun1" ["noun1", "synonym"]]]
+                                   (lexInput dummyPossibleTokens ["noun1", "no-match"]))
 lexerTest7 = TestCase (assertEqual "for (lexInput dummyPossibleTokens [\"no-match\", \"verb1\"]),"
-                                   (lexInput dummyPossibleTokens ["no-match", "verb1"])
-                                   [TokenMatch "verb1" [TokenVerb "verb1" ["verb1", "synonym"]]])
+                                   [TokenMatch "verb1" [TokenVerb "verb1" ["verb1", "synonym"]]]
+                                   (lexInput dummyPossibleTokens ["no-match", "verb1"]))
 lexerTest8 = TestCase (assertEqual "for (lexInput dummyPossibleTokens [\"verb1\", \"noun1\"]),"
-                                   (lexInput dummyPossibleTokens ["verb1", "noun1"])
                                    [TokenMatch "verb1" [TokenVerb "verb1" ["verb1", "synonym"]],
-                                    TokenMatch "noun1" [TokenNoun "noun1" ["noun1", "synonym"]]])
+                                    TokenMatch "noun1" [TokenNoun "noun1" ["noun1", "synonym"]]]
+                                   (lexInput dummyPossibleTokens ["verb1", "noun1"]))
 lexerTest9 = TestCase (assertEqual "for  (lexInput dummyPossibleTokens [\"no-match\", \"verb1\", \"no-match\", \"noun1\"]),"
-                                   (lexInput dummyPossibleTokens ["no-match", "verb1", "no-match", "noun1"])
                                    [TokenMatch "verb1" [TokenVerb "verb1" ["verb1", "synonym"]],
-                                    TokenMatch "noun1" [TokenNoun "noun1" ["noun1", "synonym"]]])
+                                    TokenMatch "noun1" [TokenNoun "noun1" ["noun1", "synonym"]]]
+                                   (lexInput dummyPossibleTokens ["no-match", "verb1", "no-match", "noun1"]))
 
 
 naturalLanguageLexerTests = TestList [TestLabel "tokenizeTest1" tokenizeTest1,
