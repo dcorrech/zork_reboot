@@ -1,4 +1,8 @@
-module NaturalLanguageParser where
+module NaturalLanguageParser (Sentence(..),
+                              parseSentence,
+                              generateSentences,
+                              nounsInTokenList,
+                              verbsInTokenList) where
 
 import NaturalLanguageLexer
 
@@ -7,10 +11,6 @@ import NaturalLanguageLexer
 data Sentence = InvalidSentence |
                 Word Token |
                 SimpleSentence Token Token deriving (Show, Eq)
-
---parseSentence :: [TokenMatch] -> [Sentence]
---parseSentence [(TokenMatch _ tokens1), (TokenMatch _ tokens2)]
---    = makeSentence []
 
 ------- Functions ---------
 

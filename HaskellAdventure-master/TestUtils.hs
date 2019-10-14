@@ -33,8 +33,8 @@ equivalentTokenNounMatch = (TokenMatch "equal1" [equalTokenVerb])
 equivalentTokenJoinedMatch :: TokenMatch
 equivalentTokenJoinedMatch = (TokenMatch "equal1" [equalTokenVerb, equalTokenNoun])
 
-possibleTokens :: [Token]
-possibleTokens = [dummyTokenVerb, dummyTokenNoun, secondDummyTokenVerb, equalTokenVerb, equalTokenNoun]
+dummyPossibleTokens :: [Token]
+dummyPossibleTokens = [dummyTokenVerb, dummyTokenNoun, secondDummyTokenVerb, equalTokenVerb, equalTokenNoun]
 
 dummyListOfTokens :: [Token]
 dummyListOfTokens = [dummyTokenVerb,
@@ -60,3 +60,8 @@ allPossibleSimpleSentencesFromVerbNounDummyLists = [SimpleSentence (TokenVerb "v
                                                     SimpleSentence (TokenVerb "verb3" ["verb3","synonym"]) (TokenNoun "noun1" ["noun1","synonym"]),
                                                     SimpleSentence (TokenVerb "verb3" ["verb3","synonym"]) (TokenNoun "noun2" ["noun2","synonym"])]
 
+dummyWord :: Sentence
+dummyWord = (Word dummyTokenVerb)
+
+dummySimpleSentence :: Sentence
+dummySimpleSentence = (SimpleSentence dummyTokenVerb dummyTokenNoun)
