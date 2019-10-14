@@ -106,19 +106,19 @@ indexHelper e (h:t) acc
     | e == h = acc
     | otherwise = indexHelper e t (acc+1)
 
--- fixdel :: [t] -> [t]
 -- Returns str without instances of \DEL or characters directly preceding \DEL
+fixdel :: [t] -> [t]
 fixdel str = delhelper str []
 
--- helper :: [t] -> [t] -> [t]
 -- Uses accumulator str to remove elements of string that are followed by \DEL
+helper :: [t] -> [t] -> [t]
 delhelper [] str = str
 delhelper (h1:t1) str
    | (h1 == '\DEL') = delhelper t1 (removelast str)
    | otherwise = delhelper t1 (str ++ [h1])
 
--- removelast [t] -> [t] -> [t]
 -- Removes last element of a list
+removelast [t] -> [t] -> [t]
 removelast (h:t)
    | t == [] = t
    | otherwise = h:(removelast t)
