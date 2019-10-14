@@ -50,31 +50,31 @@ joinTest4 = TestCase (assertEqual "for (join (Just equivalentTokenNounMatch) (Ju
 lexerTest1 = TestCase (assertEqual "for (lexInput [] []),"
                                    (lexInput [] [])
                                    [])
-lexerTest2 = TestCase (assertEqual "for (lexInput possibleTokens []),"
-                                   (lexInput possibleTokens [])
+lexerTest2 = TestCase (assertEqual "for (lexInput dummyPossibleTokens []),"
+                                   (lexInput dummyPossibleTokens [])
                                    [])
-lexerTest3 = TestCase (assertEqual "for (lexInput possibleTokens [\"no-match\"] []),"
-                                   (lexInput possibleTokens ["no-match"])
+lexerTest3 = TestCase (assertEqual "for (lexInput dummyPossibleTokens [\"no-match\"] []),"
+                                   (lexInput dummyPossibleTokens ["no-match"])
                                    [])
-lexerTest4 = TestCase (assertEqual "for (lexInput possibleTokens [\"no-match\", \"no-match\"],"
-                                   (lexInput possibleTokens ["no-match", "no-match"])
+lexerTest4 = TestCase (assertEqual "for (lexInput dummyPossibleTokens [\"no-match\", \"no-match\"],"
+                                   (lexInput dummyPossibleTokens ["no-match", "no-match"])
                                    [])
-lexerTest5 = TestCase (assertEqual "for (lexInput possibleTokens [\"equal1\"]),"
-                                   (lexInput possibleTokens ["equal1"])
+lexerTest5 = TestCase (assertEqual "for (lexInput dummyPossibleTokens [\"equal1\"]),"
+                                   (lexInput dummyPossibleTokens ["equal1"])
                                    [TokenMatch "equal1" [TokenNoun "equal1" ["equal1", "synonym"],
                                                          TokenVerb "equal1" ["equal1", "synonym"]]])
-lexerTest6 = TestCase (assertEqual "for (lexInput possibleTokens [\"noun1\", \"no-match\"]),"
-                                   (lexInput possibleTokens ["noun1", "no-match"])
+lexerTest6 = TestCase (assertEqual "for (lexInput dummyPossibleTokens [\"noun1\", \"no-match\"]),"
+                                   (lexInput dummyPossibleTokens ["noun1", "no-match"])
                                    [TokenMatch "noun1" [TokenNoun "noun1" ["noun1", "synonym"]]])
-lexerTest7 = TestCase (assertEqual "for (lexInput possibleTokens [\"no-match\", \"verb1\"]),"
-                                   (lexInput possibleTokens ["no-match", "verb1"])
+lexerTest7 = TestCase (assertEqual "for (lexInput dummyPossibleTokens [\"no-match\", \"verb1\"]),"
+                                   (lexInput dummyPossibleTokens ["no-match", "verb1"])
                                    [TokenMatch "verb1" [TokenVerb "verb1" ["verb1", "synonym"]]])
-lexerTest8 = TestCase (assertEqual "for (lexInput possibleTokens [\"verb1\", \"noun1\"]),"
-                                   (lexInput possibleTokens ["verb1", "noun1"])
+lexerTest8 = TestCase (assertEqual "for (lexInput dummyPossibleTokens [\"verb1\", \"noun1\"]),"
+                                   (lexInput dummyPossibleTokens ["verb1", "noun1"])
                                    [TokenMatch "verb1" [TokenVerb "verb1" ["verb1", "synonym"]],
                                     TokenMatch "noun1" [TokenNoun "noun1" ["noun1", "synonym"]]])
-lexerTest9 = TestCase (assertEqual "for  (lexInput possibleTokens [\"no-match\", \"verb1\", \"no-match\", \"noun1\"]),"
-                                   (lexInput possibleTokens ["no-match", "verb1", "no-match", "noun1"])
+lexerTest9 = TestCase (assertEqual "for  (lexInput dummyPossibleTokens [\"no-match\", \"verb1\", \"no-match\", \"noun1\"]),"
+                                   (lexInput dummyPossibleTokens ["no-match", "verb1", "no-match", "noun1"])
                                    [TokenMatch "verb1" [TokenVerb "verb1" ["verb1", "synonym"]],
                                     TokenMatch "noun1" [TokenNoun "noun1" ["noun1", "synonym"]]])
 
