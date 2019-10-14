@@ -137,11 +137,20 @@ stairsSouth = Scene 9 "This staircase descends into darkness, where you hear fai
         (InspectedScene "The floor of the staircase is wet, and moves further downwards." stairsSouth)]
 
 -- AREA 3 SCENES TBA ** WILL ADD EXTRA ACTION OPTIONS TO AREA 5 ONCE WE GET ITEMS IN. 
-hallEast = Scene 10 "" [] (EmptyScene hallEast) roomEast roomSouthEast hallSouth []
-roomSouthEast = Scene 16 "" [] hallEast (EmptyScene roomSouthEast) (EmptyScene roomSouthEast) stairsSouth []
+hallEast = Scene 10 "There is** " 
+    [] 
+    (EmptyScene hallEast) roomEast roomSouthEast hallSouth 
+    []
+roomSouthEast = Scene 16 "" 
+    [] 
+    hallEast (EmptyScene roomSouthEast) (EmptyScene roomSouthEast) stairsSouth 
+    []
 
 -- AREA 4 SCENES TBA ** Dead end with lots of chances of dying. Change name of roomEast/roomSouthEast when we figure out what exactly will happen in these rooms.
-roomEast = Scene 17 "" [] (EmptyScene roomEast) (EmptyScene roomEast) (EmptyScene roomEast) hallEast []
+roomEast = Scene 17 "" 
+    [] 
+    (EmptyScene roomEast) (EmptyScene roomEast) (EmptyScene roomEast) hallEast 
+    []
 
 -- AREA 5
 boulderHall = Scene 11 "The bottom of the staircase flattens out, and you appear to have hit a dead end. There is a pile of boulders blocking the way forward, and the faintest light makes it through the cracks between the large rocks, providing enough light to see the formation, and the fact that this staircase is all made of stone, like a cavern." 
@@ -153,7 +162,7 @@ boulderHall = Scene 11 "The bottom of the staircase flattens out, and you appear
         (InspectedScene "The boulders are blocking the way forward. They look like the same kind of stone that the rest of this passage is made of, but there are no greenish veins running through them. They are stacked up to the ceiling, but thin beams of light filter through the cracks between them." boulderHall),
         (InspectedScene "The wall is cool and dry, but the greenish being that runs through it is wet and slimy." boulderHall),
         (InspectedScene "The stone of the floor is dry, but the greenish vein that runs through it is wet and feels slimy." boulderHall),
-        (InspectedScene "The boulders feel heavy and solid." boulderHall),
+        (InspectedScene "The boulders feel heavy and solid, and you feel your hand tingling as your touch them." boulderHall),
         (InspectedScene "Despite how study they look and feel, when you try moving the boulders, you do so effortlessly. They disintegrate at your touch, revealing a well-let passage leading into a room to the south." boulderLessHall)]
 boulderLessHall = Scene 12 ""
     ["look", "inspect wall", "inspect floor", "inspect boulders", "touch wall", "touch floor", "touch boulders"]

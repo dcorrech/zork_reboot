@@ -12,7 +12,7 @@ masterVerbs = []
 masterNouns = []
 
 
--- Takes a given SceneMap, starts and ends the game. Based on play function by David Poole (2019) given in Assignment 3.
+-- Takes a given SceneMap, starts and ends the game. Adapted from play function by David Poole (2019) given in Assignment 3.
 play :: SceneMap -> IO SceneMap
 play map = 
     do
@@ -28,7 +28,7 @@ play map =
                 putStrLn ("Okay, bye!")
                 exitSuccess
 
--- Takes given SceneMap, prints description and advances user through the map. Based on askabout fucntion by David Poole (2019) given in Assignment 3.
+-- Takes given SceneMap, prints description and advances user through the map. Adapted from askabout function by David Poole (2019) given in Assignment 3.
 readScene :: SceneMap -> IO SceneMap
 readScene (Scene i description actions n e s w conditionals) =
     do
@@ -100,7 +100,7 @@ readScene DeathScene = -- EVENTUALLY INCLUDE POINT VALUE HERE
                 putStrLn("Okay, bye!")
                 exitSuccess
 
-getListIndex e lst = indexHelper e lst 0 -- SOMETHING GOING OFF HERE
+getListIndex e lst = indexHelper e lst 0
 
 indexHelper e (h:t) acc
     | e == h = acc
