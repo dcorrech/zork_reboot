@@ -116,7 +116,7 @@ parseLine :: [Char] -> [Sentence]
 parseLine [] = []
 parseLine line = parseSentence tokenMatches
     where processedLine = Data.List.Split.splitOneOf "' ', '\t'" line
-          tokenMatches = lexInput dummyPossibleTokens processedLine
+          tokenMatches = lexInput allTokens processedLine
 
 getListIndex e lst = indexHelper e lst 0
 
