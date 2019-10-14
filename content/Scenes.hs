@@ -4,6 +4,8 @@
 
 module Scenes where
 
+import NaturalLanguageLexer
+
 -- Scene includes String (description of scene), Integer is key/index of current scene, [String] for actions available in scene ** WILL CHANGE TO [SceneComponent when parser is good to go], and 4 SceneMap for the adjacent scenes (N/E/S/W), ** WILL ADD [String] is list of flags for the room
 data SceneMap = Scene Integer String [String] SceneMap SceneMap SceneMap SceneMap [SceneMap]
                 | EmptyScene SceneMap
@@ -250,7 +252,7 @@ windowScene = Scene 15 "As you approach the window, you hear rustling on the oth
     ["look", "inspect wall", "inspect floor", "inspect window", "inspect boards", "inspect board", "touch wall", "touch floor", "touch window", "touch boards", "touch board", "pull boards", "pull board"]
     boulderLessHall (EmptyScene windowScene) (EmptyScene windowScene) southestRoom
     [windowScene,
-        (InspectedScene "There is nothing special about the wall. There is a window in it." windowScene),
+        (InspectedScene "There is nothing special about the wall. There is a window on it." windowScene),
         (InspectedScene "The floor is the same stone as in the staircase, with greenish veins running up north starting where the boulders were before they disappeared." windowScene),
         (InspectedScene "The window is boarded up with no cracks between the boards, so you cannot see the other side." windowScene),
         (InspectedScene "The window is boarded up with no cracks between the boards, so you cannot see the other side." windowScene),
@@ -269,6 +271,18 @@ allVerbTokens [(TokenVerb "look" ["look", "inspect", "see", "view", "observe", "
                (TokenVerb "peel" ["peel", "pull", "scratch", "rip"])]
 
 allNounTokens :: [Token]
-allNounTokens [(TokenNoun "floor" ["floor", "ground", "carpet"),
-               (TokenNoun "wall" ["wall"]),
-               (TokenNoun "paint" ["paint"])]
+allNounTokens = [(TokenNoun "floor" ["floor", "ground", "carpet"),
+               (TokenNoun "wall" ["wall", "walls"]),
+               (TokenNoun "paint" ["paint"]),
+               (TokenNoun "door" ["door", "entrance"]),
+               (TokenNoun "window" ["window","glass"]),
+               (TokenNoun "board" ["board", "boards", "plank", "planks", "wood"]),
+               (TokenNoun "boulder" ["boulder", "boulders", "rock", "rocks", "stone", "stones"]),
+               (TokenNoun "painting" ["painting", "art", "frame"]),
+               (TokenNoun "table" ["table", "desk"]),
+               (TokenNoun "hammer" ["hammer", "tool"]),
+               (TokenNoun "doorknob" ["doorknob", "knob", "handle"]),
+               (TokenNoun "tentacles" ["tentacles", "tentacle", "appendage"]),
+               (TokenNoun "vein" ["vein", "veins", "slime"]),
+               (TokenNoun "words" ["words", "word", "writing", "writings", "script", "scripts", "handwriting"]),
+               (TokenNoun "scratches" ["scratches", "scratchings"])]
