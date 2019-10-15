@@ -98,7 +98,7 @@ sceneSouth = Scene 3 "There is a wooden door in front of you. It looks heavy and
      (Action [(buildSentenceWrapper ["inspect", "wall"])]
               (InspectedScene "There is nothing special about the wall here. It's just dirty." sceneSouth)),
      (Action [(buildSentenceWrapper ["inspect", "floor"])]
-             (InspectedScene "There is nothing special about the floor here. It's just dirty carpet." sceneSouth)),
+              (InspectedScene "There is nothing special about the floor here. It's just dirty carpet." sceneSouth)),
      (Action [(buildSentenceWrapper ["inspect", "carpet"])]
               (InspectedScene "There is nothing special about the carpet here. It's just dirty." sceneSouth)),
      (Action [(buildSentenceWrapper ["open", "door"]),
