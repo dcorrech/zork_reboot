@@ -28,9 +28,9 @@ parseSentence _ = [] --TODO: Invalid sentence?
 
 
 generateSentences :: [[Token]] -> [Sentence]
-generateSentences [tokenVerbs] = map (\verb -> Word verb) tokenVerbs
-generateSentences [verbs, nouns] = [(SimpleSentence verb noun) | verb <- verbs, noun <- nouns]
-generateSentences _ = [] -- TODO: null sentence?
+generateSentences [tokenVerbs]      = map (\verb -> Word verb) tokenVerbs
+generateSentences [verbs, nouns]    = [(SimpleSentence verb noun) | verb <- verbs, noun <- nouns]
+generateSentences _                 = []
 
 -- TODO: write a general function to cover both of these cases.
 verbsInTokenList :: [Token] -> [Token]
