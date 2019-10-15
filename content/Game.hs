@@ -157,6 +157,16 @@ readScene DeathScene _ = -- EVENTUALLY INCLUDE POINT VALUE HERE
             else do
                 putStrLn("Okay, bye!")
                 exitSuccess
+readScene (ExitScene string) _ = -- EVENTUALLY INCLUDE POINT VALUE HERE
+    do
+        putStrLn("CONGRATULATIONS, YOU HAVE ESCAPED. Play again?")
+        line <- getLine
+        if (line `elem` ["y", "yes", "ye", "yeah", "sure", "oui"])
+            then do
+                play zorkMapStart
+            else do
+                putStrLn("Okay, bye!")
+                exitSuccess
 
 getSceneMap :: Action -> SceneMap
 getSceneMap (Action sentences scenemap) = scenemap
