@@ -96,6 +96,10 @@ actOnInput line (Scene i description actions n e s w) action inventory
                                                                 putStrLn("You have quit the game. Goodbye!")
                                                                 separatePrompts
                                                                 exitSuccess
+
+    | (fixdel(line) == "help")                              = do
+                                                                printGameInformation
+                                                                play (Scene i description actions n e s w) "read" inventory
     | (fixdel(line) == "inventory")                         = do
                                                                 printInventory inventory
                                                                 play (Scene i description actions n e s w) "read" inventory
