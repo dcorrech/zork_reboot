@@ -17,7 +17,7 @@ import Data.List.Split
 
 -- ALLTODOs for Game:
 -- TODO: Remove ^? characters that show up when entering delete. -- Dama
--- TODO: "help" and/or "verb" commands that print list of available commands
+-- TODO: "verb" commands that print list of available commands
 -- "SOMETHING EXTRA" TODO: Implement inventory with point values. These will be displayed at the end.
 -- EXTRA FOR FUN IMPROVEMENT THING: move NSEW movement into Actions
 
