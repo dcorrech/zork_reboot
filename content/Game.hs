@@ -42,7 +42,7 @@ play map =
 readScene :: SceneMap -> String -> IO SceneMap
 readScene (Scene i description actions n e s w) flag =
     do
-
+        putStrLn ""
         if (flag == "not read")
             then do 
                 putStrLn(description ++ " What do you do?")
@@ -67,6 +67,7 @@ readScene (Scene i description actions n e s w) flag =
                             return newScene
                         else if ((inActionList sentences actions) /= EmptyAction)
                             then do
+                                putStrLn ""
                                 conditionalScene <- readScene (getSceneMap (inActionList sentences actions)) "read"
                                 return conditionalScene
                             -- else if (sentences `elem` allTokens) 
