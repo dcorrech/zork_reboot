@@ -41,3 +41,37 @@ nounsInTokenList :: [Token] -> [Token]
 nounsInTokenList []                                   = []
 nounsInTokenList ((TokenNoun word synonyms) : rest)   = (TokenNoun word synonyms) : nounsInTokenList rest
 nounsInTokenList (_ : rest)                           = nounsInTokenList rest
+
+-- Require tests --
+
+findVerb :: [Token] -> String -> Maybe Token
+findVerb [] string = Nothing
+findVerb (verbToken:rest) string
+    | ((getTokenIdentifier verbToken) == string)    = (Just verbToken)
+    | otherwise                                     = findVerb rest string
+
+findNoun :: [Token] -> String -> Maybe Token
+findNoun [] string = Nothing
+findNoun (nounToken:rest) string
+    | ((getTokenIdentifier nounToken) == string)    = (Just nounToken)
+    | otherwise                                     = findVerb rest string
+
+convertMaybeToList :: (Maybe Token) -> [Token]
+convertMaybeToList Nothing                    = []
+convertMaybeToList (Just token)               = [token]
+
+buildSentenceHelper :: [Token] -> Sentence
+buildSentenceHelper []                        = InvalidSentence
+buildSentenceHelper [verbToken]               = Word verbToken
+buildSentenceHelper [verbToken, nounToken]    = SimpleSentence verbToken nounToken
+buildSentenceHelper _                         = InvalidSentence
+
+buildSentence :: [Token] -> [Token] -> [String] -> Sentence
+buildSentence _ _ []                          = InvalidSentence
+buildSentence verbsList _ [verb]              = buildSentenceHelper (convertMaybeToList (findVerb verbsList verb))
+buildSentence verbsList nounList [verb, noun] = buildSentenceHelper ((convertMaybeToList (findVerb verbsList verb)) ++
+                                                                    (convertMaybeToList (findNoun nounList noun)))
+buildSentence _ _ _                           = InvalidSentence
+
+
+
