@@ -26,14 +26,14 @@ import Data.List.Split
 play :: SceneMap -> IO SceneMap
 play map = 
     do
-        putStrLn "Start your adventure?"
+        putStrLn "Start your adventure? (y/n)"
         ans <- getLine
         if (ans `elem` ["y", "yes", "ye", "yeah", "sure", "oui"])
             then do
-                putStrLn("Movement: type N to move north, E for east, S for south, W for west. Type 'look' to describe your surroundings.")
-                putStrLn("You wake up in an unfamiliar place, dazed and disoriented.")
-                newmap <- readScene map "not read"
-                return newmap
+                printGameInformation
+                printGameIntro
+                newMap <- readScene map "not read"
+                return newMap
             else do
                 putStrLn ("Okay, bye!")
                 exitSuccess
@@ -170,4 +170,28 @@ removelast (h:t)
 
 -- Starts game, based on go function by David Poole (2019) for Assignment 3
 go :: IO SceneMap
-go = play zorkMapStart
+go = do
+      printIntroduction
+      play zorkMapStart
+
+printIntroduction :: IO ()
+printIntroduction = do
+                      putStrLn "Welcome to Dama and Jeff's CPSC 312 Project: ZORK REBOOT"
+                      putStrLn "Prepare yourself for a mindbending dive into a dark room, plus another dark room, maybe a dark hallway, some walls and floors, maybe a hammer, and some very terrifying Cthulu references. "
+                      putStrLn "Text doesn't get more exciting than this."
+                      putStrLn ""
+                      putStrLn ""
+                      putStrLn "***YOU HAVE BEEN WARNED***"
+                      putStrLn ""
+                      putStrLn "--------------------"
+                      putStrLn ""
+
+printGameInformation :: IO()
+printGameInformation = do
+                        putStrLn ""
+                        putStrLn "***INFO***"
+                        putStrLn "Movement: type N/n to move north, E/e for east, S/s for south, W/w for west. Type 'look' to describe your surroundings."
+                        putStrLn ""
+
+printGameIntro :: IO()
+printGameIntro = putStrLn "You wake up in an unfamiliar place, dazed and disoriented."
