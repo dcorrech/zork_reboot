@@ -25,9 +25,16 @@ instance Show SceneMap where
     show DeathScene = ""
     show NullScene = ""
 
-data Action = Action [Sentence] SceneMap
-            |EmptyAction
+data Action = EmptyAction
+            | Action [Sentence] SceneMap
+            | InventoryChange [Sentence] Item SceneMap
         deriving (Eq, Show)
+
+-- An item has an identifier, a points value, and a description.
+data Item = Treasure String Int String deriving (Eq)
+
+instance Show Item where
+    show (Treasure id points description) = show (id ++ ": " ++ description)
 
 -- -- SceneComponents allow players to interact with scene; Integer is conditionalIndex Strings are objects present in the scene, while Strings are the verbs used to interact with Strings
 -- data SceneComponent = Component Integer String
@@ -44,7 +51,7 @@ zorkMapStart = Scene 0 "You are in a dusty, dimly lit room. The paint on the wal
      (Action [(buildSentenceWrapper ["inspect", "wall"])]
               (InspectedScene "From here, you see nothing but dirt on the walls." zorkMapStart))]
     sceneNorth sceneEast sceneSouth sceneWest
-sceneNorth = Scene 1 "The North wall of the room is barren, and the paint looks old."
+sceneNorth = Scene 1 "The North wall of the room is barren, and the paint looks old. There is a old, worn painting on the wall."
     [(Action [(buildSentenceWrapper ["look"])]
               (InspectedScene "The North wall of the room is barren, and the paint looks old."  sceneNorth)),
      (Action [(buildSentenceWrapper ["inspect", "wall"])]
@@ -59,10 +66,14 @@ sceneNorth = Scene 1 "The North wall of the room is barren, and the paint looks 
               (InspectedScene "The wall is hard and rough." sceneNorth)),
      (Action [(buildSentenceWrapper ["touch", "paint"])]
               (InspectedScene "The paint is dry and flaky. You can't peel too much, but you see some paint layers interspersed with red splotches." sceneNorth)),
-     (Action [(buildSentenceWrapper ["touch", "floor"])]
+     (Action [(buildSentenceWrapper ["touch", "floor"]),
+              (buildSentenceWrapper ["touch", "carpet"])]
               (InspectedScene "The floor is covered in a carpet with brown and reddish stains." sceneNorth)),
-     (Action [(buildSentenceWrapper ["touch", "carpet"])]
-              (InspectedScene "The floor is covered in a carpet with brown and reddish stains." sceneNorth)),
+     (Action [(buildSentenceWrapper ["inspect", "painting"])]
+              (InspectedScene "The painting is of a strange, awe-inspiring animal that seems to be part-man, part-lizard, and part-octopus." sceneNorth)),
+     (InventoryChange [(buildSentenceWrapper ["move", "painting"])]
+              (Treasure "Stone Tablet" 1000 "The stone tablet is inscribed in characters you've never seen before. Despite your lack of understanding, your overcome with fear and terror looking at it. You are forced to put it away, lest it drive you mad.")
+              (InspectedScene "You gently push the painting aside. To your surprise, there is a hole in the wall containing a stone tablet. You carefully pick up the tablet and slip it into your bag."  sceneNorth)),
      (Action [(buildSentenceWrapper ["peel", "paint"])]
               (InspectedScene "The paint is dry and flaky. Peeling it reveals more layers interspersed with red splotches." sceneNorth))]
     (EmptyScene sceneNorth) sceneEast zorkMapStart sceneWest
@@ -254,8 +265,11 @@ roomEast = Scene 11 "This room has the same yellow light that was spreading into
             (InspectedScene "There is nothing special about the doorknob." roomEast)),
         (Action [(buildSentenceWrapper ["peel","carpet"])] 
             (SceneError "You cannot peel the carpet." roomEast)),
-        (Action [(buildSentenceWrapper ["inspect","table"])]
+        (InventoryChange [(buildSentenceWrapper ["inspect","table"])]
             (InspectedScene "The table is metal, and bolted to the ground. On it is a blood-stained gem." centerRoomEast)),
+        (InventoryChange [(buildSentenceWrapper ["take","gem"])]
+            (Treasure "Blood-stained Gem" 1000 "The gem is a rich green hue, but is unlike any stone you've ever seen. It sparkles with a magnificent intensity and seems to be of cosmic-origin. It is shaped into a sharp point, almost like a stake. On its point is a smattering of blood.")
+            (InspectedScene "You pick up the gem, taking care to avoid touching the blood or its sharp edges. You place it in your bag." centerRoomEast)),
         (Action [(buildSentenceWrapper ["close", "door"])]
             (InspectedScene "The door doesn't close." roomEast)),
         (Action [(buildSentenceWrapper ["slam","door"]), (buildSentenceWrapper ["force","door"])] 
@@ -420,6 +434,7 @@ allNounTokens = [(TokenNoun "floor" ["floor", "ground"]),
                  (TokenNoun "words" ["words", "word", "writing", "writings", "script", "scripts", "handwriting"]),
                  (TokenNoun "darkness" ["darkness"]),
                  (TokenNoun "staircase" ["staircase", "stairs"]),
+                 (TokenNoun "painting" ["painting", "artwork", "artpiece"]),
                  (TokenNoun "scratches" ["scratches", "scratchings"])]
 
 -- Adapted from Laurence Emms "What The Functional" Website on Haskell programming.

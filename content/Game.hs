@@ -27,104 +27,93 @@ lineDelimiters = [' ', '\t']
 
 -- Takes a given SceneMap, starts and ends the game.
 
-play :: SceneMap -> IO SceneMap
-play map = 
+-- Starts game, based on go function by David Poole (2019) for Assignment 3
+go :: IO ()
+go = do
+      printIntroduction
+      putStrLn "Start your adventure? (y/n)"
+      ans <- getLine
+      if (ans `elem` ["y", "yes", "ye", "yeah", "sure", "oui"])
+         then do
+               printGameInformation
+               printGameIntro
+               play zorkMapStart "not read" []
+         else do
+               separatePrompts
+               putStrLn ("Okay, bye!")
+               separatePrompts
+               exitSuccess
+
+-- Play takes the current scene, a flag indicating whether the room has been already entered, and the current inventory.
+play :: SceneMap -> String -> [Item] -> IO ()
+play map flag inventory=
     do
-        putStrLn "Start your adventure? (y/n)"
-        ans <- getLine 
-        if (ans `elem` ["y", "yes", "ye", "yeah", "sure", "oui"])
-            then do
-                printGameInformation
-                printGameIntro
-                newMap <- readScene map "not read"
-                return newMap
-            else do
-                putStrLn ("Okay, bye!")
-                exitSuccess
+      separatePrompts
+      readScene map flag inventory
 
 -- Takes given SceneMap, prints description and advances user through the map.
-readScene :: SceneMap -> String -> IO SceneMap
-readScene (Scene i description actions n e s w) flag  =
+readScene :: SceneMap -> String -> [Item] -> IO ()
+readScene (Scene i description actions n e s w) flag inventory =
     do
-        separatePrompts
         printSceneIntro description flag
 
         line <- getLine
-
-        let sentences = parseLine (fixdel line)
+        let sentences = parseLineToSentence (fixdel line)
             matchedAction = (findMatchingAction sentences actions)
 
-        parseForQuitGame line
+        actOnInput line (Scene i description actions n e s w) matchedAction inventory
 
-        if (fixdel(line) `elem` ["N","n","north","North"])
-            then do
-                  newScene <- readScene n "not read"
-                  return newScene
-            else if (fixdel(line) `elem` ["E","e","east","East"])
-                then do
-                      newScene <- readScene e "not read"
-                      return newScene
-                else if (fixdel(line) `elem` ["S","s","south","South"])
-                    then do
-                          newScene <- readScene s "not read"
-                          return newScene
-                    else if (fixdel(line) `elem` ["W","w","west","West"])
-                        then do
-                              newScene <- readScene w "not read"
-                              return newScene
-                        else if (matchedAction /= EmptyAction)
-                            then do
-                                  putStrLn ""
-                                  conditionalScene <- readScene (getSceneMap (findMatchingAction sentences actions)) "read"
-                                  return conditionalScene
-                            else do
-                                  putStrLn ("COMMAND NOT RECOGNIZED.")
-                                  currentScene <- readScene (Scene i description actions n e s w) "read"
-                                  return currentScene
-
-readScene (SceneError errormsg parent) _ =
+readScene (SceneError errormsg parent) _ inventory =
     do
         putStrLn(errormsg ++ " What do you do instead?")
-        parentScene <- readScene parent "read"
-        return parentScene
+        play parent "read" inventory
         
 
-readScene (EmptyScene parent) _ = 
+readScene (EmptyScene parent) _ inventory=
     do
         putStrLn("There is no path this way. What do you do instead?")
-        parentScene <- readScene parent "read"
-        return parentScene
+        play parent "read" inventory
 
-readScene (InspectedScene description parent) _ = 
+readScene (InspectedScene description parent) _ inventory =
     do
         putStrLn(description)
-        parentScene <- readScene parent "read"
-        return parentScene
+        play parent "read" inventory
 
-readScene DeathScene _ = -- EVENTUALLY INCLUDE POINT VALUE HERE
+readScene DeathScene _ _ = -- EVENTUALLY INCLUDE POINT VALUE HERE
     do
         putStrLn("YOU HAVE DIED. Play again?")
-        line <- getLine
-        if (line `elem` ["y", "yes", "ye", "yeah", "sure", "oui"])
-            then do
-                play zorkMapStart
-            else do
-                putStrLn("Okay, bye!")
-                exitSuccess
-readScene (ExitScene string) _ = -- EVENTUALLY INCLUDE POINT VALUE HERE
+        restartGame
+
+readScene (ExitScene string) _ _ = -- EVENTUALLY INCLUDE POINT VALUE HERE
     do
         putStrLn("CONGRATULATIONS, YOU HAVE ESCAPED. Play again?")
-        line <- getLine
-        if (line `elem` ["y", "yes", "ye", "yeah", "sure", "oui"])
-            then do
-                play zorkMapStart
-            else do
-                putStrLn("Okay, bye!")
-                exitSuccess
+        restartGame
 
-getSceneMap :: Action -> SceneMap
-getSceneMap (Action sentences scenemap) = scenemap
-getScenemap EmptyAction = NullScene
+actOnInput :: String -> SceneMap -> Action -> [Item] -> IO ()
+actOnInput line (Scene i description actions n e s w) action inventory
+    | (fixdel(line) == "quit" || (fixdel(line) == "exit"))  = do
+                                                                separatePrompts
+                                                                putStrLn("You have quit the game. Goodbye!")
+                                                                separatePrompts
+                                                                exitSuccess
+    | (fixdel(line) == "inventory")                         = do
+                                                                printInventory inventory
+                                                                play (Scene i description actions n e s w) "read" inventory
+    | (fixdel(line) `elem` ["N","n","north","North"])       = play n "not read" inventory
+    | (fixdel(line) `elem` ["E","e","east","East"])         = play e "not read" inventory
+    | (fixdel(line) `elem` ["S","s","south","South"])       = play s "not read" inventory
+    | (fixdel(line) `elem` ["W","w","west","West"])         = play w "not read" inventory
+    | (action /= EmptyAction)                               = performAction action inventory
+    | otherwise                                             = do
+                                                                separatePrompts
+                                                                putStrLn ("COMMAND NOT RECOGNIZED.")
+                                                                play (Scene i description actions n e s w) "read" inventory
+actOnInput _ _ _ _ = return ()
+
+performAction :: Action -> [Item] -> IO()
+performAction EmptyAction _                                         = return ()
+performAction (Action sentences nextScene) inventory                = play nextScene "read" inventory
+performAction (InventoryChange sentences item nextScene) inventory  = play nextScene "read" (item : inventory)
 
 findMatchingAction :: [Sentence] -> [Action] -> Action
 findMatchingAction [] [] = EmptyAction
@@ -136,13 +125,16 @@ findMatchingAction sentences (action:rest)
 
 actionMatchesWithSentences :: [Sentence] -> Action -> Bool
 actionMatchesWithSentences [] _ = False
-actionMatchesWithSentences sentences (Action asentences scenemap)
+actionMatchesWithSentences sentences (Action asentences _)
     | [x | x <- sentences, y <- asentences, x == y] == [] = False
     | otherwise = True
+actionMatchesWithSentences sentences (InventoryChange isentences _ _)
+    | [x | x <- sentences, y <- isentences, x == y] == [] = False
+    | otherwise = True
 
-parseLine :: [Char] -> [Sentence]
-parseLine [] = []
-parseLine line = parseSentence tokenMatches
+parseLineToSentence :: [Char] -> [Sentence]
+parseLineToSentence [] = []
+parseLineToSentence line = parseSentence tokenMatches
     where processedLine = Data.List.Split.splitOneOf lineDelimiters line
           tokenMatches = lexInput allTokens processedLine
 
@@ -166,12 +158,10 @@ removelast (h:t)
    | t == [] = t
    | otherwise = h:(removelast t)
 
-
--- Starts game, based on go function by David Poole (2019) for Assignment 3
-go :: IO SceneMap
-go = do
-      printIntroduction
-      play zorkMapStart
+getSceneMapFromAction :: Action -> SceneMap
+getScenemapFromAction EmptyAction = NullScene
+getSceneMapFromAction (Action _ scenemap) = scenemap
+getSceneMapFromAction (InventoryChange _ _ scenemap) = scenemap
 
 printIntroduction :: IO ()
 printIntroduction = do
@@ -181,34 +171,49 @@ printIntroduction = do
                       putStrLn ""
                       putStrLn ""
                       putStrLn "***YOU HAVE BEEN WARNED***"
-                      putStrLn ""
-                      putStrLn "--------------------"
-                      putStrLn ""
+                      separatePrompts
 
 printGameInformation :: IO()
 printGameInformation = do
                         putStrLn ""
                         putStrLn "***INFO***"
-                        putStrLn "Movement: type N/n to move north, E/e for east, S/s for south, W/w for west. Type 'look' to describe your surroundings."
+                        putStrLn "Movement: type N/n to move north, E/e for east, S/s for south, W/w for west. Type 'look' to describe your surroundings. Type 'inventory' to check your current inventory."
                         putStrLn ""
 
 printGameIntro :: IO()
-printGameIntro = putStrLn "You wake up in an unfamiliar place, dazed and disoriented."
+printGameIntro = putStrLn "You wake up in an unfamiliar place, dazed and disoriented. There is a dusty leather bag to the side. Getting to your feet, you thread your arms through its straps and tighten it to your back."
 
 printSceneIntro :: String -> String -> IO ()
 printSceneIntro description flag
     | (flag == "not read")      = putStrLn(description ++ " What do you do?")
     | otherwise                 = putStrLn("What do you do?")
 
-parseForQuitGame :: String -> IO ()
-parseForQuitGame [] = return ()
-parseForQuitGame line
-    | (fixdel(line) == "quit" || (fixdel(line) == "exit"))  = do
-                                                                putStrLn("You have quit the game. Goodbye!")
-                                                                exitSuccess
-    | otherwise                                             = return ()
+printInventory :: [Item] -> IO ()
+printInventory [] = do
+                      separatePrompts
+                      putStrLn "Your inventory is empty."
+printInventory inventory = do
+                              separatePrompts
+                              putStrLn "Your inventory contains:"
+                              printItems inventory
+
+printItems :: [Item] -> IO ()
+printItems [] = return ()
+printItems (item:rest) = do
+                          print item
+                          printItems rest
 
 separatePrompts :: IO()
 separatePrompts = do putStrLn ""
                      putStrLn "--------------------"
                      putStrLn ""
+
+restartGame :: IO ()
+restartGame = do
+                 line <- getLine
+                 if (line `elem` ["y", "yes", "ye", "yeah", "sure", "oui"])
+                 then do
+                       play zorkMapStart "not read" []
+                 else do
+                       putStrLn("Okay, bye!")
+                       exitSuccess
