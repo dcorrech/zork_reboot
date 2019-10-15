@@ -20,10 +20,14 @@ data SceneMap = Scene Integer String [String] SceneMap SceneMap SceneMap SceneMa
 instance Show SceneMap where
     show (Scene i description actions n e s w cond) = show description
     show (EmptyScene parent) = show parent
+    show (InspectedScene description parent) = show description
     show (SceneError msg parent) = show msg
+    show DeathScene = ""
+    show NullScene = ""
 
 data Action = Action [Sentence] SceneMap
             |EmptyAction
+            -- deriving (Eq)
             deriving (Eq, Show)
 testAction = Action [(SimpleSentence (TokenVerb "look" ["look", "inspect", "see", "view", "observe", "search", "examine"]) (TokenNoun "floor" ["floor", "ground", "carpet"]))] (InspectedScene "The floor is covered in a carpet with brown and reddish stains." zorkMapStart)
 
