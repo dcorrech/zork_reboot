@@ -265,7 +265,7 @@ roomEast = Scene 11 "This room has the same yellow light that was spreading into
             (InspectedScene "There is nothing special about the doorknob." roomEast)),
         (Action [(buildSentenceWrapper ["peel","carpet"])] 
             (SceneError "You cannot peel the carpet." roomEast)),
-        (InventoryChange [(buildSentenceWrapper ["inspect","table"])]
+        (Action [(buildSentenceWrapper ["inspect","table"])]
             (InspectedScene "The table is metal, and bolted to the ground. On it is a blood-stained gem." centerRoomEast)),
         (InventoryChange [(buildSentenceWrapper ["take","gem"])]
             (Treasure "Blood-stained Gem" 1000 "The gem is a rich green hue, but is unlike any stone you've ever seen. It sparkles with a magnificent intensity and seems to be of cosmic-origin. It is shaped into a sharp point, almost like a stake. On its point is a smattering of blood.")
