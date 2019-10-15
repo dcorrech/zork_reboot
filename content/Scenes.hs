@@ -45,57 +45,90 @@ zorkMapStart = Scene1 0 "You are in a dusty, dimly lit room. The paint on the wa
      (Action [(buildSentenceWrapper ["inspect", "wall"])]
               (InspectedScene "From here, you see nothing but dirt on the walls." zorkMapStart))]
     sceneNorth sceneEast sceneSouth sceneWest
-sceneNorth = Scene 1 "The North wall of the room is barren, and the paint looks old." 
-    ["look", "inspect wall", "inspect paint", "inpect floor", "inspect carpet", "touch wall", "touch paint", "touch floor", "peel paint"]
-    (EmptyScene sceneNorth) sceneEast zorkMapStart sceneWest 
-    [sceneNorth, 
-        (InspectedScene "There is a bit of paint peeling off the walls, revealing multiple layers of paint." sceneNorth),
-        (InspectedScene "Some layers of paint reveal rusty red splotches that smell like blood." sceneNorth),
-        (InspectedScene "The floor is covered in a carpet with brown and reddish stains." sceneNorth),
-        (InspectedScene "The carpet is stained brown and red, but seems firmly secured to the ground." sceneNorth),
-        (InspectedScene "The wall is hard and rough." sceneNorth),
-        (InspectedScene "The paint is dry and flaky. You can't peel too much, but you see some paint layers interspersed with red splotches." sceneNorth),
-        (InspectedScene "The floor is covered in a carpet with brown and reddish stains." sceneNorth),
-        (InspectedScene "The carpet is rough and wet in some places, but seems firmly secured to the ground." sceneNorth),
-        (InspectedScene "The paint is dry and flaky. Peeling it reveals more layers interspersed with red splotches." sceneNorth)]
-sceneEast = Scene 2 "The East wall of the room has scratches on it, chipping away the paint more than the other walls." 
-    ["look", "inspect wall", "inspect paint", "inspect floor", "inspect carpet", "look", "touch wall", "touch paint", "touch floor", "touch carpet"]
-    sceneNorth (EmptyScene sceneEast) sceneSouth zorkMapStart 
-    [sceneEast,
-        (InspectedScene "You can see that the wall has various layers of paint, some peeling away faster than others." sceneEast),
-        (InspectedScene "The paint here looks easy to peel away." sceneEast),
-        (InspectedScene "The floor is covered in a carpet with brown and reddish stains." sceneEast),
-        (InspectedScene "The carpet is stained brown and red, but seems firmly secured to the ground." sceneEast),
-        (InspectedScene "The wall is hard and rough, with paint peeling off of it." sceneEast),
-        (InspectedScene "The paint is dry and flaky, you easily peel it off, revealing writing scratched onto the wall. It reads 'THEY HUNGER'. " sceneEast),
-        (InspectedScene "The floor is covered in a carpet with brown and reddish stains." sceneEast),
-        (InspectedScene "The carpet is rough and wet in some places, but seems firmly secured to the ground." sceneEast),
-        (InspectedScene "The carpet is rough and wet in some places, but seems firmly secured to the ground." sceneEast)]
-sceneSouth = Scene 3 "There is a wooden door in front of you. It looks heavy and old." 
-    ["look", "inspect door", "inspect doorknob", "inspect wall", "inspect floor", "inspect carpet", "open door", "turn doorknob", "kick door", "push door"] 
-    zorkMapStart sceneEast (SceneError "You can't walk through a closed door." sceneSouth) sceneWest 
-    [sceneSouth,  
-        (InspectedScene "The door is closed, and the wood is unscathed, though clearly old. The doorknob looks meticulously pollished." sceneSouth), 
-        (InspectedScene "The doorknob is shining from a recent pollish." sceneSouth),
-        (InspectedScene "There is nothing special about the wall here. It's just dirty." sceneSouth), 
-        (InspectedScene "There is nothing special about the floor here. It's just dirty carpet." sceneSouth), 
-        (InspectedScene "There is nothing special about the carpet here. It's just dirty." sceneSouth),
-        (InspectedScene "You open the door." firstDoorScene),
-        (InspectedScene "You turn the doorknob, opening the door." firstDoorScene),
-        (InspectedScene "You kick at the door to no avail. It's heavy and closed." sceneSouth),
-        (InspectedScene "The door does no budge under your weight." sceneSouth)]
-sceneWest = Scene 4 "There is a boarded up window in front of you. There are scratches on the boards, and the dim light in the room is filtering in from the cracks between the boards here." 
-    ["look", "inspect window", "inspect glass", "inspect boards", "inspect board", "inspect floor", "inspect carpet", "pull boards", "pull board"] 
-    sceneNorth zorkMapStart sceneSouth (EmptyScene sceneWest) 
-    [sceneWest,
-        (InspectedScene "The window is boarded up, but through the cracks between the boards you see that it's late afternoon, and wherever you are seems to be surrounded by dense forest." sceneWest),
-        (InspectedScene "The window is boarded up, but through the cracks between the boards you see that it's late afternoon, and wherever you are seems to be surrounded by dense forest." sceneWest),
-        (InspectedScene "The boards look firmly nailed to the window, and have bloody scratches on them." sceneWest),
-        (InspectedScene "The boards look firmly nailed to the window, and have bloody scratches on them." sceneWest),
-        (InspectedScene "The floor is covered in a carpet with brown and reddish stains." sceneWest),
-        (InspectedScene "The carpet is stained brown and red, but seems firmly secured to the ground." sceneWest),
-        (SceneError "The boards are firmly nailed to the window. You cannot pull them off with your bare hands." sceneWest),
-        (SceneError "The boards are firmly nailed to the window. You cannot pull them off with your bare hands." sceneWest)]
+sceneNorth = Scene1 1 "The North wall of the room is barren, and the paint looks old."
+    [(Action [(buildSentenceWrapper ["look"])]
+              (InspectedScene "The North wall of the room is barren, and the paint looks old."  sceneNorth)),
+     (Action [(buildSentenceWrapper ["inspect", "wall"])]
+              (InspectedScene "There is a bit of paint peeling off the walls, revealing multiple layers of paint." sceneNorth)),
+     (Action [(buildSentenceWrapper ["inspect", "paint"])]
+              (InspectedScene "Some layers of paint reveal rusty red splotches that smell like blood." sceneNorth)),
+     (Action [(buildSentenceWrapper ["inspect", "floor"])]
+              (InspectedScene "The floor is covered in a carpet with brown and reddish stains." sceneNorth)),
+     (Action [(buildSentenceWrapper ["inspect", "carpet"])]
+              (InspectedScene "The carpet is stained brown and red, but seems firmly secured to the ground." sceneNorth)),
+     (Action [(buildSentenceWrapper ["touch", "wall"])]
+              (InspectedScene "The wall is hard and rough." sceneNorth)),
+     (Action [(buildSentenceWrapper ["touch", "paint"])]
+              (InspectedScene "The paint is dry and flaky. You can't peel too much, but you see some paint layers interspersed with red splotches." sceneNorth)),
+     (Action [(buildSentenceWrapper ["touch", "floor"])]
+              (InspectedScene "The floor is covered in a carpet with brown and reddish stains." sceneNorth)),
+     (Action [(buildSentenceWrapper ["touch", "carpet"])]
+              (InspectedScene "The floor is covered in a carpet with brown and reddish stains." sceneNorth)),
+     (Action [(buildSentenceWrapper ["peel", "paint"])]
+              (InspectedScene "The paint is dry and flaky. Peeling it reveals more layers interspersed with red splotches." sceneNorth))]
+    (EmptyScene sceneNorth) sceneEast zorkMapStart sceneWest
+
+sceneEast = Scene1 2 "The East wall of the room has scratches on it, chipping away the paint more than the other walls."
+    [(Action [(buildSentenceWrapper ["look"])]
+              (InspectedScene "The East wall of the room has scratches on it, chipping away the paint more than the other walls."  sceneEast)),
+     (Action [(buildSentenceWrapper ["inspect", "wall"])]
+              (InspectedScene "You can see that the wall has various layers of paint, some peeling away faster than others." sceneEast)),
+     (Action [(buildSentenceWrapper ["inspect", "paint"])]
+              (InspectedScene "The paint here looks easy to peel away." sceneEast)),
+     (Action [(buildSentenceWrapper ["inspect", "floor"])]
+              (InspectedScene "The floor is covered in a carpet with brown and reddish stains." sceneEast)),
+     (Action [(buildSentenceWrapper ["inspect", "carpet"])]
+              (InspectedScene "The carpet is stained brown and red, but seems firmly secured to the ground." sceneEast)),
+     (Action [(buildSentenceWrapper ["touch", "wall"])]
+              (InspectedScene "The wall is hard and rough." sceneEast)),
+     (Action [(buildSentenceWrapper ["touch", "paint"])]
+              (InspectedScene "The paint is dry and flaky, you easily peel it off, revealing writing scratched onto the wall. It reads 'THEY HUNGER'. " sceneEast)),
+     (Action [(buildSentenceWrapper ["touch", "floor"])]
+              (InspectedScene "The floor is covered in a carpet with brown and reddish stains." sceneEast)),
+     (Action [(buildSentenceWrapper ["touch", "carpet"])]
+              (InspectedScene "The carpet is rough and wet in some places, but seems firmly secured to the ground." sceneEast))]
+    sceneNorth (EmptyScene sceneEast) sceneSouth zorkMapStart
+
+sceneSouth = Scene1 3 "There is a wooden door in front of you. It looks heavy and old."
+    [(Action [(buildSentenceWrapper ["look"])]
+              (InspectedScene "There is a wooden door in front of you. It looks heavy and old." sceneSouth)),
+     (Action [(buildSentenceWrapper ["inspect", "door"])]
+              (InspectedScene "The door is closed, and the wood is unscathed, though clearly old. The doorknob looks meticulously pollished." sceneSouth)),
+     (Action [(buildSentenceWrapper ["inspect", "doorknob"])]
+              (InspectedScene "The doorknob is shining from a recent pollish." sceneSouth)),
+     (Action [(buildSentenceWrapper ["inspect", "wall"])]
+              (InspectedScene "There is nothing special about the wall here. It's just dirty." sceneSouth)),
+     (Action [(buildSentenceWrapper ["inspect", "floor"])]
+             (InspectedScene "There is nothing special about the floor here. It's just dirty carpet." sceneSouth)),
+     (Action [(buildSentenceWrapper ["inspect", "carpet"])]
+              (InspectedScene "There is nothing special about the carpet here. It's just dirty." sceneSouth)),
+     (Action [(buildSentenceWrapper ["open", "door"]),
+              (buildSentenceWrapper ["turn", "doorknob"])]
+              (InspectedScene "You turn the doorknob, opening the door." firstDoorScene)),
+     (Action [(buildSentenceWrapper ["kick", "door"])]
+              (InspectedScene "You kick at the door to no avail. It's heavy and closed." sceneSouth)),
+     (Action [(buildSentenceWrapper ["puah", "door"])]
+              (InspectedScene "The door does no budge under your weight." sceneSouth))]
+     zorkMapStart sceneEast (SceneError "You can't walk through a closed door." sceneSouth) sceneWest
+
+sceneWest = Scene1 4 "There is a boarded up window in front of you. There are scratches on the boards, and the dim light in the room is filtering in from the cracks between the boards here."
+    [(Action [(buildSentenceWrapper ["look"])]
+              (InspectedScene "There is a boarded up window in front of you. There are scratches on the boards, and the dim light in the room is filtering in from the cracks between the boards here."  sceneWest)),
+     (Action [(buildSentenceWrapper ["inspect", "window"]),
+              (buildSentenceWrapper ["inspect", "glass"])]
+              (InspectedScene "The window is boarded up, but through the cracks between the boards you see that it's late afternoon, and wherever you are seems to be surrounded by dense forest." sceneWest)),
+     (Action [(buildSentenceWrapper ["inspect", "boards"]),
+              (buildSentenceWrapper ["inspect", "board"])]
+             (InspectedScene "The boards look firmly nailed to the window, and have bloody scratches on them." sceneWest)),
+     (Action [(buildSentenceWrapper ["inspect", "floor"])]
+              (InspectedScene "The floor is covered in a carpet with brown and reddish stains." sceneWest)),
+     (Action [(buildSentenceWrapper ["inspect", "carpet"])]
+             (InspectedScene "The carpet is stained brown and red, but seems firmly secured to the ground." sceneWest)),
+     (Action [(buildSentenceWrapper ["pull", "boards"]),
+              (buildSentenceWrapper ["pull", "board"])]
+              (SceneError "The boards are firmly nailed to the window. You cannot pull them off with your bare hands." sceneWest))]
+    sceneNorth zorkMapStart sceneSouth (EmptyScene sceneWest)
+
 firstDoorScene = Scene 5 "A long hallway stretches ahead of you, spreading out to the south. To the north is a door." 
     ["look", "inspect door", "inspect doorknob", "inspect wall", "inspect floor", "inspect carpet", "peel carpet", "close door", "slam door", "force door", "turn doorknob", "kick door"] -- GONNA NEED TO ADD SOME KIND OF FLAG FOR WHETHER THE DOOR IS OPEN OR NOT
     sceneSouth (EmptyScene firstDoorScene) hallSouth (EmptyScene firstDoorScene) 
@@ -305,7 +338,7 @@ allVerbTokens = [(TokenVerb "look" ["look"]),
                  (TokenVerb "touch" ["touch", "feel", "rub"]),
                  (TokenVerb "peel" ["peel", "scratch", "rip"]),
                  (TokenVerb "open" ["open"]),
-                 (TokenVerb "close" ["open", "slam"]),
+                 (TokenVerb "close" ["close", "slam"]),
                  (TokenVerb "force" ["force"]),
                  (TokenVerb "take" ["take", "grab"]),
                  (TokenVerb "turn" ["turn", "twist"]),
