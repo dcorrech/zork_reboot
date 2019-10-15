@@ -1,5 +1,6 @@
 -- Adapted from Laurence Emms "What The Functional" Website on Haskell programming.
 -- See https://whatthefunctional.wordpress.com/2018/03/10/making-a-text-adventure-in-haskell-part-2/
+-- and https://github.com/WhatTheFunctional/HaskellAdventure/blob/master/NaturalLanguageParser.hs
 
 module NaturalLanguageParser (Sentence(..),
                               parseSentence,

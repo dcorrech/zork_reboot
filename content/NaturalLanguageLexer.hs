@@ -1,5 +1,6 @@
 -- Adapted from Laurence Emms "What The Functional" Website on Haskell Programming.
 -- See https://whatthefunctional.wordpress.com/2018/03/10/making-a-text-adventure-in-haskell-part-1/
+-- and https://github.com/WhatTheFunctional/HaskellAdventure/blob/master/NaturalLanguageLexer.hs
 
 module NaturalLanguageLexer (Token(..),
                              TokenMatch(..),
