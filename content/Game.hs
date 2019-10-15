@@ -19,9 +19,10 @@ import Data.List.Split
 -- ALLTODOs for Game:
 -- TODO: Remove ^? characters that show up when entering delete. -- Dama
 -- TODO: "help" and/or "verb" commands that print list of available commands
+-- TODO: Fix following bug: putting in "inspect" matches to a simple sentence. -- Jeff
+-- TODO: change Scene1 to Scene, remove indeces -- Dama
 -- "SOMETHING EXTRA" TODO: Implement inventory with point values. These will be displayed at the end.
 -- EXTRA FOR FUN IMPROVEMENT THING: move NSEW movement into Actions
--- TODO: Fix following bug: putting in "inspect" matches to a simple sentence.
 
 
 -- Takes a given SceneMap, starts and ends the game. Adapted from play function by David Poole (2019) given in Assignment 3.
