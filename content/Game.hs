@@ -80,7 +80,47 @@ readScene (Scene i description actions n e s w conditionals) =
                                     else do
                                         putStrLn ("COMMAND NOT RECOGNIZED.")
                                         currentScene <- readScene (Scene i description actions n e s w conditionals)
-                                        return currentScene                    
+                                        return currentScene          
+                                        
+readScene (Scene1 i description actions n e s w) =
+    do
+        putStrLn(description ++ " What do you do?")
+        line <- getLine
+        let sentences = parseLine line
+        print sentences
+        if (fixdel(line) `elem` ["N","n","north","North"])
+            then do
+                newScene <- readScene n
+                return newScene
+            else if (fixdel(line) `elem` ["E","e","east","East"])
+                then do
+                    newScene <- readScene e
+                    return newScene
+                else if (fixdel(line) `elem` ["S","s","south","South"])
+                    then do
+                        newScene <- readScene s
+                        return newScene
+                    else if (fixdel(line) `elem` ["W","w","west","West"])
+                        then do
+                            newScene <- readScene w
+                            return newScene
+                        else if ((inActionList sentences actions) /= EmptyAction) -- THIS WILL BE CHANGED TO SOMETHING WITH THE PARSER, SO THAT I CAN GRAB THE INDEX OF THE CONDITIONAL SCENE BASED ON THE INPUT AND AVAILABLE ACTIONS
+                            then do
+                                conditionalScene <- readScene (getSceneMap (inActionList sentences actions))
+                                return conditionalScene
+                            -- else if (fixdel(line) `elem` masterVerbs) 
+                            --     then do
+                            --     putStrLn ("You can't do that here.")
+                            --     currentScene <- readScene (Scene i description actions n e s w conditionals)
+                            --     return currentScene 
+                                else if (fixdel(line) == "quit" || (fixdel(line) == "exit"))
+                                    then do
+                                        putStrLn("You have quit the game. Goodbye!")
+                                        exitSuccess
+                                    else do
+                                        putStrLn ("COMMAND NOT RECOGNIZED.")
+                                        currentScene <- readScene (Scene1 i description actions n e s w)
+                                        return currentScene          
 
 readScene (SceneError errormsg parent) =
     do
@@ -111,6 +151,24 @@ readScene DeathScene = -- EVENTUALLY INCLUDE POINT VALUE HERE
             else do
                 putStrLn("Okay, bye!")
                 exitSuccess
+
+getSceneMap :: Action -> SceneMap
+getSceneMap (Action sentences scenemap) = scenemap
+getScenemap EmptyAction = NullScene
+
+inActionList [] [] = EmptyAction
+inActionList [] lst = EmptyAction
+inActionList lst [] = EmptyAction
+inActionList sentences (action:rest)
+    |inAction sentences action = action
+    |otherwise = inActionList sentences rest
+
+inAction :: [Sentence] -> Action -> Bool 
+inAction [] _ = False
+inAction sentences (Action asentences scenemap)
+    |[x | x <- sentences, y <- asentences, x == y] == [] = False
+    |otherwise = True
+
 
 parseLine :: [Char] -> [Sentence]
 parseLine [] = []
