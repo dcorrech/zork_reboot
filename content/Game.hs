@@ -7,7 +7,6 @@ module Game where
 import System.IO
 import System.Exit
 import Scenes
-
 import NaturalLanguageLexer
 import NaturalLanguageParser
 
@@ -22,15 +21,17 @@ import Data.List.Split
 -- "SOMETHING EXTRA" TODO: Implement inventory with point values. These will be displayed at the end.
 -- EXTRA FOR FUN IMPROVEMENT THING: move NSEW movement into Actions
 
+
 lineDelimiters :: [Char]
 lineDelimiters = [' ', '\t']
 
--- Takes a given SceneMap, starts and ends the game. Adapted from play function by David Poole (2019) given in Assignment 3.
+-- Takes a given SceneMap, starts and ends the game.
+
 play :: SceneMap -> IO SceneMap
 play map = 
     do
         putStrLn "Start your adventure? (y/n)"
-        ans <- getLine
+        ans <- getLine 
         if (ans `elem` ["y", "yes", "ye", "yeah", "sure", "oui"])
             then do
                 printGameInformation
@@ -41,7 +42,7 @@ play map =
                 putStrLn ("Okay, bye!")
                 exitSuccess
 
--- Takes given SceneMap, prints description and advances user through the map. Adapted from askabout function by David Poole (2019) given in Assignment 3.
+-- Takes given SceneMap, prints description and advances user through the map.
 readScene :: SceneMap -> String -> IO SceneMap
 readScene (Scene i description actions n e s w) flag  =
     do
@@ -49,7 +50,8 @@ readScene (Scene i description actions n e s w) flag  =
         printSceneIntro description flag
 
         line <- getLine
-        let sentences = parseLine line
+
+        let sentences = parseLine (fixdel line)
             matchedAction = (findMatchingAction sentences actions)
 
         parseForQuitGame line
