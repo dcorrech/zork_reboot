@@ -53,7 +53,7 @@ play map flag inventory=
 
 -- Takes given SceneMap, prints description and advances user through the map.
 readScene :: SceneMap -> String -> [Item] -> IO ()
-readScene (Scene i description actions n e s w) flag inventory =
+readScene (Scene description actions n e s w) flag inventory =
     do
         printSceneIntro description flag
 
@@ -61,17 +61,11 @@ readScene (Scene i description actions n e s w) flag inventory =
         let sentences = parseLineToSentence (fixdel line)
             matchedAction = (findMatchingAction sentences actions)
 
-        actOnInput line (Scene i description actions n e s w) matchedAction inventory
+        actOnInput line (Scene description actions n e s w) matchedAction inventory
 
 readScene (SceneError errormsg parent) _ inventory =
     do
         putStrLn(errormsg ++ " What do you do instead?")
-        play parent "read" inventory
-        
-
-readScene (EmptyScene parent) _ inventory=
-    do
-        putStrLn("There is no path this way. What do you do instead?")
         play parent "read" inventory
 
 readScene (InspectedScene description parent) _ inventory =
@@ -79,18 +73,24 @@ readScene (InspectedScene description parent) _ inventory =
         putStrLn(description)
         play parent "read" inventory
 
-readScene DeathScene _ _ = -- EVENTUALLY INCLUDE POINT VALUE HERE
+readScene DeathScene _ inventory =
     do
-        putStrLn("YOU HAVE DIED. Play again?")
+        putStrLn("YOU HAVE DIED.")
+        let points =  getInventoryValue inventory
+        putStrLn("You scored: " ++ (show points) ++ " points.")
+        putStrLn("Play again?")
         restartGame
 
-readScene (ExitScene string) _ _ = -- EVENTUALLY INCLUDE POINT VALUE HERE
+readScene (ExitScene string) _ inventory =
     do
-        putStrLn("CONGRATULATIONS, YOU HAVE ESCAPED. Play again?")
+        putStrLn("CONGRATULATIONS, YOU HAVE ESCAPED.")
+        let points =  getInventoryValue inventory
+        putStrLn("You scored: " ++ (show points) ++ " points.")
+        putStrLn("Play again?")
         restartGame
 
 actOnInput :: String -> SceneMap -> Action -> [Item] -> IO ()
-actOnInput line (Scene i description actions n e s w) action inventory
+actOnInput line (Scene description actions n e s w) action inventory
     | (fixdel(line) == "quit" || (fixdel(line) == "exit"))  = do
                                                                 separatePrompts
                                                                 putStrLn("You have quit the game. Goodbye!")
@@ -99,10 +99,10 @@ actOnInput line (Scene i description actions n e s w) action inventory
 
     | (fixdel(line) == "help")                              = do
                                                                 printGameInformation
-                                                                play (Scene i description actions n e s w) "read" inventory
+                                                                play (Scene description actions n e s w) "read" inventory
     | (fixdel(line) == "inventory")                         = do
                                                                 printInventory inventory
-                                                                play (Scene i description actions n e s w) "read" inventory
+                                                                play (Scene description actions n e s w) "read" inventory
     | (fixdel(line) `elem` ["N","n","north","North"])       = play n "not read" inventory
     | (fixdel(line) `elem` ["E","e","east","East"])         = play e "not read" inventory
     | (fixdel(line) `elem` ["S","s","south","South"])       = play s "not read" inventory
@@ -111,7 +111,7 @@ actOnInput line (Scene i description actions n e s w) action inventory
     | otherwise                                             = do
                                                                 separatePrompts
                                                                 putStrLn ("COMMAND NOT RECOGNIZED.")
-                                                                play (Scene i description actions n e s w) "read" inventory
+                                                                play (Scene description actions n e s w) "read" inventory
 actOnInput _ _ _ _ = return ()
 
 performAction :: Action -> [Item] -> IO()
@@ -142,12 +142,6 @@ parseLineToSentence line = parseSentence tokenMatches
     where processedLine = Data.List.Split.splitOneOf lineDelimiters line
           tokenMatches = lexInput allTokens processedLine
 
-getListIndex e lst = indexHelper e lst 0
-
-indexHelper e (h:t) acc
-    | e == h = acc
-    | otherwise = indexHelper e t (acc+1)
-
 -- Returns str without instances of \DEL or characters directly preceding \DEL
 fixdel str = delhelper str []
 
@@ -162,6 +156,12 @@ removelast (h:t)
    | t == [] = t
    | otherwise = h:(removelast t)
 
+getInventoryValue :: [Item] -> Int
+getInventoryValue inventory = foldr (\x y -> getPointsFromItem(x) + y) 0 inventory
+
+getPointsFromItem :: Item -> Int
+getPointsFromItem (Treasure id val description) = val
+
 getSceneMapFromAction :: Action -> SceneMap
 getScenemapFromAction EmptyAction = NullScene
 getSceneMapFromAction (Action _ scenemap) = scenemap
@@ -170,7 +170,7 @@ getSceneMapFromAction (InventoryChange _ _ scenemap) = scenemap
 printIntroduction :: IO ()
 printIntroduction = do
                       putStrLn "Welcome to Dama and Jeff's CPSC 312 Project: ZORK REBOOT"
-                      putStrLn "Prepare yourself for a mindbending dive into a dark room, plus another dark room, maybe a dark hallway, some walls and floors, maybe a hammer, and some very terrifying Cthulu references. "
+                      putStrLn "Prepare yourself for a mindbending dive into a dark room, plus another dark room, maybe a dark hallway, some walls and floors, maybe a hammer, and some very terrifying Cthulhu references. "
                       putStrLn "Text doesn't get more exciting than this."
                       putStrLn ""
                       putStrLn ""
