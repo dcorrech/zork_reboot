@@ -5,7 +5,8 @@ module NaturalLanguageLexer (Token(..),
                              TokenMatch(..),
                              join,
                              lexInput,
-                             tokenize) where
+                             tokenize,
+                             getTokenIdentifier) where
 
 import qualified Data.Char
 
@@ -50,3 +51,7 @@ lexTokens :: [Token] -> [String] -> [(Maybe TokenMatch, [String])] -> [TokenMatc
 lexTokens potentialTokens words [] = lexInput potentialTokens words
 lexTokens potentialTokens words ((Nothing, _) : tokens) = lexTokens potentialTokens words tokens
 lexTokens potentialTokens words ((Just token, tokenWords) : tokens) = token : lexInput potentialTokens words
+
+getTokenIdentifier :: Token -> String
+getTokenIdentifier (TokenVerb string _) = string
+getTokenIdentifier (TokenNoun string _) = string
