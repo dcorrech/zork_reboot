@@ -17,7 +17,10 @@ import TestUtils
 import Data.List.Split
 
 -- ALLTODOs for Game:
--- TODO: Remove ^? characters that show up when entering delete.
+-- TODO: Remove ^? characters that show up when entering delete. -- Dama
+-- TODO: "help" and/or "verb" commands that print list of available commands
+-- "SOMETHING EXTRA" TODO: Implement inventory with point values. These will be displayed at the end.
+-- EXTRA FOR FUN IMPROVEMENT THING: move NSEW movement into Actions
 
 
 -- Takes a given SceneMap, starts and ends the game. Adapted from play function by David Poole (2019) given in Assignment 3.
@@ -28,7 +31,7 @@ play map =
         ans <- getLine
         if (ans `elem` ["y", "yes", "ye", "yeah", "sure", "oui"])
             then do
-                putStrLn("Movement: type N to move north, E for east, S for south, W for west.")
+                putStrLn("Movement: type N to move north, E for east, S for south, W for west. Type 'look' to describe your surroundings.")
                 putStrLn("You wake up in an unfamiliar place, dazed and disoriented.")
                 newmap <- readScene map "not read"
                 return newmap

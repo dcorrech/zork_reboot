@@ -151,67 +151,84 @@ centerRoomWest = Scene 8 "The icy sensation from the tentacles eases up as you s
         (InspectedScene "You peel away the carpet, revealing a block of text in a language you don't understand. Still, you can't seem to look away, and the words start shifting as you feel a pressure building in your head. The words shift into a shape: an arrow pointing south, into a staircase you now see." centerRoomWest)]
 stairsSouth = Scene 9 "This staircase descends into darkness, where you hear faint rustling. To the east, you see an opening with a faint light, but further south the light doesn't reach, and you can't see what's ahead."
     ["look", "inspect", "touch wall", "touch floor"]
-    roomWest roomSouthEast boulderHall (EmptyScene stairsSouth)
+    roomWest roomEast boulderHall (EmptyScene stairsSouth)
     [stairsSouth,
         (InspectedScene "It is too dark to see anything beyond the faint light to the east." stairsSouth),
         (InspectedScene "The wall is cool, and feels like stone, a big change from the scratched up wooden walls from before." stairsSouth),
         (InspectedScene "The floor of the staircase is wet, and moves further downwards." stairsSouth)]
 
 -- AREA 3 SCENES ** WILL ADD EXTRA ACTION OPTIONS TO AREA 5 ONCE WE GET ITEMS IN. 
-hallEast = Scene 10 "The faint yellow light from the east gets brighter as you walk further down this hall. To the south is a closed door, and further east is an open passage to another room, where the yellow light is coming from." 
-    ["look", "inspect wall", "inspect floor", "inspect carpet", "inspect door", "inspect doorknob", "peel carpet", "open door", "kick door", "turn doorknob"]
-    (EmptyScene hallEast) roomEast (SceneError "You can't walk through a closed door." hallEast) hallSouth 
-    [hallEast,
-        (InspectedScene "There is nothing special about this wall." hallEast),
-        (InspectedScene "There is nothing special about the floor here." hallEast),
-        (InspectedScene "There is nothing special about the carpet." hallEast),
-        (InspectedScene "There is nothing special about the door." hallEast),
-        (InspectedScene "There is nothing special about the doorknob." hallEast),
-        (SceneError "You cannot peel the carpet." hallEast),
-        (InspectedScene "You open the door." roomSouthEast)]
-roomSouthEast = Scene 16 "This room has the same yellow light that was spreading into the hall. You see a table in the center of the room, and a staircase going down to the west." -- ADD ITEMS HERE LATER 
-    ["look", "inspect wall", "inspect floor", "inspect carpet", "inspect door", "inspect doorknob", "inspect table", "peel carpet", "close door", "slam door", "force door", "kick door", "turn doorknob"]
-    hallEast (EmptyScene roomSouthEast) centerRoomSouthEast stairsSouth 
-    [roomSouthEast,
-        (InspectedScene "There is nothing special about this wall." roomSouthEast),
-        (InspectedScene "There is nothing special about the floor here." roomSouthEast),
-        (InspectedScene "There is nothing special about the carpet." roomSouthEast),
-        (InspectedScene "There is nothing special about the door." roomSouthEast),
-        (InspectedScene "There is nothing special about the doorknob." roomSouthEast),
-        (InspectedScene "The table is metal, and bolted to the ground. On it is a blood-stained hammer." centerRoomSouthEast),
-        (SceneError "You cannot peel the carpet." roomSouthEast),
-        (InspectedScene "The door doesn't close." roomSouthEast),
-        (InspectedScene "You slam the door shut. The sound of it reverberates through the room." roomSouthEastDeath),
-        (InspectedScene "You slam the door shut. The sound of it reverberates through the room." roomSouthEastDeath),
-        (InspectedScene "The door is very heavy, you feel a sharp pain on your foot, but can still move. What was the point of that?" roomSouthEast),
-        (InspectedScene "The doorknob turns freely." roomSouthEast)]
-centerRoomSouthEast = Scene 18 "At the center of this room, you see a table. A path back to the hall opens up to the north, and there is a staircase going down to the west."
-    ["look", "inspect wall", "inspect floor", "inspect carpet", "inspect door", "inspect doorknob", "inspect table", "inspect hammer","peel carpet", "close door", "slam door", "force door", "kick door", "turn doorknob", "take hammer"]
-    hallEast (EmptyScene centerRoomSouthEast) (EmptyScene centerRoomSouthEast) stairsSouth
-    [centerRoomSouthEast,
-        (InspectedScene "There is nothing special about this wall." centerRoomSouthEast),
-        (InspectedScene "There is nothing special about the floor here." centerRoomSouthEast),
-        (InspectedScene "There is nothing special about the carpet." centerRoomSouthEast),
-        (InspectedScene "There is nothing special about the door." centerRoomSouthEast),
-        (InspectedScene "There is nothing special about the doorknob." centerRoomSouthEast),
-        (InspectedScene "The table is metal, and bolted to the ground. On it is a blood-stained hammer." centerRoomSouthEast),
-        (InspectedScene "The hammer is hefty, and has blood stains on its head." centerRoomSouthEast),
-        (SceneError "You cannot peel the carpet." centerRoomSouthEast),
-        (InspectedScene "The door doesn't close." centerRoomSouthEast),
-        (InspectedScene "You slam the door shut. The sound of it reverberates through the room." roomSouthEastDeath),
-        (InspectedScene "You slam the door shut. The sound of it reverberates through the room." roomSouthEastDeath),
-        (InspectedScene "The door is very heavy, you feel a sharp pain on your foot, but can still move. What was the point of that?" centerRoomSouthEast),
-        (InspectedScene "The doorknob turns freely." centerRoomSouthEast),
-        (InspectedScene "You take the hammer." centerRoomSouthEast)]
-roomSouthEastDeath = InspectedScene "All too quickly, you feel an icy cold sensation rising from your feet up to your throat as you see dark tentacles materializing from the shadows, shooting up the hallway and enveloping you. You barely have a second to think before you feel an undeniable madness stirring in your mind as the tentacles shoot into your mouth, and then there is just all-possessing cold and darkness." DeathScene
+hallEast = Scene1 10 "The faint yellow light from the east gets brighter as you walk further down this hall. To the south is a closed door, where the yellow light filters in through the bottom, and further east is a dead end." 
+    [(Action [(buildSentenceWrapper ["look"])] 
+            (InspectedScene "The faint yellow light from the east gets brighter as you walk further down this hall. To the south is a closed door, where the yellow light filters in through the bottom, and further east is a dead end." hallEast)),
+        (Action [(buildSentenceWrapper ["inspect","wall"])] 
+            (InspectedScene "There is nothing special about this wall." hallEast)),
+        (Action [(buildSentenceWrapper ["inspect","floor"]), (buildSentenceWrapper ["inspect", "carpet"])] 
+            (InspectedScene "There is nothing special about the carpeting on the floor." hallEast)),
+        (Action [(buildSentenceWrapper ["inspect","door"])] 
+            (InspectedScene "There is nothing special about the door." hallEast)),
+        (Action [(buildSentenceWrapper ["inspect","doorknob"])] 
+            (InspectedScene "There is nothing special about the doorknob." hallEast)),
+        (Action [(buildSentenceWrapper ["peel","carpet"])] 
+            (SceneError "You cannot peel the carpet." hallEast)),
+        (Action [(buildSentenceWrapper ["open","door"]),(buildSentenceWrapper ["turn","doorknob"])]
+            (InspectedScene "You open the door." roomEast)),
+        (Action [(buildSentenceWrapper ["kick","door"])] 
+            (InspectedScene "The door is very heavy, you feel a sharp pain on your foot, but can still move. What was the point of that?" hallEast))]
+    (EmptyScene hallEast) (EmptyScene hallEast) (SceneError "You can't walk through a closed door." hallEast) hallSouth 
+roomEast = Scene1 16 "This room has the same yellow light that was spreading into the hall. You see a table in the center of the room, and a staircase going down to the west." -- ADD ITEMS HERE LATER 
+    [(Action [(buildSentenceWrapper ["look"])] 
+            (InspectedScene "This room has the same yellow light that was spreading into the hall. You see a table in the center of the room, and a staircase going down to the west." roomEast)),
+        (Action [(buildSentenceWrapper ["inspect","wall"])]
+            (InspectedScene "There is nothing special about this wall." roomEast)),
+        (Action [(buildSentenceWrapper ["inspect","floor"]), (buildSentenceWrapper ["inspect","carpet"])]
+            (InspectedScene "There is nothing special about the carpeting on the floor here." roomEast)),
+        (Action [(buildSentenceWrapper ["inspect","door"])] 
+            (InspectedScene "There is nothing special about the door." roomEast)),
+        (Action [(buildSentenceWrapper ["inspect","doorknob"])] 
+            (InspectedScene "There is nothing special about the doorknob." roomEast)),
+        (Action [(buildSentenceWrapper ["peel","carpet"])] 
+            (SceneError "You cannot peel the carpet." roomEast)),
+        (Action [(buildSentenceWrapper ["inspect","table"])]
+            (InspectedScene "The table is metal, and bolted to the ground. On it is a blood-stained hammer." centerRoomEast)),
+        (Action [(buildSentenceWrapper ["close", "door"])]
+            (InspectedScene "The door doesn't close." roomEast)),
+        (Action [(buildSentenceWrapper ["slam","door"]), (buildSentenceWrapper ["force","door"])] 
+            (InspectedScene "You slam the door shut. The sound of it reverberates through the room." roomEastDeath)),
+        (Action [(buildSentenceWrapper ["kick","door"])]
+            (InspectedScene "The door is very heavy, you feel a sharp pain on your foot, but can still move. What was the point of that?" roomEast)),
+        (Action [(buildSentenceWrapper ["turn","doorknob"])]
+            (InspectedScene "The doorknob turns freely." roomEast))]
+    hallEast (EmptyScene roomEast) centerRoomEast stairsSouth
+centerRoomEast = Scene1 18 "At the center of this room, you see a table. A path back to the hall opens up to the north, and there is a staircase going down to the west."
+    [(Action [(buildSentenceWrapper ["look"])] 
+            (InspectedScene "At the center of this room, you see a table. A path back to the hall opens up to the north, and there is a staircase going down to the west." centerRoomEast)),
+        (Action [(buildSentenceWrapper ["inspect","wall"])]
+            (InspectedScene "There is nothing special about this wall." centerRoomEast)),
+        (Action [(buildSentenceWrapper ["inspect","floor"]), (buildSentenceWrapper ["inspect","carpet"])]
+            (InspectedScene "There is nothing special about the carpeting on the floor here." centerRoomEast)),
+        (Action [(buildSentenceWrapper ["inspect","door"])] 
+            (InspectedScene "There is nothing special about the door." centerRoomEast)),
+        (Action [(buildSentenceWrapper ["inspect","doorknob"])] 
+            (InspectedScene "There is nothing special about the doorknob." centerRoomEast)),
+        (Action [(buildSentenceWrapper ["peel","carpet"])] 
+            (SceneError "You cannot peel the carpet." centerRoomEast)),
+        (Action [(buildSentenceWrapper ["inspect","table"])]
+            (InspectedScene "The table is metal, and bolted to the ground. On it is a blood-stained gem." centerRoomEast)),
+        (Action [(buildSentenceWrapper ["inspect","gem"])]
+            (InspectedScene "The gem is hefty, and has blood stains on its head." centerRoomEast)),
+        (Action [(buildSentenceWrapper ["close", "door"])]
+            (InspectedScene "The door doesn't close." roomEast)),
+        (Action [(buildSentenceWrapper ["slam","door"]), (buildSentenceWrapper ["force","door"])] 
+            (InspectedScene "You slam the door shut. The sound of it reverberates through the room." roomEastDeath)),
+        (Action [(buildSentenceWrapper ["kick","door"])]
+            (InspectedScene "The door is very heavy, you feel a sharp pain on your foot, but can still move. What was the point of that?" centerRoomEast)),
+        (Action [(buildSentenceWrapper ["turn","doorknob"])]
+            (InspectedScene "The doorknob turns freely." centerRoomEast))]
+    hallEast (EmptyScene centerRoomEast) (EmptyScene centerRoomEast) stairsSouth
+roomEastDeath = InspectedScene "All too quickly, you feel an icy cold sensation rising from your feet up to your throat as you see dark tentacles materializing from the shadows, shooting up the hallway and enveloping you. You barely have a second to think before you feel an undeniable madness stirring in your mind as the tentacles shoot into your mouth, and then there is just all-possessing cold and darkness." DeathScene
 
--- AREA 4 SCENES TBA ** Dead end with lots of chances of dying. Change name of roomEast/roomSouthEast when we figure out what exactly will happen in these rooms.
-roomEast = Scene 17 "" 
-    [] 
-    (EmptyScene roomEast) (EmptyScene roomEast) (EmptyScene roomEast) hallEast 
-    []
-
--- AREA 5
+-- AREA 4
 boulderHall = Scene 11 "The bottom of the staircase flattens out, and you appear to have hit a dead end. There is a pile of boulders blocking the way forward, and the faintest light makes it through the cracks between the large rocks, providing enough light to see the formation, and the fact that this staircase is all made of stone, like a cavern." 
     ["look", "inspect wall", "inspect floor", "inspect boulders", "touch wall", "touch floor", "touch boulders", "move boulders"]
     stairsSouth (EmptyScene boulderHall) (EmptyScene boulderHall) (EmptyScene boulderHall)
@@ -298,7 +315,7 @@ allVerbTokens = [(TokenVerb "look" ["look"]),
                  (TokenVerb "move" ["move", "slide"])]
 
 allNounTokens :: [Token]
-allNounTokens = [(TokenNoun "floor" ["floor", "ground", "carpet"]),
+allNounTokens = [(TokenNoun "floor" ["floor", "ground", "carpet", "carpeting"]),
                (TokenNoun "wall" ["wall", "walls"]),
                (TokenNoun "paint" ["paint"]),
                (TokenNoun "door" ["door", "entrance"]),
@@ -307,7 +324,7 @@ allNounTokens = [(TokenNoun "floor" ["floor", "ground", "carpet"]),
                (TokenNoun "boulder" ["boulder", "boulders", "rock", "rocks", "stone", "stones"]),
                (TokenNoun "painting" ["painting", "art", "frame"]),
                (TokenNoun "table" ["table", "desk"]),
-               (TokenNoun "hammer" ["hammer", "tool"]),
+               (TokenNoun "gem" ["gem", "jewel", "diamond","gemstone","crystal"]),
                (TokenNoun "doorknob" ["doorknob", "knob", "handle"]),
                (TokenNoun "tentacles" ["tentacles", "tentacle", "appendage"]),
                (TokenNoun "vein" ["vein", "veins", "slime"]),
