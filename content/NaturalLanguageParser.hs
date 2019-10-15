@@ -42,8 +42,6 @@ nounsInTokenList []                                   = []
 nounsInTokenList ((TokenNoun word synonyms) : rest)   = (TokenNoun word synonyms) : nounsInTokenList rest
 nounsInTokenList (_ : rest)                           = nounsInTokenList rest
 
--- Require tests --
-
 findVerb :: [Token] -> String -> Maybe Token
 findVerb [] string = Nothing
 findVerb (verbToken:rest) string
