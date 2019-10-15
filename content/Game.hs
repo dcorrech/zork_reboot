@@ -22,6 +22,9 @@ import Data.List.Split
 -- "SOMETHING EXTRA" TODO: Implement inventory with point values. These will be displayed at the end.
 -- EXTRA FOR FUN IMPROVEMENT THING: move NSEW movement into Actions
 
+lineDelimiters :: [Char]
+lineDelimiters = [' ', '\t']
+
 -- Takes a given SceneMap, starts and ends the game. Adapted from play function by David Poole (2019) given in Assignment 3.
 play :: SceneMap -> IO SceneMap
 play map = 
@@ -40,49 +43,42 @@ play map =
 
 -- Takes given SceneMap, prints description and advances user through the map. Adapted from askabout function by David Poole (2019) given in Assignment 3.
 readScene :: SceneMap -> String -> IO SceneMap
-readScene (Scene i description actions n e s w) flag =
+readScene (Scene i description actions n e s w) flag  =
     do
-        putStrLn ""
-        if (flag == "not read")
-            then do 
-                putStrLn(description ++ " What do you do?")
-            else putStrLn("What do you do?")
+        separatePrompts
+        printSceneIntro description flag
+
         line <- getLine
         let sentences = parseLine line
+            matchedAction = (findMatchingAction sentences actions)
+
+        parseForQuitGame line
+
         if (fixdel(line) `elem` ["N","n","north","North"])
             then do
-                newScene <- readScene n "not read"
-                return newScene
+                  newScene <- readScene n "not read"
+                  return newScene
             else if (fixdel(line) `elem` ["E","e","east","East"])
                 then do
-                    newScene <- readScene e "not read"
-                    return newScene
+                      newScene <- readScene e "not read"
+                      return newScene
                 else if (fixdel(line) `elem` ["S","s","south","South"])
                     then do
-                        newScene <- readScene s "not read"
-                        return newScene
+                          newScene <- readScene s "not read"
+                          return newScene
                     else if (fixdel(line) `elem` ["W","w","west","West"])
                         then do
-                            newScene <- readScene w "not read"
-                            return newScene
-                        else if ((inActionList sentences actions) /= EmptyAction)
+                              newScene <- readScene w "not read"
+                              return newScene
+                        else if (matchedAction /= EmptyAction)
                             then do
-                                putStrLn ""
-                                conditionalScene <- readScene (getSceneMap (inActionList sentences actions)) "read"
-                                return conditionalScene
-                            -- else if (sentences `elem` allTokens) 
-                            --     then do
-                            --     putStrLn ("You can't do that here.")
-                            --     currentScene <- readScene (Scene i description actions n e s w conditionals) "read"
-                            --     return currentScene 
-                                else if (fixdel(line) == "quit" || (fixdel(line) == "exit"))
-                                    then do
-                                        putStrLn("You have quit the game. Goodbye!")
-                                        exitSuccess
-                                    else do
-                                        putStrLn ("COMMAND NOT RECOGNIZED.")
-                                        currentScene <- readScene (Scene i description actions n e s w) "read"
-                                        return currentScene          
+                                  putStrLn ""
+                                  conditionalScene <- readScene (getSceneMap (findMatchingAction sentences actions)) "read"
+                                  return conditionalScene
+                            else do
+                                  putStrLn ("COMMAND NOT RECOGNIZED.")
+                                  currentScene <- readScene (Scene i description actions n e s w) "read"
+                                  return currentScene
 
 readScene (SceneError errormsg parent) _ =
     do
@@ -128,24 +124,24 @@ getSceneMap :: Action -> SceneMap
 getSceneMap (Action sentences scenemap) = scenemap
 getScenemap EmptyAction = NullScene
 
-inActionList :: [Sentence] -> [Action] -> Action 
-inActionList [] [] = EmptyAction
-inActionList [] lst = EmptyAction
-inActionList lst [] = EmptyAction
-inActionList sentences (action:rest)
-    |inAction sentences action = action
-    |otherwise = inActionList sentences rest
+findMatchingAction :: [Sentence] -> [Action] -> Action
+findMatchingAction [] [] = EmptyAction
+findMatchingAction [] lst = EmptyAction
+findMatchingAction lst [] = EmptyAction
+findMatchingAction sentences (action:rest)
+    | actionMatchesWithSentences sentences action = action
+    | otherwise = findMatchingAction sentences rest
 
-inAction :: [Sentence] -> Action -> Bool 
-inAction [] _ = False
-inAction sentences (Action asentences scenemap)
-    |[x | x <- sentences, y <- asentences, x == y] == [] = False
-    |otherwise = True
+actionMatchesWithSentences :: [Sentence] -> Action -> Bool
+actionMatchesWithSentences [] _ = False
+actionMatchesWithSentences sentences (Action asentences scenemap)
+    | [x | x <- sentences, y <- asentences, x == y] == [] = False
+    | otherwise = True
 
 parseLine :: [Char] -> [Sentence]
 parseLine [] = []
 parseLine line = parseSentence tokenMatches
-    where processedLine = Data.List.Split.splitOneOf "' ', '\t'" line
+    where processedLine = Data.List.Split.splitOneOf lineDelimiters line
           tokenMatches = lexInput allTokens processedLine
 
 getListIndex e lst = indexHelper e lst 0
@@ -196,3 +192,21 @@ printGameInformation = do
 
 printGameIntro :: IO()
 printGameIntro = putStrLn "You wake up in an unfamiliar place, dazed and disoriented."
+
+printSceneIntro :: String -> String -> IO ()
+printSceneIntro description flag
+    | (flag == "not read")      = putStrLn(description ++ " What do you do?")
+    | otherwise                 = putStrLn("What do you do?")
+
+parseForQuitGame :: String -> IO ()
+parseForQuitGame [] = return ()
+parseForQuitGame line
+    | (fixdel(line) == "quit" || (fixdel(line) == "exit"))  = do
+                                                                putStrLn("You have quit the game. Goodbye!")
+                                                                exitSuccess
+    | otherwise                                             = return ()
+
+separatePrompts :: IO()
+separatePrompts = do putStrLn ""
+                     putStrLn "--------------------"
+                     putStrLn ""
