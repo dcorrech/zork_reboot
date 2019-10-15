@@ -196,7 +196,7 @@ centerRoomWest = Scene 8 "The icy sensation from the tentacles eases up as you s
               (InspectedScene "The icy sensation from the tentacles eases up as you step away from them, and you can calmly take in your surroundings now. To the south, a stairway goes down into the darkness. The carpet is frayed and stained, and the walls are covered in scratches; some look like words. Above you, a faint blue glow illuminates the room in a similar shade as the tentacles." centerRoomWest)),
      (Action [(buildSentenceWrapper ["inspect", "wall"]),
               (buildSentenceWrapper ["inspect", "words"])]
-              (InspectedScene "The scratches on the wall are mostly unintelligible, but you make out a few disparate words: 'MADNESS', 'COLD', 'GET OUT', 'WHY'." roomWestDeath)),
+              (InspectedScene "The scratches on the wall are mostly unintelligible, but you make out a few disparate words: 'MADNESS', 'COLD', 'GET OUT', 'WHY'." centerRoomWest)),
      (Action [(buildSentenceWrapper ["inspect", "carpet"]),
               (buildSentenceWrapper ["inspect", "floor"])]
               (InspectedScene "The floor is still covered with carpet, which is particularly damp here." roomWest)),

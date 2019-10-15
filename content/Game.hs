@@ -7,7 +7,6 @@ module Game where
 import System.IO
 import System.Exit
 import Scenes
-
 import NaturalLanguageLexer
 import NaturalLanguageParser
 
@@ -22,12 +21,12 @@ import Data.List.Split
 -- "SOMETHING EXTRA" TODO: Implement inventory with point values. These will be displayed at the end.
 -- EXTRA FOR FUN IMPROVEMENT THING: move NSEW movement into Actions
 
--- Takes a given SceneMap, starts and ends the game. Adapted from play function by David Poole (2019) given in Assignment 3.
+-- Takes a given SceneMap, starts and ends the game.
 play :: SceneMap -> IO SceneMap
 play map = 
     do
         putStrLn "Start your adventure? (y/n)"
-        ans <- getLine
+        ans <- getLine 
         if (ans `elem` ["y", "yes", "ye", "yeah", "sure", "oui"])
             then do
                 printGameInformation
@@ -38,7 +37,7 @@ play map =
                 putStrLn ("Okay, bye!")
                 exitSuccess
 
--- Takes given SceneMap, prints description and advances user through the map. Adapted from askabout function by David Poole (2019) given in Assignment 3.
+-- Takes given SceneMap, prints description and advances user through the map.
 readScene :: SceneMap -> String -> IO SceneMap
 readScene (Scene i description actions n e s w) flag =
     do
@@ -48,7 +47,7 @@ readScene (Scene i description actions n e s w) flag =
                 putStrLn(description ++ " What do you do?")
             else putStrLn("What do you do?")
         line <- getLine
-        let sentences = parseLine line
+        let sentences = parseLine (fixdel line)
         if (fixdel(line) `elem` ["N","n","north","North"])
             then do
                 newScene <- readScene n "not read"
@@ -70,19 +69,14 @@ readScene (Scene i description actions n e s w) flag =
                                 putStrLn ""
                                 conditionalScene <- readScene (getSceneMap (inActionList sentences actions)) "read"
                                 return conditionalScene
-                            -- else if (sentences `elem` allTokens) 
-                            --     then do
-                            --     putStrLn ("You can't do that here.")
-                            --     currentScene <- readScene (Scene i description actions n e s w conditionals) "read"
-                            --     return currentScene 
-                                else if (fixdel(line) == "quit" || (fixdel(line) == "exit"))
-                                    then do
-                                        putStrLn("You have quit the game. Goodbye!")
-                                        exitSuccess
-                                    else do
-                                        putStrLn ("COMMAND NOT RECOGNIZED.")
-                                        currentScene <- readScene (Scene i description actions n e s w) "read"
-                                        return currentScene          
+                            else if (fixdel(line) == "quit" || (fixdel(line) == "exit"))
+                                then do
+                                    putStrLn("You have quit the game. Goodbye!")
+                                    exitSuccess
+                                else do
+                                    putStrLn ("COMMAND NOT RECOGNIZED.")
+                                    currentScene <- readScene (Scene i description actions n e s w) "read"
+                                    return currentScene          
 
 readScene (SceneError errormsg parent) _ =
     do
