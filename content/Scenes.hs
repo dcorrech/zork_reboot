@@ -38,21 +38,14 @@ testAction = Action [(SimpleSentence (TokenVerb "look" ["look", "inspect", "see"
 -- AREA 1 SCENES
 zorkMapStart = Scene1 0 "You are in a dusty, dimly lit room. The paint on the wall is chipping away, and a dirty carpet covers the ground. To the South of the room, you see a worn wooden door. To the West, there is a boarded-up window." 
     [(Action [(buildSentenceWrapper ["look"])]
-              zorkMapStart),
+              (InspectedScene "You are in a dusty, dimly lit room. The paint on the wall is chipping away, and a dirty carpet covers the ground. To the South of the room, you see a worn wooden door. To the West, there is a boarded-up window."  zorkMapStart)),
      (Action [(buildSentenceWrapper ["inspect", "floor"])]
               (InspectedScene "The floor is covered in a carpet with brown and reddish stains." zorkMapStart)),
      (Action [(buildSentenceWrapper ["inspect", "carpet"])]
               (InspectedScene "The carpet is stained brown and red, but seems firmly secured to the ground." zorkMapStart)),
      (Action [(buildSentenceWrapper ["inspect", "wall"])]
               (InspectedScene "From here, you see nothing but dirt on the walls." zorkMapStart))]
-    sceneNorth sceneEast sceneSouth sceneWest 
--- zorkMapStart = Scene 0 "You are in a dusty, dimly lit room. The paint on the wall is chipping away, and a dirty carpet covers the ground. To the South of the room, you see a worn wooden door. To the West, there is a boarded-up window." 
---     ["look", "inspect floor", "inspect carpet", "inspect wall"]
---     sceneNorth sceneEast sceneSouth sceneWest 
---     [zorkMapStart,
---         (InspectedScene "The carpet is stained brown and red, but seems firmly secured to the ground." zorkMapStart),
---         (InspectedScene "The floor is covered in a carpet with brown and reddish stains." zorkMapStart),
---         (InspectedScene "From here, you see nothing but dirt on the walls." zorkMapStart)]
+    sceneNorth sceneEast sceneSouth sceneWest
 sceneNorth = Scene 1 "The North wall of the room is barren, and the paint looks old." 
     ["look", "inspect wall", "inspect paint", "inpect floor", "inspect carpet", "touch wall", "touch paint", "touch floor", "peel paint"]
     (EmptyScene sceneNorth) sceneEast zorkMapStart sceneWest 
