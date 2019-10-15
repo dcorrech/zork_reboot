@@ -17,7 +17,7 @@ import Data.List.Split
 
 -- ALLTODOs for Game:
 -- TODO: Remove ^? characters that show up when entering delete. -- Dama
--- TODO: "help" and/or "verb" commands that print list of available commands
+-- TODO: "verb" commands that print list of available commands
 -- EXTRA FOR FUN IMPROVEMENT THING: move NSEW movement into Actions
 
 
@@ -60,7 +60,7 @@ readScene (Scene description actions n e s w) flag inventory =
         let sentences = parseLineToSentence (fixdel line)
             matchedAction = (findMatchingAction sentences actions)
 
-        actOnInput line (Scene description actions n e s w) matchedAction inventory
+        actOnInput line sentences (Scene description actions n e s w) matchedAction inventory
 
 readScene (SceneError errormsg parent) _ inventory =
     do
@@ -88,30 +88,30 @@ readScene (ExitScene string) _ inventory =
         putStrLn("Play again?")
         restartGame
 
-actOnInput :: String -> SceneMap -> Action -> [Item] -> IO ()
-actOnInput line (Scene description actions n e s w) action inventory
-    | (fixdel(line) == "quit" || (fixdel(line) == "exit"))  = do
-                                                                separatePrompts
-                                                                putStrLn("You have quit the game. Goodbye!")
-                                                                separatePrompts
-                                                                exitSuccess
+actOnInput :: String -> [Sentence] -> SceneMap -> Action -> [Item] -> IO ()
+actOnInput line sentences (Scene description actions n e s w) action inventory
+    | (fixdel(line) == "quit" || (fixdel(line) == "exit"))                      = do
+                                                                                    separatePrompts
+                                                                                    putStrLn("You have quit the game. Goodbye!")
+                                                                                    separatePrompts
+                                                                                    exitSuccess
 
-    | (fixdel(line) == "help")                              = do
-                                                                printGameInformation
-                                                                play (Scene description actions n e s w) "read" inventory
-    | (fixdel(line) == "inventory")                         = do
-                                                                printInventory inventory
-                                                                play (Scene description actions n e s w) "read" inventory
-    | (fixdel(line) `elem` ["N","n","north","North"])       = play n "not read" inventory
-    | (fixdel(line) `elem` ["E","e","east","East"])         = play e "not read" inventory
-    | (fixdel(line) `elem` ["S","s","south","South"])       = play s "not read" inventory
-    | (fixdel(line) `elem` ["W","w","west","West"])         = play w "not read" inventory
-    | (action /= EmptyAction)                               = performAction action inventory
-    | otherwise                                             = do
-                                                                separatePrompts
-                                                                putStrLn ("COMMAND NOT RECOGNIZED.")
-                                                                play (Scene description actions n e s w) "read" inventory
-actOnInput _ _ _ _ = return ()
+    | (fixdel(line) == "help")                                                  = do
+                                                                                    printGameInformation
+                                                                                    play (Scene description actions n e s w) "read" inventory
+    | (fixdel(line) == "inventory")                                             = do
+                                                                                    printInventory inventory
+                                                                                    play (Scene description actions n e s w) "read" inventory
+    | sentencesMatch sentences [(buildSentenceWrapper ["go", "north"])]         = play n "not read" inventory
+    | sentencesMatch sentences [(buildSentenceWrapper ["go", "east"])]          = play e "not read" inventory
+    | sentencesMatch sentences [(buildSentenceWrapper ["go", "south"])]         = play s "not read" inventory
+    | sentencesMatch sentences [(buildSentenceWrapper ["go", "west"])]          = play w "not read" inventory
+    | (action /= EmptyAction)                                                   = performAction action inventory
+    | otherwise                                                                 = do
+                                                                                    separatePrompts
+                                                                                    putStrLn ("COMMAND NOT RECOGNIZED.")
+                                                                                    play (Scene description actions n e s w) "read" inventory
+actOnInput _ _ _ _ _ = return ()
 
 performAction :: Action -> [Item] -> IO()
 performAction EmptyAction _                                         = return ()
@@ -134,6 +134,9 @@ actionMatchesWithSentences sentences (Action asentences _)
 actionMatchesWithSentences sentences (InventoryChange isentences _ _)
     | [x | x <- sentences, y <- isentences, x == y] == [] = False
     | otherwise = True
+
+sentencesMatch :: [Sentence] -> [Sentence] -> Bool
+sentencesMatch sentences1 sentences2 = [x | x <- sentences1, y <- sentences2, x == y] /= []
 
 parseLineToSentence :: [Char] -> [Sentence]
 parseLineToSentence [] = []
@@ -180,7 +183,7 @@ printGameInformation :: IO()
 printGameInformation = do
                         putStrLn ""
                         putStrLn "***INFO***"
-                        putStrLn "Movement: type N/n to move north, E/e for east, S/s for south, W/w for west. Type 'look' to describe your surroundings. Type 'inventory' to check your current inventory. Type 'help' to repeat this message."
+                        putStrLn "Movement: Type 'look' to describe your surroundings. Type 'inventory' to check your current inventory. Type 'help' to repeat this message."
                         putStrLn ""
 
 printGameIntro :: IO()

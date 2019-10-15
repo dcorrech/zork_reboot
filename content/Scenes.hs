@@ -35,19 +35,25 @@ instance Show Item where
     show (Treasure id points description) = show (id ++ ": " ++ description)
 
 -- AREA 1 SCENES
-zorkMapStart = Scene "You are in a dusty, dimly lit room. The paint on the wall is chipping away, and a dirty carpet covers the ground. To the South of the room, you see a worn wooden door. To the West, there is a boarded-up window."
+
+zorkMapStart = Scene "You are in a dusty, dimly lit room. The paint on the wall is chipping away, and a dirty carpet covers the ground. There is a small statue at your feet. To the South of the room, you see a worn wooden door. To the West, there is a boarded-up window."
     [(Action [(buildSentenceWrapper ["look"])]
-              (InspectedScene "You are in a dusty, dimly lit room. The paint on the wall is chipping away, and a dirty carpet covers the ground. To the South of the room, you see a worn wooden door. To the West, there is a boarded-up window."  zorkMapStart)),
+              (InspectedScene "You are in a dusty, dimly lit room. The paint on the wall is chipping away, and a dirty carpet covers the ground. There is a small statue at your feet. To the South of the room, you see a worn wooden door. To the West, there is a boarded-up window."  zorkMapStart)),
      (Action [(buildSentenceWrapper ["inspect", "floor"])]
               (InspectedScene "The floor is covered in a carpet with brown and reddish stains." zorkMapStart)),
      (Action [(buildSentenceWrapper ["inspect", "carpet"])]
               (InspectedScene "The carpet is stained brown and red, but seems firmly secured to the ground." zorkMapStart)),
+     (Action [(buildSentenceWrapper ["inspect", "statue"])]
+              (InspectedScene "The statue is of a odd figure that appears to be eating human beings. Is the figure an octopus? Maybe a reptile? A human being? All three?" zorkMapStart)),
+     (InventoryChange [(buildSentenceWrapper ["take", "statue"])]
+              (Treasure "Statue" 1000 "A statue of some octopus, reptile, and human hybrid.")
+              (InspectedScene "You pick up the statue and put it in your bag."  zorkMapStart)),
      (Action [(buildSentenceWrapper ["inspect", "wall"])]
               (InspectedScene "From here, you see nothing but dirt on the walls." zorkMapStart))]
     sceneNorth sceneEast sceneSouth sceneWest
 sceneNorth = Scene "The North wall of the room is barren, and the paint looks old. There is a old, worn painting on the wall."
     [(Action [(buildSentenceWrapper ["look"])]
-              (InspectedScene "The North wall of the room is barren, and the paint looks old."  sceneNorth)),
+              (InspectedScene "The North wall of the room is barren, and the paint looks old. There is an old, worn painting on the wall."  sceneNorth)),
      (Action [(buildSentenceWrapper ["inspect", "wall"])]
               (InspectedScene "There is a bit of paint peeling off the walls, revealing multiple layers of paint." sceneNorth)),
      (Action [(buildSentenceWrapper ["inspect", "paint"])]
@@ -214,20 +220,27 @@ centerRoomWest = Scene "The icy sensation from the tentacles eases up as you ste
               (InspectedScene "You peel away the carpet, revealing a block of text in a language you don't understand. Still, you can't seem to look away, and the words start shifting as you feel a pressure building in your head. The words shift into a shape: an arrow pointing south, into a staircase you now see." roomWest))]
     (SceneError "There is no path this way." roomWest) roomWest stairsSouth (SceneError "There is no path this way." roomWest)
 
-stairsSouth = Scene "This staircase descends into darkness, where you hear faint rustling. To the east, you see an opening with a faint light, but further south the light doesn't reach, and you can't see what's ahead."
+
+stairsSouth = Scene "This staircase descends into darkness, where you hear faint rustling. To the east, you see an opening with a faint light, but further south the light doesn't reach, and you can't see what's ahead. A rope descends from the ceiling."
     [(Action [(buildSentenceWrapper ["look"])]
-              (InspectedScene "This staircase descends into darkness, where you hear faint rustling. To the east, you see an opening with a faint light, but further south the light doesn't reach, and you can't see what's ahead." stairsSouth)),
+              (InspectedScene "This staircase descends into darkness, where you hear faint rustling. To the east, you see an opening with a faint light, but further south the light doesn't reach, and you can't see what's ahead. A rope descends from the ceiling." stairsSouth)),
      (Action [(buildSentenceWrapper ["inspect"]),
               (buildSentenceWrapper ["inspect", "darkness"]),
               (buildSentenceWrapper ["inspect", "staircase"])]
-              (InspectedScene "It is too dark to see anything beyond the faint light to the east." stairsSouth)),
+              (InspectedScene "There is a rope from the ceiling. The staircase seems safe to walk on, although you have no idea what is at the bottom." stairsSouth)),
      (Action [(buildSentenceWrapper ["touch", "wall"])]
               (InspectedScene "The wall is cool, and feels like stone, a big change from the scratched up wooden walls from before." stairsSouth)),
+     (Action [(buildSentenceWrapper ["inspect", "rope"])]
+              (InspectedScene "It looks like a normal rope. Tugging on it reveals that there is something heavy on the other end. You cannot see what that thing is." stairsSouth)),
+     (InventoryChange [(buildSentenceWrapper ["pull","rope"])]
+            (Treasure "Metal Bell" 1000 "A head-sized metal bell that is attached to a rope. It has a odd sequence of engravings around its perimeter.")
+            (InspectedScene "You tentatively place your hands around the rope, giving it a quick tug. Feeling more assured, you begin to pull the rope towards yourself. You can tell that there is something hard and heavy at the end of the rope. Quickly, the rope becomes loose as the object falls. You quickly dash out of the way. You see that there is an engraved bell on the end. You put it in your bag." stairsSouth)),
      (Action [(buildSentenceWrapper ["touch", "floor"])]
               (InspectedScene "The floor of the staircase is wet, and moves further downwards." stairsSouth))]
     roomWest roomEast boulderHall (SceneError "There is no path this way." stairsSouth)
 
 -- AREA 3 SCENES
+
 hallEast = Scene "The faint yellow light from the east gets brighter as you walk further down this hall. To the south is a closed door, where the yellow light filters in through the bottom, and further east is a dead end."
     [(Action [(buildSentenceWrapper ["look"])] 
             (InspectedScene "The faint yellow light from the east gets brighter as you walk further down this hall. To the south is a closed door, where the yellow light filters in through the bottom, and further east is a dead end." hallEast)),
@@ -246,6 +259,7 @@ hallEast = Scene "The faint yellow light from the east gets brighter as you walk
         (Action [(buildSentenceWrapper ["kick","door"])] 
             (InspectedScene "The door is very heavy, you feel a sharp pain on your foot, but can still move. What was the point of that?" hallEast))]
     (SceneError "There is no path this way." hallEast) (SceneError "There is no path this way." hallEast) (SceneError "You can't walk through a closed door." hallEast) hallSouth 
+
 roomEast = Scene "This room has the same yellow light that was spreading into the hall. You see a table in the center of the room, and a staircase going down to the west." -- ADD ITEMS HERE LATER
     [(Action [(buildSentenceWrapper ["look"])] 
             (InspectedScene "This room has the same yellow light that was spreading into the hall. You see a table in the center of the room, and a staircase going down to the west." roomEast)),
@@ -288,6 +302,9 @@ centerRoomEast = Scene "At the center of this room, you see a table. A path back
             (SceneError "You cannot peel the carpet." centerRoomEast)),
         (Action [(buildSentenceWrapper ["inspect","table"])]
             (InspectedScene "The table is metal, and bolted to the ground. On it is a blood-stained gem." centerRoomEast)),
+        (InventoryChange [(buildSentenceWrapper ["take","gem"])]
+            (Treasure "Blood-stained Gem" 1000 "The gem is a rich green hue, but is unlike any stone you've ever seen. It sparkles with a magnificent intensity and seems to be of cosmic-origin. It is shaped into a sharp point, almost like a stake. On its point is a smattering of blood.")
+            (InspectedScene "You pick up the gem, taking care to avoid touching the blood or its sharp edges. You place it in your bag." centerRoomEast)),
         (Action [(buildSentenceWrapper ["inspect","gem"])]
             (InspectedScene "The gem is hefty, and has blood stains on its head." centerRoomEast)),
         (Action [(buildSentenceWrapper ["close", "door"])]
@@ -320,6 +337,7 @@ boulderHall = Scene "The bottom of the staircase flattens out, and you appear to
         (Action [(buildSentenceWrapper ["move","boulder"])]
             (InspectedScene "Despite how sturdy they look and feel, when you try moving the boulders, you do so effortlessly. They disintegrate at your touch, revealing a well-let passage leading into a room to the south." boulderLessHall))]
     stairsSouth (SceneError "There is no path this way." boulderHall) (SceneError "There is no path this way." boulderHall) (SceneError "There is no path this way." boulderHall)
+
 boulderLessHall = Scene "The hall stretches further south, where a warm yellow light filters in from a room."
     [(Action [(buildSentenceWrapper ["look"])]
             (InspectedScene "The hall stretches further south, where a warm yellow light filters in from a room." boulderLessHall)),
@@ -334,6 +352,7 @@ boulderLessHall = Scene "The hall stretches further south, where a warm yellow l
         (Action [(buildSentenceWrapper ["touch","floor"])]
             (InspectedScene "The stone of the floor is dry, but the greenish vein that runs through it is wet and feels slimy." boulderLessHall))]
     stairsSouth (SceneError "There is no path this way." boulderHall) roomSouth (SceneError "There is no path this way." boulderHall)
+
 roomSouth = Scene "This small room is lit by the glowing ceiling, which pulsates with a warm yellow light. To the east is a window, while to the west a painting hangs on the wall. The south wall is barren."
     [(Action [(buildSentenceWrapper ["look"])]
             (InspectedScene "This small room is lit by the glowing ceiling, which pulsates with a warm yellow light. To the east is a boarded up window, while to the west a painting hangs on the wall. The south wall is barren." roomSouth)),
@@ -358,6 +377,7 @@ roomSouth = Scene "This small room is lit by the glowing ceiling, which pulsates
         (Action [(buildSentenceWrapper ["move","painting"])]
             (InspectedScene "You easily move the painting, revealing a hole in the wall where two glowing blue eyes stare at you." wallSceneDeath))]
     boulderLessHall windowScene (SceneError "There is no path this way." roomSouth) (SceneError "There is no path this way." roomSouth)
+
 windowScene = Scene "As you approach the window, you hear rustling on the other side. The window is boarded up, and you can't see what's on the other side." -- WILL ADD ACTIONS WITH ITEMS ONCE THOSE ARE SET UP --> POSSIBILITY OF TAKING OUT THE BOARDS TO REACH THE WINDOW WITH TOOLS, THEN BREAKING THE WINDOW TO ESCAPE
     [(Action [(buildSentenceWrapper ["look"])]
             (InspectedScene "As you approach the window, you hear rustling on the other side. The window is boarded up, and you can't see what's on the other side." windowScene)),
@@ -376,11 +396,17 @@ windowScene = Scene "As you approach the window, you hear rustling on the other 
         (Action [(buildSentenceWrapper ["pull","board"])]
             (InspectedScene "You pull the boards out." openWindowScene))]
     boulderLessHall (SceneError "You can't go through the boarded up window." windowScene) (SceneError "There is no path this way." windowScene) roomSouth
-openWindowScene = Scene "With the boards gone, you see an open window that leads into a small path through some woods. You see a couple squirrels rustling around, rushing down the path."
+
+openWindowScene = Scene "With the boards gone, you see an open window that leads into a small path through some woods. There is a knife on the windowsill. You see a couple squirrels rustling around, rushing down the path."
     [(Action [(buildSentenceWrapper ["look"])]
-            (InspectedScene "With the boards gone, you see an open window that leads into a small path through some woods. You see a couple squirrels rustling around, rushing down the path." openWindowScene)),
+            (InspectedScene "With the boards gone, you see an open window that leads into a small path through some woods. There is a knife on the windowsill. You see a couple squirrels rustling around, rushing down the path." openWindowScene)),
         (Action [(buildSentenceWrapper ["inspect","wall"])]
             (InspectedScene "There is nothing special about the wall. There is a window on it." openWindowScene)),
+        (Action [(buildSentenceWrapper ["inspect", "knife"])]
+              (InspectedScene "The knife is covered in fresh blood and, if your eyes don't deceive you, human flesh." openWindowScene)),
+        (InventoryChange [(buildSentenceWrapper ["take", "knife"])]
+              (Treasure "Ritual Knife" 1000 "A knife that appears to be used in rituals. It is freshly used.")
+              (InspectedScene "You wipe the knife on the ground before putting it in your bag."  openWindowScene)),
         (Action [(buildSentenceWrapper ["inspect","floor"])]
             (InspectedScene "The floor is the same stone as in the staircase, with greenish veins running up north starting where the boulders were before they disappeared." openWindowScene)),
         (Action [(buildSentenceWrapper ["inspect","window"]),(buildSentenceWrapper ["inspect","board"])]
@@ -402,12 +428,13 @@ allVerbTokens = [(TokenVerb "look" ["look"]),
                  (TokenVerb "open" ["open"]),
                  (TokenVerb "close" ["close"]),
                  (TokenVerb "force" ["force","slam"]),
-                 (TokenVerb "take" ["take", "grab"]),
+                 (TokenVerb "take" ["take", "grab", "pick"]),
                  (TokenVerb "turn" ["turn", "twist"]),
                  (TokenVerb "kick" ["kick", "bodyslam", "hit"]),
                  (TokenVerb "pull" ["pull"]),
                  (TokenVerb "push" ["push"]),
                  (TokenVerb "move" ["move", "slide"]),
+                 (TokenVerb "go" ["go", "walk", "move", "run", "skip", "slide", "moonwalk", "hop", "crabwalk"]),
                  (TokenVerb "climb" ["climb","exit","leave"])]
 
 allNounTokens :: [Token]
@@ -427,8 +454,14 @@ allNounTokens = [(TokenNoun "floor" ["floor", "ground"]),
                  (TokenNoun "vein" ["vein", "veins", "slime"]),
                  (TokenNoun "words" ["words", "word", "writing", "writings", "script", "scripts", "handwriting"]),
                  (TokenNoun "darkness" ["darkness"]),
+                 (TokenNoun "rope" ["rope", "string"]),
+                 (TokenNoun "knife" ["knife"]),
                  (TokenNoun "staircase" ["staircase", "stairs"]),
                  (TokenNoun "painting" ["painting", "artwork", "artpiece"]),
+                 (TokenNoun "north" ["north", "North", "n", "N"]),
+                 (TokenNoun "west" ["west", "West", "w", "W"]),
+                 (TokenNoun "south" ["south", "South", "s", "S"]),
+                 (TokenNoun "east" ["east", "East", "e", "E"]),
                  (TokenNoun "scratches" ["scratches", "scratchings"])]
 
 -- Adapted from Laurence Emms "What The Functional" Website on Haskell programming.
