@@ -79,14 +79,19 @@ readScene (InspectedScene description parent) _ inventory =
         putStrLn(description)
         play parent "read" inventory
 
-readScene DeathScene _ _ = -- EVENTUALLY INCLUDE POINT VALUE HERE
+readScene DeathScene _ inventory =
     do
-        putStrLn("YOU HAVE DIED. Play again?")
+        putStrLn("YOU HAVE DIED.")
+        let points =  getInventoryValue inventory
+        putStrLn("You scored: " ++ (show points) ++ " points.")
         restartGame
 
-readScene (ExitScene string) _ _ = -- EVENTUALLY INCLUDE POINT VALUE HERE
+readScene (ExitScene string) _ inventory =
     do
-        putStrLn("CONGRATULATIONS, YOU HAVE ESCAPED. Play again?")
+        putStrLn("CONGRATULATIONS, YOU HAVE ESCAPED.")
+        let points =  getInventoryValue inventory
+        putStrLn("You scored: " ++ (show points) ++ " points.")
+        putStrLn("Play again?")
         restartGame
 
 actOnInput :: String -> SceneMap -> Action -> [Item] -> IO ()
@@ -142,12 +147,6 @@ parseLineToSentence line = parseSentence tokenMatches
     where processedLine = Data.List.Split.splitOneOf lineDelimiters line
           tokenMatches = lexInput allTokens processedLine
 
-getListIndex e lst = indexHelper e lst 0
-
-indexHelper e (h:t) acc
-    | e == h = acc
-    | otherwise = indexHelper e t (acc+1)
-
 -- Returns str without instances of \DEL or characters directly preceding \DEL
 fixdel str = delhelper str []
 
@@ -162,6 +161,12 @@ removelast (h:t)
    | t == [] = t
    | otherwise = h:(removelast t)
 
+getInventoryValue :: [Item] -> Int
+getInventoryValue inventory = foldr (\x y -> getPointsFromItem(x) + y) 0 inventory
+
+getPointsFromItem :: Item -> Int
+getPointsFromItem (Treasure id val description) = val
+
 getSceneMapFromAction :: Action -> SceneMap
 getScenemapFromAction EmptyAction = NullScene
 getSceneMapFromAction (Action _ scenemap) = scenemap
@@ -170,7 +175,7 @@ getSceneMapFromAction (InventoryChange _ _ scenemap) = scenemap
 printIntroduction :: IO ()
 printIntroduction = do
                       putStrLn "Welcome to Dama and Jeff's CPSC 312 Project: ZORK REBOOT"
-                      putStrLn "Prepare yourself for a mindbending dive into a dark room, plus another dark room, maybe a dark hallway, some walls and floors, maybe a hammer, and some very terrifying Cthulu references. "
+                      putStrLn "Prepare yourself for a mindbending dive into a dark room, plus another dark room, maybe a dark hallway, some walls and floors, maybe a hammer, and some very terrifying Cthulhu references. "
                       putStrLn "Text doesn't get more exciting than this."
                       putStrLn ""
                       putStrLn ""

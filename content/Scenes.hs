@@ -7,7 +7,7 @@ module Scenes where
 import NaturalLanguageLexer
 import NaturalLanguageParser
 
--- Scene includes String (description of scene), Integer is key/index of current scene, [String] for actions available in scene ** WILL CHANGE TO [SceneComponent when parser is good to go], and 4 SceneMap for the adjacent scenes (N/E/S/W), ** WILL ADD [String] is list of flags for the room
+-- Scene includes String (description of scene), Integer is key/index of current scene, [Action] for actions available in scene and 4 SceneMap for the adjacent scenes (N/E/S/W)
 data SceneMap =   Scene Integer String [Action] SceneMap SceneMap SceneMap SceneMap
                 | EmptyScene SceneMap
                 | InspectedScene String SceneMap
@@ -35,10 +35,6 @@ data Item = Treasure String Int String deriving (Eq)
 
 instance Show Item where
     show (Treasure id points description) = show (id ++ ": " ++ description)
-
--- -- SceneComponents allow players to interact with scene; Integer is conditionalIndex Strings are objects present in the scene, while Strings are the verbs used to interact with Strings
--- data SceneComponent = Component Integer String
---                 deriving (Show, Eq)
 
 -- AREA 1 SCENES
 zorkMapStart = Scene 0 "You are in a dusty, dimly lit room. The paint on the wall is chipping away, and a dirty carpet covers the ground. To the South of the room, you see a worn wooden door. To the West, there is a boarded-up window."
@@ -233,7 +229,7 @@ stairsSouth = Scene 9 "This staircase descends into darkness, where you hear fai
               (InspectedScene "The floor of the staircase is wet, and moves further downwards." stairsSouth))]
     roomWest roomEast boulderHall (EmptyScene stairsSouth)
 
--- AREA 3 SCENES ** WILL ADD EXTRA ACTION OPTIONS TO AREA 5 ONCE WE GET ITEMS IN. 
+-- AREA 3 SCENES
 hallEast = Scene 10 "The faint yellow light from the east gets brighter as you walk further down this hall. To the south is a closed door, where the yellow light filters in through the bottom, and further east is a dead end."
     [(Action [(buildSentenceWrapper ["look"])] 
             (InspectedScene "The faint yellow light from the east gets brighter as you walk further down this hall. To the south is a closed door, where the yellow light filters in through the bottom, and further east is a dead end." hallEast)),
@@ -406,8 +402,8 @@ allVerbTokens = [(TokenVerb "look" ["look"]),
                  (TokenVerb "touch" ["touch", "feel", "rub"]),
                  (TokenVerb "peel" ["peel", "scratch", "rip"]),
                  (TokenVerb "open" ["open"]),
-                 (TokenVerb "close" ["close", "slam"]),
-                 (TokenVerb "force" ["force"]),
+                 (TokenVerb "close" ["close"]),
+                 (TokenVerb "force" ["force","slam"]),
                  (TokenVerb "take" ["take", "grab"]),
                  (TokenVerb "turn" ["turn", "twist"]),
                  (TokenVerb "kick" ["kick", "bodyslam", "hit"]),
