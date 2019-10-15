@@ -12,9 +12,10 @@ data SceneMap = Scene Integer String [String] SceneMap SceneMap SceneMap SceneMa
                 | Scene1 Integer String [Action] SceneMap SceneMap SceneMap SceneMap
                 | EmptyScene SceneMap
                 | InspectedScene String SceneMap
-                | DeathScene
                 | SceneError String SceneMap
+                | DeathScene
                 | NullScene
+                | ExitScene String
             deriving (Eq)
 
 instance Show SceneMap where
@@ -209,7 +210,7 @@ hallEast = Scene1 10 "The faint yellow light from the east gets brighter as you 
         (Action [(buildSentenceWrapper ["kick","door"])] 
             (InspectedScene "The door is very heavy, you feel a sharp pain on your foot, but can still move. What was the point of that?" hallEast))]
     (EmptyScene hallEast) (EmptyScene hallEast) (SceneError "You can't walk through a closed door." hallEast) hallSouth 
-roomEast = Scene1 16 "This room has the same yellow light that was spreading into the hall. You see a table in the center of the room, and a staircase going down to the west." -- ADD ITEMS HERE LATER 
+roomEast = Scene1 11 "This room has the same yellow light that was spreading into the hall. You see a table in the center of the room, and a staircase going down to the west." -- ADD ITEMS HERE LATER 
     [(Action [(buildSentenceWrapper ["look"])] 
             (InspectedScene "This room has the same yellow light that was spreading into the hall. You see a table in the center of the room, and a staircase going down to the west." roomEast)),
         (Action [(buildSentenceWrapper ["inspect","wall"])]
@@ -233,7 +234,7 @@ roomEast = Scene1 16 "This room has the same yellow light that was spreading int
         (Action [(buildSentenceWrapper ["turn","doorknob"])]
             (InspectedScene "The doorknob turns freely." roomEast))]
     hallEast (EmptyScene roomEast) centerRoomEast stairsSouth
-centerRoomEast = Scene1 18 "At the center of this room, you see a table. A path back to the hall opens up to the north, and there is a staircase going down to the west."
+centerRoomEast = Scene1 12 "At the center of this room, you see a table. A path back to the hall opens up to the north, and there is a staircase going down to the west."
     [(Action [(buildSentenceWrapper ["look"])] 
             (InspectedScene "At the center of this room, you see a table. A path back to the hall opens up to the north, and there is a staircase going down to the west." centerRoomEast)),
         (Action [(buildSentenceWrapper ["inspect","wall"])]
@@ -262,72 +263,94 @@ centerRoomEast = Scene1 18 "At the center of this room, you see a table. A path 
 roomEastDeath = InspectedScene "All too quickly, you feel an icy cold sensation rising from your feet up to your throat as you see dark tentacles materializing from the shadows, shooting up the hallway and enveloping you. You barely have a second to think before you feel an undeniable madness stirring in your mind as the tentacles shoot into your mouth, and then there is just all-possessing cold and darkness." DeathScene
 
 -- AREA 4
-boulderHall = Scene 11 "The bottom of the staircase flattens out, and you appear to have hit a dead end. There is a pile of boulders blocking the way forward, and the faintest light makes it through the cracks between the large rocks, providing enough light to see the formation, and the fact that this staircase is all made of stone, like a cavern." 
-    ["look", "inspect wall", "inspect floor", "inspect boulders", "touch wall", "touch floor", "touch boulders", "move boulders"]
+boulderHall = Scene1 13 "The bottom of the staircase flattens out, and you appear to have hit a dead end. There is a pile of boulders blocking the way forward, and the faintest light makes it through the cracks between the large rocks, providing enough light to see the formation, and the fact that this staircase is all made of stone, like a cavern." 
+    [(Action [(buildSentenceWrapper ["look"])] 
+            (InspectedScene "The bottom of the staircase flattens out, and you appear to have hit a dead end. There is a pile of boulders blocking the way forward, and the faintest light makes it through the cracks between the large rocks, providing enough light to see the formation, and the fact that this staircase is all made of stone, like a cavern." boulderHall)),
+        (Action [(buildSentenceWrapper ["inspect","wall"])]
+            (InspectedScene "The wall is made of solid stone, with a greenish vein running through it, getting thicker the further from the boulders it gets. " boulderHall)),
+        (Action [(buildSentenceWrapper ["inspect","floor"])]
+            (InspectedScene "The floor is made of solid stone, and the greenish vein that runs through it, up the stairs, looks wet." boulderHall)),
+        (Action [(buildSentenceWrapper ["inspect","boulders"])]
+            (InspectedScene "The boulders are blocking the way forward. They look like the same kind of stone that the rest of this passage is made of, but there are no greenish veins running through them. They are stacked up to the ceiling, but thin beams of light filter through the cracks between them." boulderHall)),
+        (Action [(buildSentenceWrapper ["touch","wall"])]
+            (InspectedScene "The wall is cool and dry, but the greenish being that runs through it is wet and slimy." boulderHall)),
+        (Action [(buildSentenceWrapper ["touch","floor"])]
+            (InspectedScene "The stone of the floor is dry, but the greenish vein that runs through it is wet and feels slimy." boulderHall)),
+        (Action [(buildSentenceWrapper ["touch","boulders"])]
+            (InspectedScene "The boulders feel heavy and solid, and you feel your hand tingling as your touch them." boulderHall)),
+        (Action [(buildSentenceWrapper ["move","boulders"])]
+            (InspectedScene "Despite how sturdy they look and feel, when you try moving the boulders, you do so effortlessly. They disintegrate at your touch, revealing a well-let passage leading into a room to the south." boulderLessHall))]
     stairsSouth (EmptyScene boulderHall) (EmptyScene boulderHall) (EmptyScene boulderHall)
-    [boulderHall,
-        (InspectedScene "The wall is made of solid stone, with a greenish vein running through it, getting thicker the further from the boulders it gets. " boulderHall),
-        (InspectedScene "The floor is made of solid stone, and the greenish vein that runs through it, up the stairs, looks wet." boulderHall),
-        (InspectedScene "The boulders are blocking the way forward. They look like the same kind of stone that the rest of this passage is made of, but there are no greenish veins running through them. They are stacked up to the ceiling, but thin beams of light filter through the cracks between them." boulderHall),
-        (InspectedScene "The wall is cool and dry, but the greenish being that runs through it is wet and slimy." boulderHall),
-        (InspectedScene "The stone of the floor is dry, but the greenish vein that runs through it is wet and feels slimy." boulderHall),
-        (InspectedScene "The boulders feel heavy and solid, and you feel your hand tingling as your touch them." boulderHall),
-        (InspectedScene "Despite how study they look and feel, when you try moving the boulders, you do so effortlessly. They disintegrate at your touch, revealing a well-let passage leading into a room to the south." boulderLessHall)]
-boulderLessHall = Scene 12 ""
-    ["look", "inspect wall", "inspect floor", "inspect boulders", "touch wall", "touch floor", "touch boulders"]
-    stairsSouth (EmptyScene boulderHall) southestRoom (EmptyScene boulderHall)
-    [boulderHall,
-        (InspectedScene "The wall is made of solid stone, with a greenish vein running through it, getting thicker the further from the boulders it gets. " boulderLessHall),
-        (InspectedScene "The floor is made of solid stone, and the greenish vein that runs through it, up the stairs, looks wet." boulderLessHall),
-        (InspectedScene "The boulders are gone, the way forward is cleared now." boulderLessHall),
-        (InspectedScene "The wall is cool and dry, but the greenish being that runs through it is wet and slimy." boulderLessHall),
-        (InspectedScene "The stone of the floor is dry, but the greenish vein that runs through it is wet and feels slimy." boulderLessHall),
-        (InspectedScene "The boulders are gone, the way forward is cleared now." boulderLessHall)]
-southestRoom = Scene 13 "This small room is lit by the glowing ceiling, which pulsates with a warm yellow light. To the east is a boarded up window, while to the west a painting hangs on the wall. The south wall is barren."
-    ["look", "inspect wall", "inspect floor", "inspect painting", "inspect window", "inspect boards", "inspect board", "touch wall", "touch floor", "touch painting", "touch window", "touch boards", "touch board", "move painting"]
-    boulderLessHall windowScene (EmptyScene southestRoom) wallScene
-    [southestRoom,
-        (InspectedScene "The west wall has an abstract painting of coiling shapes, it is very colorful. There is nothing special about the south wall." southestRoom),
-        (InspectedScene "The floor is the same stone as in the staircase, with greenish veins running up north starting where the boulders were before they disappeared." southestRoom),
-        (InspectedScene "Upon closer inspection, the coils in the painting seem to be multiple octopi and squids tangled together. The paint used and the material are not anything you recognize." southestRoom),
-        (InspectedScene "The window is boarded up with no cracks between the boards, so you cannot see the other side." southestRoom),
-        (InspectedScene "The boards have no cracks between them, you cannot see the other side or the glass of the window." southestRoom),
-        (InspectedScene "The boards have no cracks between them, you cannot see the other side or the glass of the window." southestRoom),
-        (InspectedScene "The walls are the same stone as the previous staircase area." southestRoom),
-        (InspectedScene "The floor is the same stone as in the staircase, cool to the touch and dry except for the greenish veins running up north starting where the boulders were before they disappeared, which are wet and slimy." southestRoom),
-        (InspectedScene "You walk to the west wall and touch the painting, feeling the unfamiliar material. It feels slimy, like the greenish veins in the floor and walls, and you feel an icy cold sensation working its way up the arm you touched it with." wallScene),
-        (InspectedScene "You walk to the east and touch the boards on the window. They feel firmly and neatly nailed together." windowScene),
-        (InspectedScene "You walk to the east and touch the boards on the window. They feel firmly and neatly nailed together." windowScene),
-        (InspectedScene "You walk to the east and touch the boards on the window. They feel firmly and neatly nailed together." windowScene),
-        (InspectedScene "You easily move the painting, revealing a hole in the wall where two glowing blue eyes stare at you." wallSceneDeath)]
-wallScene = Scene 14 "The west wall has an abstract painting of coiling shapes, it is very colorful." 
-    ["look", "inspect wall", "inspect floor", "inspect painting", "touch wall", "touch floor", "touch painting", "move painting"]
-    boulderLessHall southestRoom (EmptyScene wallScene) (EmptyScene wallScene)
-    [wallScene,
-        (InspectedScene "There is nothing special about the wall other than the painting." wallScene),
-        (InspectedScene "The floor is the same stone as in the staircase, with greenish veins running up north starting where the boulders were before they disappeared." wallScene),
-        (InspectedScene "Upon closer inspection, the coils in the painting seem to be multiple octopi and squids tangled together. The paint used and the material are not anything you recognize." wallScene),
-        (InspectedScene "The walls are the same stone as the previous staircase area." southestRoom),
-        (InspectedScene "The floor is the same stone as in the staircase, cool to the touch and dry except for the greenish veins running up north starting where the boulders were before they disappeared, which are wet and slimy." southestRoom),
-        (InspectedScene "You walk to the west wall and touch the painting, feeling the unfamiliar material. It feels slimy, like the greenish veins in the floor and walls, and you feel an icy cold sensation working its way up the arm you touched it with." wallScene),
-        (InspectedScene "You easily move the painting, revealing a hole in the wall where two glowing blue eyes stare at you." wallSceneDeath)]
+boulderLessHall = Scene1 14 "The hall stretches further south, where a warm yellow light filters in from a room."
+    [(Action [(buildSentenceWrapper ["look"])]
+            (InspectedScene "The hall stretches further south, where a warm yellow light filters in from a room." boulderLessHall)),
+        (Action [(buildSentenceWrapper ["inspect","wall"])]
+            (InspectedScene "The wall is made of solid stone, with a greenish vein running through it, getting thicker the further from the boulders it gets. " boulderLessHall)),
+        (Action [(buildSentenceWrapper ["inspect","floor"])]
+            (InspectedScene "The floor is made of solid stone, and the greenish vein that runs through it, up the stairs, looks wet." boulderLessHall)),
+        (Action [(buildSentenceWrapper ["inspect","boulders"]), (buildSentenceWrapper ["touch","boulders"])]
+            (InspectedScene "The boulders are gone, the way forward is cleared now." boulderLessHall)),
+        (Action [(buildSentenceWrapper ["touch","wall"])]
+            (InspectedScene "The wall is cool and dry, but the greenish being that runs through it is wet and slimy." boulderLessHall)),
+        (Action [(buildSentenceWrapper ["touch","floor"])]
+            (InspectedScene "The stone of the floor is dry, but the greenish vein that runs through it is wet and feels slimy." boulderLessHall))]
+    stairsSouth (EmptyScene boulderHall) roomSouth (EmptyScene boulderHall)
+roomSouth = Scene1 15 "This small room is lit by the glowing ceiling, which pulsates with a warm yellow light. To the east is a window, while to the west a painting hangs on the wall. The south wall is barren."
+    [(Action [(buildSentenceWrapper ["look"])]
+            (InspectedScene "This small room is lit by the glowing ceiling, which pulsates with a warm yellow light. To the east is a boarded up window, while to the west a painting hangs on the wall. The south wall is barren." roomSouth)),
+        (Action [(buildSentenceWrapper ["inspect","wall"])]
+            (InspectedScene "The west wall has an abstract painting of coiling shapes, it is very colorful. There is nothing special about the south wall." roomSouth)),
+        (Action [(buildSentenceWrapper ["inspect","floor"])]
+            (InspectedScene "The floor is the same stone as in the staircase, with greenish veins running up north starting where the boulders were before they disappeared." roomSouth)),
+        (Action [(buildSentenceWrapper ["inspect","painting"])]
+            (InspectedScene "Upon closer inspection, the coils in the painting seem to be multiple octopi and squids tangled together. The paint used and the material are not anything you recognize." roomSouth)),
+        (Action [(buildSentenceWrapper ["inspect","window"])]
+            (InspectedScene "The window is boarded up with no cracks between the boards, so you cannot see the other side." roomSouth)),
+        (Action [(buildSentenceWrapper ["inspect","boards"])]
+            (InspectedScene "The boards have no cracks between them, you cannot see the other side or the glass of the window." roomSouth)),
+        (Action [(buildSentenceWrapper ["touch","wall"])]
+            (InspectedScene "The walls are the same stone as the staircase area." roomSouth)),
+        (Action [(buildSentenceWrapper ["touch","floor"])]
+            (InspectedScene "The floor is the same stone as in the staircase, cool to the touch and dry except for the greenish veins running up north starting where the boulders were before they disappeared, which are wet and slimy." roomSouth)),
+        (Action [(buildSentenceWrapper ["touch","painting"])]
+            (InspectedScene "You touch the painting on the west wall, feeling the unfamiliar material. It feels slimy, like the greenish veins in the floor and walls, and you feel an icy cold sensation working its way up the arm you touched it with." roomSouth)),
+        (Action [(buildSentenceWrapper ["touch","window"]),(buildSentenceWrapper ["touch","boards"])]
+            (InspectedScene "You walk to the east and touch the boards on the window. They feel neatly but loosely nailed together." windowScene)),
+        (Action [(buildSentenceWrapper ["move","painting"])]
+            (InspectedScene "You easily move the painting, revealing a hole in the wall where two glowing blue eyes stare at you." wallSceneDeath))]
+    boulderLessHall windowScene (EmptyScene roomSouth) (EmptyScene roomSouth)
+windowScene = Scene1 16 "As you approach the window, you hear rustling on the other side. The window is boarded up, and you can't see what's on the other side." -- WILL ADD ACTIONS WITH ITEMS ONCE THOSE ARE SET UP --> POSSIBILITY OF TAKING OUT THE BOARDS TO REACH THE WINDOW WITH TOOLS, THEN BREAKING THE WINDOW TO ESCAPE
+    [(Action [(buildSentenceWrapper ["look"])]
+            (InspectedScene "As you approach the window, you hear rustling on the other side. The window is boarded up, and you can't see what's on the other side." windowScene)),
+        (Action [(buildSentenceWrapper ["inspect","wall"])]
+            (InspectedScene "There is nothing special about the wall. There is a window on it." windowScene)),
+        (Action [(buildSentenceWrapper ["inspect","floor"])]
+            (InspectedScene "The floor is the same stone as in the staircase, with greenish veins running up north starting where the boulders were before they disappeared." windowScene)),
+        (Action [(buildSentenceWrapper ["inspect","window"]),(buildSentenceWrapper ["inspect","boards"])]
+            (InspectedScene "The window is boarded up with no cracks between the boards, so you cannot see the other side." windowScene)),
+        (Action [(buildSentenceWrapper ["touch","wall"])]
+            (InspectedScene "The wall is dry stone." windowScene)),
+        (Action [(buildSentenceWrapper ["touch","floor"])]
+            (InspectedScene "The floor in this area is dry stone." windowScene)),
+        (Action [(buildSentenceWrapper ["touch","window"]),(buildSentenceWrapper ["touch","boards"])]
+            (InspectedScene "The boards on the window feel loosely nailed together." windowScene)),
+        (Action [(buildSentenceWrapper ["pull","boards"])]
+            (InspectedScene "You pull the boards out." openWindowScene))]
+    boulderLessHall (SceneError "You can't go through the boarded up window." windowScene) (EmptyScene windowScene) roomSouth
+openWindowScene = Scene1 17 "With the boards gone, you see an open window that leads into a small path through some woods. You see a couple squirrels rustling around, rushing down the path."
+    [(Action [(buildSentenceWrapper ["look"])]
+            (InspectedScene "With the boards gone, you see an open window that leads into a small path through some woods. You see a couple squirrels rustling around, rushing down the path." openWindowScene)),
+        (Action [(buildSentenceWrapper ["inspect","wall"])]
+            (InspectedScene "There is nothing special about the wall. There is a window on it." openWindowScene)),
+        (Action [(buildSentenceWrapper ["inspect","floor"])]
+            (InspectedScene "The floor is the same stone as in the staircase, with greenish veins running up north starting where the boulders were before they disappeared." openWindowScene)),
+        (Action [(buildSentenceWrapper ["inspect","window"]),(buildSentenceWrapper ["inspect","boards"])]
+            (InspectedScene "The boards are gone, and the window is open." openWindowScene)),
+        (Action [(buildSentenceWrapper ["climb","window"]),(buildSentenceWrapper ["exit","window"]),(buildSentenceWrapper ["leave","window"])]
+            (InspectedScene "You climb out the window and feel the cool air of the outdoors." exitScene))]
+    boulderLessHall exitScene (EmptyScene windowScene) roomSouth
 wallSceneDeath = InspectedScene "The blue eyes' gaze burns into the back of your skull, and you don't remember who you are anymore. You willingly step into the hole in the wall, feeling the icy cold sensation that was running up your arm now consume your entire body, and you embrace it. The eyes glint for a moment, and you hear distant screaming, then you are enveloped in darkness." DeathScene
-windowScene = Scene 15 "As you approach the window, you hear rustling on the other side. The window is boarded up, and you can't see what's on the other side." -- WILL ADD ACTIONS WITH ITEMS ONCE THOSE ARE SET UP --> POSSIBILITY OF TAKING OUT THE BOARDS TO REACH THE WINDOW WITH TOOLS, THEN BREAKING THE WINDOW TO ESCAPE
-    ["look", "inspect wall", "inspect floor", "inspect window", "inspect boards", "inspect board", "touch wall", "touch floor", "touch window", "touch boards", "touch board", "pull boards", "pull board"]
-    boulderLessHall (EmptyScene windowScene) (EmptyScene windowScene) southestRoom
-    [windowScene,
-        (InspectedScene "There is nothing special about the wall. There is a window on it." windowScene),
-        (InspectedScene "The floor is the same stone as in the staircase, with greenish veins running up north starting where the boulders were before they disappeared." windowScene),
-        (InspectedScene "The window is boarded up with no cracks between the boards, so you cannot see the other side." windowScene),
-        (InspectedScene "The window is boarded up with no cracks between the boards, so you cannot see the other side." windowScene),
-        (InspectedScene "The window is boarded up with no cracks between the boards, so you cannot see the other side." windowScene),
-        (InspectedScene "The wall is stone and dry." windowScene),
-        (InspectedScene "The floor in this area is stone and dry." windowScene),
-        (InspectedScene "The boards on the window feel firmly nailed together." windowScene),
-        (InspectedScene "The boards on the window feel firmly nailed together." windowScene),
-        (InspectedScene "The boards on the window feel firmly nailed together." windowScene),
-        (InspectedScene "You cannot pull the boards out with your bare hands." windowScene),
-        (InspectedScene "You cannot pull the boards out with your bare hands." windowScene)]
+exitScene = ExitScene "Once outside, you turn and see that the window you just exited through slams shut. The structure you have just left seems to be an amalgamation of an old Victorian house and a cave, melded into each other, and the structure starts pulsating as the window closes. With you gone, the nightmarish structure recedes into the ground, leaving you standing in the middle of an empty clearing. You follow the path through the woods to safety, and the further you get from the clearing, the less you remember about what you've just experienced."
 
 allTokens :: [Token]
 allTokens = allVerbTokens ++ allNounTokens
