@@ -53,7 +53,7 @@ play map flag inventory=
 
 -- Takes given SceneMap, prints description and advances user through the map.
 readScene :: SceneMap -> String -> [Item] -> IO ()
-readScene (Scene i description actions n e s w) flag inventory =
+readScene (Scene description actions n e s w) flag inventory =
     do
         printSceneIntro description flag
 
@@ -61,17 +61,11 @@ readScene (Scene i description actions n e s w) flag inventory =
         let sentences = parseLineToSentence (fixdel line)
             matchedAction = (findMatchingAction sentences actions)
 
-        actOnInput line (Scene i description actions n e s w) matchedAction inventory
+        actOnInput line (Scene description actions n e s w) matchedAction inventory
 
 readScene (SceneError errormsg parent) _ inventory =
     do
         putStrLn(errormsg ++ " What do you do instead?")
-        play parent "read" inventory
-        
-
-readScene (EmptyScene parent) _ inventory=
-    do
-        putStrLn("There is no path this way. What do you do instead?")
         play parent "read" inventory
 
 readScene (InspectedScene description parent) _ inventory =
@@ -84,6 +78,7 @@ readScene DeathScene _ inventory =
         putStrLn("YOU HAVE DIED.")
         let points =  getInventoryValue inventory
         putStrLn("You scored: " ++ (show points) ++ " points.")
+        putStrLn("Play again?")
         restartGame
 
 readScene (ExitScene string) _ inventory =
@@ -95,7 +90,7 @@ readScene (ExitScene string) _ inventory =
         restartGame
 
 actOnInput :: String -> SceneMap -> Action -> [Item] -> IO ()
-actOnInput line (Scene i description actions n e s w) action inventory
+actOnInput line (Scene description actions n e s w) action inventory
     | (fixdel(line) == "quit" || (fixdel(line) == "exit"))  = do
                                                                 separatePrompts
                                                                 putStrLn("You have quit the game. Goodbye!")
@@ -104,10 +99,10 @@ actOnInput line (Scene i description actions n e s w) action inventory
 
     | (fixdel(line) == "help")                              = do
                                                                 printGameInformation
-                                                                play (Scene i description actions n e s w) "read" inventory
+                                                                play (Scene description actions n e s w) "read" inventory
     | (fixdel(line) == "inventory")                         = do
                                                                 printInventory inventory
-                                                                play (Scene i description actions n e s w) "read" inventory
+                                                                play (Scene description actions n e s w) "read" inventory
     | (fixdel(line) `elem` ["N","n","north","North"])       = play n "not read" inventory
     | (fixdel(line) `elem` ["E","e","east","East"])         = play e "not read" inventory
     | (fixdel(line) `elem` ["S","s","south","South"])       = play s "not read" inventory
@@ -116,7 +111,7 @@ actOnInput line (Scene i description actions n e s w) action inventory
     | otherwise                                             = do
                                                                 separatePrompts
                                                                 putStrLn ("COMMAND NOT RECOGNIZED.")
-                                                                play (Scene i description actions n e s w) "read" inventory
+                                                                play (Scene description actions n e s w) "read" inventory
 actOnInput _ _ _ _ = return ()
 
 performAction :: Action -> [Item] -> IO()

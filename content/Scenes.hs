@@ -7,9 +7,8 @@ module Scenes where
 import NaturalLanguageLexer
 import NaturalLanguageParser
 
--- Scene includes String (description of scene), Integer is key/index of current scene, [Action] for actions available in scene and 4 SceneMap for the adjacent scenes (N/E/S/W)
-data SceneMap =   Scene Integer String [Action] SceneMap SceneMap SceneMap SceneMap
-                | EmptyScene SceneMap
+-- Scene includes String (description of scene), [Action] for actions available in scene and 4 SceneMap for the adjacent scenes (N/E/S/W)
+data SceneMap =   Scene String [Action] SceneMap SceneMap SceneMap SceneMap
                 | InspectedScene String SceneMap
                 | SceneError String SceneMap
                 | DeathScene
@@ -18,8 +17,7 @@ data SceneMap =   Scene Integer String [Action] SceneMap SceneMap SceneMap Scene
             deriving (Eq)
 
 instance Show SceneMap where
-    show (Scene i description actions n e s w) = show description
-    show (EmptyScene parent) = show parent
+    show (Scene description actions n e s w) = show description
     show (InspectedScene description parent) = show description
     show (SceneError msg parent) = show msg
     show DeathScene = ""
@@ -37,7 +35,7 @@ instance Show Item where
     show (Treasure id points description) = show (id ++ ": " ++ description)
 
 -- AREA 1 SCENES
-zorkMapStart = Scene 0 "You are in a dusty, dimly lit room. The paint on the wall is chipping away, and a dirty carpet covers the ground. To the South of the room, you see a worn wooden door. To the West, there is a boarded-up window."
+zorkMapStart = Scene "You are in a dusty, dimly lit room. The paint on the wall is chipping away, and a dirty carpet covers the ground. To the South of the room, you see a worn wooden door. To the West, there is a boarded-up window."
     [(Action [(buildSentenceWrapper ["look"])]
               (InspectedScene "You are in a dusty, dimly lit room. The paint on the wall is chipping away, and a dirty carpet covers the ground. To the South of the room, you see a worn wooden door. To the West, there is a boarded-up window."  zorkMapStart)),
      (Action [(buildSentenceWrapper ["inspect", "floor"])]
@@ -47,7 +45,7 @@ zorkMapStart = Scene 0 "You are in a dusty, dimly lit room. The paint on the wal
      (Action [(buildSentenceWrapper ["inspect", "wall"])]
               (InspectedScene "From here, you see nothing but dirt on the walls." zorkMapStart))]
     sceneNorth sceneEast sceneSouth sceneWest
-sceneNorth = Scene 1 "The North wall of the room is barren, and the paint looks old. There is a old, worn painting on the wall."
+sceneNorth = Scene "The North wall of the room is barren, and the paint looks old. There is a old, worn painting on the wall."
     [(Action [(buildSentenceWrapper ["look"])]
               (InspectedScene "The North wall of the room is barren, and the paint looks old."  sceneNorth)),
      (Action [(buildSentenceWrapper ["inspect", "wall"])]
@@ -72,9 +70,9 @@ sceneNorth = Scene 1 "The North wall of the room is barren, and the paint looks 
               (InspectedScene "You gently push the painting aside. To your surprise, there is a hole in the wall containing a stone tablet. You carefully pick up the tablet and slip it into your bag."  sceneNorth)),
      (Action [(buildSentenceWrapper ["peel", "paint"])]
               (InspectedScene "The paint is dry and flaky. Peeling it reveals more layers interspersed with red splotches." sceneNorth))]
-    (EmptyScene sceneNorth) sceneEast zorkMapStart sceneWest
+    (SceneError "There is no path this way." sceneNorth) sceneEast zorkMapStart sceneWest
 
-sceneEast = Scene 2 "The East wall of the room has scratches on it, chipping away the paint more than the other walls."
+sceneEast = Scene "The East wall of the room has scratches on it, chipping away the paint more than the other walls."
     [(Action [(buildSentenceWrapper ["look"])]
               (InspectedScene "The East wall of the room has scratches on it, chipping away the paint more than the other walls."  sceneEast)),
      (Action [(buildSentenceWrapper ["inspect", "wall"])]
@@ -93,9 +91,9 @@ sceneEast = Scene 2 "The East wall of the room has scratches on it, chipping awa
               (InspectedScene "The floor is covered in a carpet with brown and reddish stains." sceneEast)),
      (Action [(buildSentenceWrapper ["touch", "carpet"])]
               (InspectedScene "The carpet is rough and wet in some places, but seems firmly secured to the ground." sceneEast))]
-    sceneNorth (EmptyScene sceneEast) sceneSouth zorkMapStart
+    sceneNorth (SceneError "There is no path this way." sceneEast) sceneSouth zorkMapStart
 
-sceneSouth = Scene 3 "There is a wooden door in front of you. It looks heavy and old."
+sceneSouth = Scene "There is a wooden door in front of you. It looks heavy and old."
     [(Action [(buildSentenceWrapper ["look"])]
               (InspectedScene "There is a wooden door in front of you. It looks heavy and old." sceneSouth)),
      (Action [(buildSentenceWrapper ["inspect", "door"])]
@@ -117,7 +115,7 @@ sceneSouth = Scene 3 "There is a wooden door in front of you. It looks heavy and
               (InspectedScene "The door does no budge under your weight." sceneSouth))]
      zorkMapStart sceneEast (SceneError "You can't walk through a closed door." sceneSouth) sceneWest
 
-sceneWest = Scene 4 "There is a boarded up window in front of you. There are scratches on the boards, and the dim light in the room is filtering in from the cracks between the boards here."
+sceneWest = Scene "There is a boarded up window in front of you. There are scratches on the boards, and the dim light in the room is filtering in from the cracks between the boards here."
     [(Action [(buildSentenceWrapper ["look"])]
               (InspectedScene "There is a boarded up window in front of you. There are scratches on the boards, and the dim light in the room is filtering in from the cracks between the boards here."  sceneWest)),
      (Action [(buildSentenceWrapper ["inspect", "window"]),
@@ -133,9 +131,9 @@ sceneWest = Scene 4 "There is a boarded up window in front of you. There are scr
      (Action [(buildSentenceWrapper ["pull", "boards"]),
               (buildSentenceWrapper ["pull", "board"])]
               (SceneError "The boards are firmly nailed to the window. You cannot pull them off with your bare hands." sceneWest))]
-    sceneNorth zorkMapStart sceneSouth (EmptyScene sceneWest)
+    sceneNorth zorkMapStart sceneSouth (SceneError "There is no path this way." sceneWest)
 
-firstDoorScene = Scene 5 "A long hallway stretches ahead of you, spreading out to the south. To the north is a door."
+firstDoorScene = Scene "A long hallway stretches ahead of you, spreading out to the south. To the north is a door."
     [(Action [(buildSentenceWrapper ["look"])]
               (InspectedScene "A long hallway stretches ahead of you, spreading out to the south. To the north is a door." firstDoorScene)),
      (Action [(buildSentenceWrapper ["inspect", "door"])]
@@ -159,11 +157,11 @@ firstDoorScene = Scene 5 "A long hallway stretches ahead of you, spreading out t
               (InspectedScene "The doorknob turns easily, but the door is still open." firstDoorScene)),
      (Action [(buildSentenceWrapper ["kick", "door"])]
               (InspectedScene "The door is very heavy, you feel a sharp pain on your foot, but can still move. What was the point of that?" firstDoorScene))]
-     sceneSouth (EmptyScene firstDoorScene) hallSouth (EmptyScene firstDoorScene)
+     sceneSouth (SceneError "There is no path this way." firstDoorScene) hallSouth (SceneError "There is no path this way." firstDoorScene)
 firstDoorSceneDeath = InspectedScene "All too quickly, you feel an icy cold sensation rising from your feet up to your throat as you see dark tentacles materializing from the shadows, shooting up the hallway and enveloping you. You barely have a second to think before you feel an undeniable madness stirring in your mind as the tentacles shoot into your mouth, and then there is just all-possessing cold and darkness." DeathScene
 
 -- AREA 2 SCENES
-hallSouth = Scene 6 "As you walk down the hall, you see an ominous blue light coming in from the west where a room opens up, and a dimmer, yellow light from the east, where a hall stretches onward."
+hallSouth = Scene "As you walk down the hall, you see an ominous blue light coming in from the west where a room opens up, and a dimmer, yellow light from the east, where a hall stretches onward."
     [(Action [(buildSentenceWrapper ["look"])]
               (InspectedScene "As you walk down the hall, you see an ominous blue light coming in from the west where a room opens up, and a dimmer, yellow light from the east, where a hall stretches onward." hallSouth)),
      (Action [(buildSentenceWrapper ["inspect", "wall"])]
@@ -174,9 +172,9 @@ hallSouth = Scene 6 "As you walk down the hall, you see an ominous blue light co
               (InspectedScene "There is nothing special about the carpet." hallSouth)),
      (Action [(buildSentenceWrapper ["peel", "carpet"])]
               (InspectedScene "You can't peel the carpet here." hallSouth))]
-    firstDoorScene hallEast (EmptyScene hallSouth) roomWest
+    firstDoorScene hallEast (SceneError "There is no path this way." hallSouth) roomWest
 
-roomWest = Scene 7 "You walk into the blue-lit room, and you hear a squelching sound behind you as a wall of writhing tentacles blocks your way back. You feel a horrible icy sensation coming from the tentacles, and you hear the gurgling of an incomprehensible, guttural language coming from them. You feel your mind might give into the foreign whispers if you get too close."
+roomWest = Scene "You walk into the blue-lit room, and you hear a squelching sound behind you as a wall of writhing tentacles blocks your way back. You feel a horrible icy sensation coming from the tentacles, and you hear the gurgling of an incomprehensible, guttural language coming from them. You feel your mind might give into the foreign whispers if you get too close."
     [(Action [(buildSentenceWrapper ["look"])]
               (InspectedScene "You walk into the blue-lit room, and you hear a squelching sound behind you as a wall of writhing tentacles blocks your way back. You feel a horrible icy sensation coming from the tentacles, and you hear the gurgling of an incomprehensible, guttural language coming from them. You feel your mind might give into the foreign whispers if you get too close." roomWest)),
      (Action [(buildSentenceWrapper ["inspect", "wall"]),
@@ -195,10 +193,10 @@ roomWest = Scene 7 "You walk into the blue-lit room, and you hear a squelching s
               (InspectedScene "You feel the damp carpet, it seems much looser than in the previous rooms you've seen." roomWest)),
      (Action [(buildSentenceWrapper ["peel", "carpet"])]
               (InspectedScene "You peel away the carpet, revealing a block of text in a language you don't understand. Still, you can't seem to look away, and the words start shifting as you feel a pressure building in your head. The words shift into a shape: an arrow pointing south, into a staircase you now see." roomWest))]
-    (EmptyScene roomWest) roomWestDeath stairsSouth centerRoomWest
+    (SceneError "There is no path this way." roomWest) roomWestDeath stairsSouth centerRoomWest
 roomWestDeath = InspectedScene "The tentacles reach out and grab you before you can make another move, wrapping around your extremities and pulling you into the icy cold wall of movement. There are two eyes looking into yours, and you hear the strange gurgling language you heard coming from the tentacles before as your mind descends into madness. Then there is darkness." DeathScene
 
-centerRoomWest = Scene 8 "The icy sensation from the tentacles eases up as you step away from them, and you can calmly take in your surroundings now. To the south, a stairway goes down into the darkness. The carpet is frayed and stained, and the walls are covered in scratches; some look like words. Above you, a faint blue glow illuminates the room in a similar shade as the tentacles."
+centerRoomWest = Scene "The icy sensation from the tentacles eases up as you step away from them, and you can calmly take in your surroundings now. To the south, a stairway goes down into the darkness. The carpet is frayed and stained, and the walls are covered in scratches; some look like words. Above you, a faint blue glow illuminates the room in a similar shade as the tentacles."
     [(Action [(buildSentenceWrapper ["look"])]
               (InspectedScene "The icy sensation from the tentacles eases up as you step away from them, and you can calmly take in your surroundings now. To the south, a stairway goes down into the darkness. The carpet is frayed and stained, and the walls are covered in scratches; some look like words. Above you, a faint blue glow illuminates the room in a similar shade as the tentacles." centerRoomWest)),
      (Action [(buildSentenceWrapper ["inspect", "wall"]),
@@ -214,9 +212,9 @@ centerRoomWest = Scene 8 "The icy sensation from the tentacles eases up as you s
               (InspectedScene "You feel the damp carpet, it seems much looser than in the previous rooms you've seen." roomWest)),
      (Action [(buildSentenceWrapper ["peel", "carpet"])]
               (InspectedScene "You peel away the carpet, revealing a block of text in a language you don't understand. Still, you can't seem to look away, and the words start shifting as you feel a pressure building in your head. The words shift into a shape: an arrow pointing south, into a staircase you now see." roomWest))]
-    (EmptyScene roomWest) roomWest stairsSouth (EmptyScene roomWest)
+    (SceneError "There is no path this way." roomWest) roomWest stairsSouth (SceneError "There is no path this way." roomWest)
 
-stairsSouth = Scene 9 "This staircase descends into darkness, where you hear faint rustling. To the east, you see an opening with a faint light, but further south the light doesn't reach, and you can't see what's ahead."
+stairsSouth = Scene "This staircase descends into darkness, where you hear faint rustling. To the east, you see an opening with a faint light, but further south the light doesn't reach, and you can't see what's ahead."
     [(Action [(buildSentenceWrapper ["look"])]
               (InspectedScene "This staircase descends into darkness, where you hear faint rustling. To the east, you see an opening with a faint light, but further south the light doesn't reach, and you can't see what's ahead." stairsSouth)),
      (Action [(buildSentenceWrapper ["inspect"]),
@@ -227,10 +225,10 @@ stairsSouth = Scene 9 "This staircase descends into darkness, where you hear fai
               (InspectedScene "The wall is cool, and feels like stone, a big change from the scratched up wooden walls from before." stairsSouth)),
      (Action [(buildSentenceWrapper ["touch", "floor"])]
               (InspectedScene "The floor of the staircase is wet, and moves further downwards." stairsSouth))]
-    roomWest roomEast boulderHall (EmptyScene stairsSouth)
+    roomWest roomEast boulderHall (SceneError "There is no path this way." stairsSouth)
 
 -- AREA 3 SCENES
-hallEast = Scene 10 "The faint yellow light from the east gets brighter as you walk further down this hall. To the south is a closed door, where the yellow light filters in through the bottom, and further east is a dead end."
+hallEast = Scene "The faint yellow light from the east gets brighter as you walk further down this hall. To the south is a closed door, where the yellow light filters in through the bottom, and further east is a dead end."
     [(Action [(buildSentenceWrapper ["look"])] 
             (InspectedScene "The faint yellow light from the east gets brighter as you walk further down this hall. To the south is a closed door, where the yellow light filters in through the bottom, and further east is a dead end." hallEast)),
         (Action [(buildSentenceWrapper ["inspect","wall"])] 
@@ -247,8 +245,8 @@ hallEast = Scene 10 "The faint yellow light from the east gets brighter as you w
             (InspectedScene "You open the door." roomEast)),
         (Action [(buildSentenceWrapper ["kick","door"])] 
             (InspectedScene "The door is very heavy, you feel a sharp pain on your foot, but can still move. What was the point of that?" hallEast))]
-    (EmptyScene hallEast) (EmptyScene hallEast) (SceneError "You can't walk through a closed door." hallEast) hallSouth 
-roomEast = Scene 11 "This room has the same yellow light that was spreading into the hall. You see a table in the center of the room, and a staircase going down to the west." -- ADD ITEMS HERE LATER
+    (SceneError "There is no path this way." hallEast) (SceneError "There is no path this way." hallEast) (SceneError "You can't walk through a closed door." hallEast) hallSouth 
+roomEast = Scene "This room has the same yellow light that was spreading into the hall. You see a table in the center of the room, and a staircase going down to the west." -- ADD ITEMS HERE LATER
     [(Action [(buildSentenceWrapper ["look"])] 
             (InspectedScene "This room has the same yellow light that was spreading into the hall. You see a table in the center of the room, and a staircase going down to the west." roomEast)),
         (Action [(buildSentenceWrapper ["inspect","wall"])]
@@ -274,8 +272,8 @@ roomEast = Scene 11 "This room has the same yellow light that was spreading into
             (InspectedScene "The door is very heavy, you feel a sharp pain on your foot, but can still move. What was the point of that?" roomEast)),
         (Action [(buildSentenceWrapper ["turn","doorknob"])]
             (InspectedScene "The doorknob turns freely." roomEast))]
-    hallEast (EmptyScene roomEast) centerRoomEast stairsSouth
-centerRoomEast = Scene 12 "At the center of this room, you see a table. A path back to the hall opens up to the north, and there is a staircase going down to the west."
+    hallEast (SceneError "There is no path this way." roomEast) centerRoomEast stairsSouth
+centerRoomEast = Scene "At the center of this room, you see a table. A path back to the hall opens up to the north, and there is a staircase going down to the west."
     [(Action [(buildSentenceWrapper ["look"])] 
             (InspectedScene "At the center of this room, you see a table. A path back to the hall opens up to the north, and there is a staircase going down to the west." centerRoomEast)),
         (Action [(buildSentenceWrapper ["inspect","wall"])]
@@ -300,11 +298,11 @@ centerRoomEast = Scene 12 "At the center of this room, you see a table. A path b
             (InspectedScene "The door is very heavy, you feel a sharp pain on your foot, but can still move. What was the point of that?" centerRoomEast)),
         (Action [(buildSentenceWrapper ["turn","doorknob"])]
             (InspectedScene "The doorknob turns freely." centerRoomEast))]
-    hallEast (EmptyScene centerRoomEast) (EmptyScene centerRoomEast) stairsSouth
+    hallEast (SceneError "There is no path this way." centerRoomEast) (SceneError "There is no path this way." centerRoomEast) stairsSouth
 roomEastDeath = InspectedScene "All too quickly, you feel an icy cold sensation rising from your feet up to your throat as you see dark tentacles materializing from the shadows, shooting up the hallway and enveloping you. You barely have a second to think before you feel an undeniable madness stirring in your mind as the tentacles shoot into your mouth, and then there is just all-possessing cold and darkness." DeathScene
 
 -- AREA 4
-boulderHall = Scene 13 "The bottom of the staircase flattens out, and you appear to have hit a dead end. There is a pile of boulders blocking the way forward, and the faintest light makes it through the cracks between the large rocks, providing enough light to see the formation, and the fact that this staircase is all made of stone, like a cavern."
+boulderHall = Scene "The bottom of the staircase flattens out, and you appear to have hit a dead end. There is a pile of boulders blocking the way forward, and the faintest light makes it through the cracks between the large rocks, providing enough light to see the formation, and the fact that this staircase is all made of stone, like a cavern."
     [(Action [(buildSentenceWrapper ["look"])] 
             (InspectedScene "The bottom of the staircase flattens out, and you appear to have hit a dead end. There is a pile of boulders blocking the way forward, and the faintest light makes it through the cracks between the large rocks, providing enough light to see the formation, and the fact that this staircase is all made of stone, like a cavern." boulderHall)),
         (Action [(buildSentenceWrapper ["inspect","wall"])]
@@ -321,8 +319,8 @@ boulderHall = Scene 13 "The bottom of the staircase flattens out, and you appear
             (InspectedScene "The boulders feel heavy and solid, and you feel your hand tingling as you touch them." boulderHall)),
         (Action [(buildSentenceWrapper ["move","boulder"])]
             (InspectedScene "Despite how sturdy they look and feel, when you try moving the boulders, you do so effortlessly. They disintegrate at your touch, revealing a well-let passage leading into a room to the south." boulderLessHall))]
-    stairsSouth (EmptyScene boulderHall) (EmptyScene boulderHall) (EmptyScene boulderHall)
-boulderLessHall = Scene 14 "The hall stretches further south, where a warm yellow light filters in from a room."
+    stairsSouth (SceneError "There is no path this way." boulderHall) (SceneError "There is no path this way." boulderHall) (SceneError "There is no path this way." boulderHall)
+boulderLessHall = Scene "The hall stretches further south, where a warm yellow light filters in from a room."
     [(Action [(buildSentenceWrapper ["look"])]
             (InspectedScene "The hall stretches further south, where a warm yellow light filters in from a room." boulderLessHall)),
         (Action [(buildSentenceWrapper ["inspect","wall"])]
@@ -335,8 +333,8 @@ boulderLessHall = Scene 14 "The hall stretches further south, where a warm yello
             (InspectedScene "The wall is cool and dry, but the greenish being that runs through it is wet and slimy." boulderLessHall)),
         (Action [(buildSentenceWrapper ["touch","floor"])]
             (InspectedScene "The stone of the floor is dry, but the greenish vein that runs through it is wet and feels slimy." boulderLessHall))]
-    stairsSouth (EmptyScene boulderHall) roomSouth (EmptyScene boulderHall)
-roomSouth = Scene 15 "This small room is lit by the glowing ceiling, which pulsates with a warm yellow light. To the east is a window, while to the west a painting hangs on the wall. The south wall is barren."
+    stairsSouth (SceneError "There is no path this way." boulderHall) roomSouth (SceneError "There is no path this way." boulderHall)
+roomSouth = Scene "This small room is lit by the glowing ceiling, which pulsates with a warm yellow light. To the east is a window, while to the west a painting hangs on the wall. The south wall is barren."
     [(Action [(buildSentenceWrapper ["look"])]
             (InspectedScene "This small room is lit by the glowing ceiling, which pulsates with a warm yellow light. To the east is a boarded up window, while to the west a painting hangs on the wall. The south wall is barren." roomSouth)),
         (Action [(buildSentenceWrapper ["inspect","wall"])]
@@ -359,8 +357,8 @@ roomSouth = Scene 15 "This small room is lit by the glowing ceiling, which pulsa
             (InspectedScene "You walk to the east and touch the boards on the window. They feel neatly but loosely nailed together." windowScene)),
         (Action [(buildSentenceWrapper ["move","painting"])]
             (InspectedScene "You easily move the painting, revealing a hole in the wall where two glowing blue eyes stare at you." wallSceneDeath))]
-    boulderLessHall windowScene (EmptyScene roomSouth) (EmptyScene roomSouth)
-windowScene = Scene 16 "As you approach the window, you hear rustling on the other side. The window is boarded up, and you can't see what's on the other side." -- WILL ADD ACTIONS WITH ITEMS ONCE THOSE ARE SET UP --> POSSIBILITY OF TAKING OUT THE BOARDS TO REACH THE WINDOW WITH TOOLS, THEN BREAKING THE WINDOW TO ESCAPE
+    boulderLessHall windowScene (SceneError "There is no path this way." roomSouth) (SceneError "There is no path this way." roomSouth)
+windowScene = Scene "As you approach the window, you hear rustling on the other side. The window is boarded up, and you can't see what's on the other side." -- WILL ADD ACTIONS WITH ITEMS ONCE THOSE ARE SET UP --> POSSIBILITY OF TAKING OUT THE BOARDS TO REACH THE WINDOW WITH TOOLS, THEN BREAKING THE WINDOW TO ESCAPE
     [(Action [(buildSentenceWrapper ["look"])]
             (InspectedScene "As you approach the window, you hear rustling on the other side. The window is boarded up, and you can't see what's on the other side." windowScene)),
         (Action [(buildSentenceWrapper ["inspect","wall"])]
@@ -377,8 +375,8 @@ windowScene = Scene 16 "As you approach the window, you hear rustling on the oth
             (InspectedScene "The boards on the window feel loosely nailed together." windowScene)),
         (Action [(buildSentenceWrapper ["pull","board"])]
             (InspectedScene "You pull the boards out." openWindowScene))]
-    boulderLessHall (SceneError "You can't go through the boarded up window." windowScene) (EmptyScene windowScene) roomSouth
-openWindowScene = Scene 17 "With the boards gone, you see an open window that leads into a small path through some woods. You see a couple squirrels rustling around, rushing down the path."
+    boulderLessHall (SceneError "You can't go through the boarded up window." windowScene) (SceneError "There is no path this way." windowScene) roomSouth
+openWindowScene = Scene "With the boards gone, you see an open window that leads into a small path through some woods. You see a couple squirrels rustling around, rushing down the path."
     [(Action [(buildSentenceWrapper ["look"])]
             (InspectedScene "With the boards gone, you see an open window that leads into a small path through some woods. You see a couple squirrels rustling around, rushing down the path." openWindowScene)),
         (Action [(buildSentenceWrapper ["inspect","wall"])]
@@ -389,7 +387,7 @@ openWindowScene = Scene 17 "With the boards gone, you see an open window that le
             (InspectedScene "The boards are gone, and the window is open." openWindowScene)),
         (Action [(buildSentenceWrapper ["climb","window"])]
             (InspectedScene "You climb out the window and feel the cool air of the outdoors." exitScene))]
-    boulderLessHall exitScene (EmptyScene windowScene) roomSouth
+    boulderLessHall exitScene (SceneError "There is no path this way." windowScene) roomSouth
 wallSceneDeath = InspectedScene "The blue eyes' gaze burns into the back of your skull, and you don't remember who you are anymore. You willingly step into the hole in the wall, feeling the icy cold sensation that was running up your arm now consume your entire body, and you embrace it. The eyes glint for a moment, and you hear distant screaming, then you are enveloped in darkness." DeathScene
 exitScene = ExitScene "Once outside, you turn and see that the window you just exited through slams shut. The structure you have just left seems to be an amalgamation of an old Victorian house and a cave, melded into each other, and the structure starts pulsating as the window closes. With you gone, the nightmarish structure recedes into the ground, leaving you standing in the middle of an empty clearing. You follow the path through the woods to safety, and the further you get from the clearing, the less you remember about what you've just experienced."
 
