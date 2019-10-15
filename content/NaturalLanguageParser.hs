@@ -24,15 +24,13 @@ parseSentence [(TokenMatch _ matches)]
 parseSentence [(TokenMatch _ matches1), (TokenMatch _ matches2)]
     = generateSentences [(verbsInTokenList matches1),
                          (nounsInTokenList matches2)]
-parseSentence _ = [] --TODO: Invalid sentence?
-
+parseSentence _ = []
 
 generateSentences :: [[Token]] -> [Sentence]
 generateSentences [tokenVerbs]      = map (\verb -> Word verb) tokenVerbs
 generateSentences [verbs, nouns]    = [(SimpleSentence verb noun) | verb <- verbs, noun <- nouns]
 generateSentences _                 = []
 
--- TODO: write a general function to cover both of these cases.
 verbsInTokenList :: [Token] -> [Token]
 verbsInTokenList []                                   = []
 verbsInTokenList ((TokenVerb word synonyms) : rest)   = (TokenVerb word synonyms) : verbsInTokenList rest
