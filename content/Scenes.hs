@@ -99,7 +99,7 @@ sceneEast = Scene "The East wall of the room has scratches on it, chipping away 
               (InspectedScene "The carpet is rough and wet in some places, but seems firmly secured to the ground." sceneEast))]
     sceneNorth (SceneError "There is no path this way." sceneEast) sceneSouth zorkMapStart
 
-sceneSouth = Scene "s door in front of you. It looks heavy and old."
+sceneSouth = Scene "There is a wooden door in front of you. It looks heavy and old."
     [(Action [(buildSentenceWrapper ["look"])]
               (InspectedScene "There is a wooden door in front of you. It looks heavy and old." sceneSouth)),
      (Action [(buildSentenceWrapper ["inspect", "door"])]
@@ -434,6 +434,7 @@ allVerbTokens = [(TokenVerb "look" ["look"]),
                  (TokenVerb "pull" ["pull"]),
                  (TokenVerb "push" ["push"]),
                  (TokenVerb "move" ["move", "slide"]),
+                 (TokenVerb "go" ["go", "walk", "move", "run", "skip", "slide", "moonwalk", "hop", "crabwalk"]),
                  (TokenVerb "climb" ["climb","exit","leave"])]
 
 allNounTokens :: [Token]
@@ -457,6 +458,10 @@ allNounTokens = [(TokenNoun "floor" ["floor", "ground"]),
                  (TokenNoun "knife" ["knife"]),
                  (TokenNoun "staircase" ["staircase", "stairs"]),
                  (TokenNoun "painting" ["painting", "artwork", "artpiece"]),
+                 (TokenNoun "north" ["north", "North", "n", "N"]),
+                 (TokenNoun "west" ["west", "West", "w", "W"]),
+                 (TokenNoun "south" ["south", "South", "s", "S"]),
+                 (TokenNoun "east" ["east", "East", "e", "E"]),
                  (TokenNoun "scratches" ["scratches", "scratchings"])]
 
 -- Adapted from Laurence Emms "What The Functional" Website on Haskell programming.
