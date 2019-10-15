@@ -40,52 +40,9 @@ play map =
 
 -- Takes given SceneMap, prints description and advances user through the map. Adapted from askabout function by David Poole (2019) given in Assignment 3.
 readScene :: SceneMap -> String -> IO SceneMap
-readScene (Scene i description actions n e s w conditionals) flag =
+readScene (Scene i description actions n e s w) flag =
     do
-        if (flag == "not read")
-            then do 
-                putStrLn(description ++ " What do you do?")
-            else putStrLn("What do you do?")
-        line <- getLine
-        let sentences = parseLine line
-        print sentences
-        if (fixdel(line) `elem` ["N","n","north","North"])
-            then do
-                newScene <- readScene n "not read"
-                return newScene
-            else if (fixdel(line) `elem` ["E","e","east","East"])
-                then do
-                    newScene <- readScene e "not read"
-                    return newScene
-                else if (fixdel(line) `elem` ["S","s","south","South"])
-                    then do
-                        newScene <- readScene s "not read"
-                        return newScene
-                    else if (fixdel(line) `elem` ["W","w","west","West"])
-                        then do
-                            newScene <- readScene w "not read"
-                            return newScene
-                        else if (fixdel(line) `elem` actions) -- THIS WILL BE CHANGED TO SOMETHING WITH THE PARSER, SO THAT I CAN GRAB THE INDEX OF THE CONDITIONAL SCENE BASED ON THE INPUT AND AVAILABLE ACTIONS
-                            then do
-                                let index = getListIndex line actions
-                                conditionalScene <- readScene (conditionals!!index) "not read"
-                                return conditionalScene
-                            -- else if (fixdel(line) `elem` masterVerbs) 
-                            --     then do
-                            --     putStrLn ("You can't do that here.")
-                            --     currentScene <- readScene (Scene i description actions n e s w conditionals) "read"
-                            --     return currentScene 
-                                else if (fixdel(line) == "quit" || (fixdel(line) == "exit"))
-                                    then do
-                                        putStrLn("You have quit the game. Goodbye!")
-                                        exitSuccess
-                                    else do
-                                        putStrLn ("COMMAND NOT RECOGNIZED.")
-                                        currentScene <- readScene (Scene i description actions n e s w conditionals) "read"
-                                        return currentScene          
-                                        
-readScene (Scene1 i description actions n e s w) flag =
-    do
+
         if (flag == "not read")
             then do 
                 putStrLn(description ++ " What do you do?")
@@ -123,7 +80,7 @@ readScene (Scene1 i description actions n e s w) flag =
                                         exitSuccess
                                     else do
                                         putStrLn ("COMMAND NOT RECOGNIZED.")
-                                        currentScene <- readScene (Scene1 i description actions n e s w) "read"
+                                        currentScene <- readScene (Scene i description actions n e s w) "read"
                                         return currentScene          
 
 readScene (SceneError errormsg parent) _ =
