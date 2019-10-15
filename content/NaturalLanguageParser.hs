@@ -6,7 +6,8 @@ module NaturalLanguageParser (Sentence(..),
                               parseSentence,
                               generateSentences,
                               nounsInTokenList,
-                              verbsInTokenList) where
+                              verbsInTokenList,
+                              buildSentence) where
 
 import NaturalLanguageLexer
 

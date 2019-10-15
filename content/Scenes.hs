@@ -36,15 +36,15 @@ testAction = Action [(SimpleSentence (TokenVerb "look" ["look", "inspect", "see"
 
 -- AREA 1 SCENES
 zorkMapStart = Scene1 0 "You are in a dusty, dimly lit room. The paint on the wall is chipping away, and a dirty carpet covers the ground. To the South of the room, you see a worn wooden door. To the West, there is a boarded-up window." 
-    [testAction]
-    sceneNorth sceneEast sceneSouth sceneWest 
--- zorkMapStart = Scene 0 "You are in a dusty, dimly lit room. The paint on the wall is chipping away, and a dirty carpet covers the ground. To the South of the room, you see a worn wooden door. To the West, there is a boarded-up window." 
---     ["look", "inspect floor", "inspect carpet", "inspect wall"]
---     sceneNorth sceneEast sceneSouth sceneWest 
---     [zorkMapStart,
---         (InspectedScene "The carpet is stained brown and red, but seems firmly secured to the ground." zorkMapStart),
---         (InspectedScene "The floor is covered in a carpet with brown and reddish stains." zorkMapStart),
---         (InspectedScene "From here, you see nothing but dirt on the walls." zorkMapStart)]
+    [(Action [(buildSentenceWrapper ["look"])]
+              (InspectedScene "You are in a dusty, dimly lit room. The paint on the wall is chipping away, and a dirty carpet covers the ground. To the South of the room, you see a worn wooden door. To the West, there is a boarded-up window."  zorkMapStart)),
+     (Action [(buildSentenceWrapper ["inspect", "floor"])]
+              (InspectedScene "The floor is covered in a carpet with brown and reddish stains." zorkMapStart)),
+     (Action [(buildSentenceWrapper ["inspect", "carpet"])]
+              (InspectedScene "The carpet is stained brown and red, but seems firmly secured to the ground." zorkMapStart)),
+     (Action [(buildSentenceWrapper ["inspect", "wall"])]
+              (InspectedScene "From here, you see nothing but dirt on the walls." zorkMapStart))]
+    sceneNorth sceneEast sceneSouth sceneWest
 sceneNorth = Scene 1 "The North wall of the room is barren, and the paint looks old." 
     ["look", "inspect wall", "inspect paint", "inpect floor", "inspect carpet", "touch wall", "touch paint", "touch floor", "peel paint"]
     (EmptyScene sceneNorth) sceneEast zorkMapStart sceneWest 
@@ -283,7 +283,8 @@ allTokens :: [Token]
 allTokens = allVerbTokens ++ allNounTokens
 
 allVerbTokens :: [Token]
-allVerbTokens = [(TokenVerb "look" ["look", "inspect", "see", "view", "observe", "search", "examine"]),
+allVerbTokens = [(TokenVerb "look" ["look"]),
+                 (TokenVerb "inspect" ["inspect", "see", "view", "observe", "search", "examine"]),
                  (TokenVerb "touch" ["touch", "feel", "rub"]),
                  (TokenVerb "peel" ["peel", "scratch", "rip"]),
                  (TokenVerb "open" ["open"]),
@@ -312,3 +313,9 @@ allNounTokens = [(TokenNoun "floor" ["floor", "ground", "carpet"]),
                (TokenNoun "vein" ["vein", "veins", "slime"]),
                (TokenNoun "words" ["words", "word", "writing", "writings", "script", "scripts", "handwriting"]),
                (TokenNoun "scratches" ["scratches", "scratchings"])]
+
+-- Adapted from Laurence Emms "What The Functional" Website on Haskell programming.
+-- See https://whatthefunctional.wordpress.com/2018/03/10/making-a-text-adventure-in-haskell-part-2/
+-- and https://github.com/WhatTheFunctional/HaskellAdventure/blob/master/NaturalLanguageParser.hs
+buildSentenceWrapper :: [String] -> Sentence
+buildSentenceWrapper strings = buildSentence allVerbTokens allNounTokens strings
