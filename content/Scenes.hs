@@ -280,7 +280,8 @@ allTokens :: [Token]
 allTokens = allVerbTokens ++ allNounTokens
 
 allVerbTokens :: [Token]
-allVerbTokens = [(TokenVerb "look" ["look", "inspect", "see", "view", "observe", "search", "examine"]),
+allVerbTokens = [(TokenVerb "look" ["look"]),
+                 (TokenVerb "inspect" ["inspect", "see", "view", "observe", "search", "examine"]),
                  (TokenVerb "touch" ["touch", "feel", "rub"]),
                  (TokenVerb "peel" ["peel", "scratch", "rip"]),
                  (TokenVerb "open" ["open"]),
