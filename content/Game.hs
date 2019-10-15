@@ -90,7 +90,6 @@ readScene (Scene1 i description actions n e s w) flag =
             else putStrLn("What do you do?")
         line <- getLine
         let sentences = parseLine line
-        print sentences
         if (fixdel(line) `elem` ["N","n","north","North"])
             then do
                 newScene <- readScene n "not read"

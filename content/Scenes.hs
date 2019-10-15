@@ -27,8 +27,7 @@ instance Show SceneMap where
 
 data Action = Action [Sentence] SceneMap
             |EmptyAction
-            -- deriving (Eq)
-            deriving (Eq, Show)
+        deriving (Eq, Show)
 testAction = Action [(SimpleSentence (TokenVerb "look" ["look", "inspect", "see", "view", "observe", "search", "examine"]) (TokenNoun "floor" ["floor", "ground", "carpet"]))] (InspectedScene "The floor is covered in a carpet with brown and reddish stains." zorkMapStart)
 
 -- -- SceneComponents allow players to interact with scene; Integer is conditionalIndex Strings are objects present in the scene, while Strings are the verbs used to interact with Strings
