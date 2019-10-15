@@ -47,7 +47,7 @@ zorkMapStart = Scene "You are in a dusty, dimly lit room. The paint on the wall 
               (InspectedScene "The statue is of a odd figure that appears to be eating human beings. Is the figure an octopus? Maybe a reptile? A human being? All three?" zorkMapStart)),
      (InventoryChange [(buildSentenceWrapper ["take", "statue"])]
               (Treasure "Statue" 1000 "A statue of some octopus, reptile, and human hybrid.")
-              (InspectedScene "You pick up the statue and put it in your bag."  sceneNorth)),
+              (InspectedScene "You pick up the statue and put it in your bag."  zorkMapStart)),
      (Action [(buildSentenceWrapper ["inspect", "wall"])]
               (InspectedScene "From here, you see nothing but dirt on the walls." zorkMapStart))]
     sceneNorth sceneEast sceneSouth sceneWest
@@ -99,7 +99,7 @@ sceneEast = Scene "The East wall of the room has scratches on it, chipping away 
               (InspectedScene "The carpet is rough and wet in some places, but seems firmly secured to the ground." sceneEast))]
     sceneNorth (SceneError "There is no path this way." sceneEast) sceneSouth zorkMapStart
 
-sceneSouth = Scene "There is a wooden door in front of you. It looks heavy and old."
+sceneSouth = Scene "s door in front of you. It looks heavy and old."
     [(Action [(buildSentenceWrapper ["look"])]
               (InspectedScene "There is a wooden door in front of you. It looks heavy and old." sceneSouth)),
      (Action [(buildSentenceWrapper ["inspect", "door"])]
@@ -221,20 +221,20 @@ centerRoomWest = Scene "The icy sensation from the tentacles eases up as you ste
     (SceneError "There is no path this way." roomWest) roomWest stairsSouth (SceneError "There is no path this way." roomWest)
 
 
-stairsSouth = Scene "This staircase descends into darkness, where you hear faint rustling. To the east, you see an opening with a faint light, but further south the light doesn't reach, and you can't see what's ahead."
+stairsSouth = Scene "This staircase descends into darkness, where you hear faint rustling. To the east, you see an opening with a faint light, but further south the light doesn't reach, and you can't see what's ahead. A rope descends from the ceiling."
     [(Action [(buildSentenceWrapper ["look"])]
-              (InspectedScene "This staircase descends into darkness, where you hear faint rustling. To the east, you see an opening with a faint light, but further south the light doesn't reach, and you can't see what's ahead." stairsSouth)),
+              (InspectedScene "This staircase descends into darkness, where you hear faint rustling. To the east, you see an opening with a faint light, but further south the light doesn't reach, and you can't see what's ahead. A rope descends from the ceiling." stairsSouth)),
      (Action [(buildSentenceWrapper ["inspect"]),
               (buildSentenceWrapper ["inspect", "darkness"]),
               (buildSentenceWrapper ["inspect", "staircase"])]
-              (InspectedScene "There is a rope coming out of the darkness of the staircase." stairsSouth)),
+              (InspectedScene "There is a rope from the ceiling. The staircase seems safe to walk on, although you have no idea what is at the bottom." stairsSouth)),
      (Action [(buildSentenceWrapper ["touch", "wall"])]
               (InspectedScene "The wall is cool, and feels like stone, a big change from the scratched up wooden walls from before." stairsSouth)),
      (Action [(buildSentenceWrapper ["inspect", "rope"])]
               (InspectedScene "It looks like a normal rope. Tugging on it reveals that there is something heavy on the other end. You cannot see what that thing is." stairsSouth)),
      (InventoryChange [(buildSentenceWrapper ["pull","rope"])]
             (Treasure "Metal Bell" 1000 "A head-sized metal bell that is attached to a rope. It has a odd sequence of engravings around its perimeter.")
-            (InspectedScene "You tentatively place your hands around the rope, giving it a quick tug. Feeling more assured, you begin to pull the rope towards yourself. You can tell that there is something hard and heavy at the end of the rope and it makes sharp noses as it hits each stair of the staircase." stairsSouth)),
+            (InspectedScene "You tentatively place your hands around the rope, giving it a quick tug. Feeling more assured, you begin to pull the rope towards yourself. You can tell that there is something hard and heavy at the end of the rope. Quickly, the rope becomes loose as the object falls. You quickly dash out of the way. You see that there is an engraved bell on the end. You put it in your bag." stairsSouth)),
      (Action [(buildSentenceWrapper ["touch", "floor"])]
               (InspectedScene "The floor of the staircase is wet, and moves further downwards." stairsSouth))]
     roomWest roomEast boulderHall (SceneError "There is no path this way." stairsSouth)
@@ -403,10 +403,10 @@ openWindowScene = Scene "With the boards gone, you see an open window that leads
         (Action [(buildSentenceWrapper ["inspect","wall"])]
             (InspectedScene "There is nothing special about the wall. There is a window on it." openWindowScene)),
         (Action [(buildSentenceWrapper ["inspect", "knife"])]
-              (InspectedScene "The knife is covered in fresh blood and, if your eyes don't deceive you, human flesh." zorkMapStart)),
+              (InspectedScene "The knife is covered in fresh blood and, if your eyes don't deceive you, human flesh." openWindowScene)),
         (InventoryChange [(buildSentenceWrapper ["take", "knife"])]
               (Treasure "Ritual Knife" 1000 "A knife that appears to be used in rituals. It is freshly used.")
-              (InspectedScene "You wipe the knife on the ground before putting it in your bag."  sceneNorth)),
+              (InspectedScene "You wipe the knife on the ground before putting it in your bag."  openWindowScene)),
         (Action [(buildSentenceWrapper ["inspect","floor"])]
             (InspectedScene "The floor is the same stone as in the staircase, with greenish veins running up north starting where the boulders were before they disappeared." openWindowScene)),
         (Action [(buildSentenceWrapper ["inspect","window"]),(buildSentenceWrapper ["inspect","board"])]
