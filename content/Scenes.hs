@@ -129,66 +129,99 @@ sceneWest = Scene1 4 "There is a boarded up window in front of you. There are sc
               (SceneError "The boards are firmly nailed to the window. You cannot pull them off with your bare hands." sceneWest))]
     sceneNorth zorkMapStart sceneSouth (EmptyScene sceneWest)
 
-firstDoorScene = Scene 5 "A long hallway stretches ahead of you, spreading out to the south. To the north is a door." 
-    ["look", "inspect door", "inspect doorknob", "inspect wall", "inspect floor", "inspect carpet", "peel carpet", "close door", "slam door", "force door", "turn doorknob", "kick door"] -- GONNA NEED TO ADD SOME KIND OF FLAG FOR WHETHER THE DOOR IS OPEN OR NOT
-    sceneSouth (EmptyScene firstDoorScene) hallSouth (EmptyScene firstDoorScene) 
-    [firstDoorScene,
-        (InspectedScene "The door looks the same from this side as it did on the other side. It is remarkably clean, despite its clear old age." firstDoorScene),
-        (InspectedScene "The doorknob is just as shiny on this side, still meticulously polished." firstDoorScene),
-        (InspectedScene "The walls here are bare and wooden, with no paint, but there are bloody scratches leading deeper into the hall." firstDoorScene),
-        (InspectedScene "The same carpet extends into the hallway in front of you. It is frayed and stained." firstDoorScene),
-        (InspectedScene "The carpet here is dirty and frayed." firstDoorScene),
-        (SceneError "The carpet here is slightly looser, but you still cannot peel it." firstDoorScene),
-        (InspectedScene "The door does not close when you use a regular amount of strength" firstDoorScene),
-        (InspectedScene "You slam the door shut. The sound of it reverberates down the hallway." firstDoorSceneDeath),
-        (InspectedScene "You slam the door shut. The sound of it reverberates down the hallway." firstDoorSceneDeath),
-        (InspectedScene "The doorknob turns easily, but the door is still open." firstDoorScene),
-        (InspectedScene "The door is very heavy, you feel a sharp pain on your foot, but can still move. What was the point of that?" firstDoorScene)]
+firstDoorScene = Scene1 5 "A long hallway stretches ahead of you, spreading out to the south. To the north is a door."
+    [(Action [(buildSentenceWrapper ["look"])]
+              (InspectedScene "A long hallway stretches ahead of you, spreading out to the south. To the north is a door." firstDoorScene)),
+     (Action [(buildSentenceWrapper ["inspect", "door"])]
+              (InspectedScene "The door looks the same from this side as it did on the other side. It is remarkably clean, despite its clear old age." firstDoorScene)),
+     (Action [(buildSentenceWrapper ["inspect", "doorknob"])]
+              (InspectedScene "The doorknob is just as shiny on this side, still meticulously polished." firstDoorScene)),
+     (Action [(buildSentenceWrapper ["inspect", "wall"])]
+              (InspectedScene "The walls here are bare and wooden, with no paint, but there are bloody scratches leading deeper into the hall." firstDoorScene)),
+     (Action [(buildSentenceWrapper ["inspect", "floor"])]
+             (InspectedScene "The same carpet extends into the hallway in front of you. It is frayed and stained." firstDoorScene)),
+     (Action [(buildSentenceWrapper ["inspect", "carpet"])]
+              (InspectedScene "The carpet here is dirty and frayed." firstDoorScene)),
+     (Action [(buildSentenceWrapper ["peel", "carpet"])]
+              (SceneError "The carpet here is slightly looser, but you still cannot peel it." firstDoorScene)),
+     (Action [(buildSentenceWrapper ["close", "door"])]
+              (InspectedScene "The door does not close when you use a regular amount of strength" firstDoorScene)),
+     (Action [(buildSentenceWrapper ["slam", "door"]),
+              (buildSentenceWrapper ["force", "door"])]
+              (InspectedScene "You slam the door shut. The sound of it reverberates down the hallway." firstDoorSceneDeath)),
+     (Action [(buildSentenceWrapper ["turn", "doorknob"])]
+              (InspectedScene "The doorknob turns easily, but the door is still open." firstDoorScene)),
+     (Action [(buildSentenceWrapper ["kick", "door"])]
+              (InspectedScene "The door is very heavy, you feel a sharp pain on your foot, but can still move. What was the point of that?" firstDoorScene))]
+     sceneSouth (EmptyScene firstDoorScene) hallSouth (EmptyScene firstDoorScene)
 firstDoorSceneDeath = InspectedScene "All too quickly, you feel an icy cold sensation rising from your feet up to your throat as you see dark tentacles materializing from the shadows, shooting up the hallway and enveloping you. You barely have a second to think before you feel an undeniable madness stirring in your mind as the tentacles shoot into your mouth, and then there is just all-possessing cold and darkness." DeathScene
 
 -- AREA 2 SCENES
-hallSouth = Scene 6 "As you walk down the hall, you see an ominous blue light coming in from the west where a room opens up, and a dimmer, yellow light from the east, where a hall stretches onward."
-    ["look", "inspect wall", "inspect floor", "inspect carpet", "peel carpet"]
+hallSouth = Scene1 6 "As you walk down the hall, you see an ominous blue light coming in from the west where a room opens up, and a dimmer, yellow light from the east, where a hall stretches onward."
+    [(Action [(buildSentenceWrapper ["look"])]
+              (InspectedScene "As you walk down the hall, you see an ominous blue light coming in from the west where a room opens up, and a dimmer, yellow light from the east, where a hall stretches onward." hallSouth)),
+     (Action [(buildSentenceWrapper ["inspect", "wall"])]
+              (InspectedScene "There is nothing special about this wall." hallSouth)),
+     (Action [(buildSentenceWrapper ["inspect", "floor"])]
+              (InspectedScene "There is nothing special about the floor here." hallSouth)),
+     (Action [(buildSentenceWrapper ["inspect", "carpet"])]
+              (InspectedScene "There is nothing special about the carpet." hallSouth)),
+     (Action [(buildSentenceWrapper ["peel", "carpet"])]
+              (InspectedScene "You can't peel the carpet here." hallSouth))]
     firstDoorScene hallEast (EmptyScene hallSouth) roomWest
-    [hallSouth,
-        (InspectedScene "There is nothing special about this wall." hallSouth),
-        (InspectedScene "There is nothing special about the floor here." hallSouth),
-        (InspectedScene "There is nothing special about the carpet." hallSouth),
-        (InspectedScene "You can't peel the carpet here." hallSouth)]
-roomWest = Scene 7 "You walk into the blue-lit room, and you hear a squelching sound behind you as a wall of writhing tentacles blocks your way back. You feel a horrible icy sensation coming from the tentacles, and you hear the gurgling of an incomprehensible, guttural language coming from them. You feel your mind might give into the foreign whispers if you get too close." 
-    ["look", "inspect wall", "inspect words", "inspect floor", "inspect carpet", "inspect tentacles", "touch tentacles", "touch wall", "touch floor", "touch carpet", "peel carpet"]
+
+roomWest = Scene1 7 "You walk into the blue-lit room, and you hear a squelching sound behind you as a wall of writhing tentacles blocks your way back. You feel a horrible icy sensation coming from the tentacles, and you hear the gurgling of an incomprehensible, guttural language coming from them. You feel your mind might give into the foreign whispers if you get too close."
+    [(Action [(buildSentenceWrapper ["look"])]
+              (InspectedScene "You walk into the blue-lit room, and you hear a squelching sound behind you as a wall of writhing tentacles blocks your way back. You feel a horrible icy sensation coming from the tentacles, and you hear the gurgling of an incomprehensible, guttural language coming from them. You feel your mind might give into the foreign whispers if you get too close." roomWest)),
+     (Action [(buildSentenceWrapper ["inspect", "wall"]),
+              (buildSentenceWrapper ["inspect", "words"])]
+              (InspectedScene "The scratches on the wall are mostly unintelligible, but you make out a few disparate words: 'MADNESS', 'COLD', 'GET OUT', 'WHY'." roomWestDeath)),
+     (Action [(buildSentenceWrapper ["inspect", "carpet"]),
+              (buildSentenceWrapper ["inspect", "floor"])]
+              (InspectedScene "The floor is still covered with carpet, which is particularly damp here." roomWest)),
+     (Action [(buildSentenceWrapper ["inspect", "tentacles"]),
+              (buildSentenceWrapper ["touch", "tentacles"])]
+              roomWestDeath),
+     (Action [(buildSentenceWrapper ["touch", "wall"])]
+              (InspectedScene "The wall is rough with scratches. They are mostly unintelligible, but you make out a few disparate words: 'MADNESS', 'COLD', 'GET OUT', 'WHY'." roomWestDeath)),
+     (Action [(buildSentenceWrapper ["touch", "floor"]),
+              (buildSentenceWrapper ["touch", "carpet"])]
+              (InspectedScene "You feel the damp carpet, it seems much looser than in the previous rooms you've seen." roomWest)),
+     (Action [(buildSentenceWrapper ["peel", "carpet"])]
+              (InspectedScene "You peel away the carpet, revealing a block of text in a language you don't understand. Still, you can't seem to look away, and the words start shifting as you feel a pressure building in your head. The words shift into a shape: an arrow pointing south, into a staircase you now see." roomWest))]
     (EmptyScene roomWest) roomWestDeath stairsSouth centerRoomWest
-    [roomWest,
-        (InspectedScene "The scratches on the wall are mostly unintelligible, but you make out a few disparate words: 'MADNESS', 'COLD', 'GET OUT', 'WHY'." roomWestDeath),
-        (InspectedScene "The scratches on the wall are mostly unintelligible, but you make out a few disparate words: 'MADNESS', 'COLD', 'GET OUT', 'WHY'." roomWestDeath),
-        (InspectedScene "The floor is still covered with carpet, which is particularly damp here." roomWest),
-        (InspectedScene "The carpet is very damp in this room, and you see it giving way in some places." roomWest),
-        roomWestDeath,
-        roomWestDeath,
-        (InspectedScene "The wall is rough with scratches. They are mostly unintelligible, but you make out a few disparate words: 'MADNESS', 'COLD', 'GET OUT', 'WHY'." roomWestDeath),
-        (InspectedScene "You feel the damp carpet, it seems much looser than in the previous rooms you've seen." roomWest),
-        (InspectedScene "You feel the damp carpet, it seems much looser than in the previous rooms you've seen." roomWest),
-        (InspectedScene "You peel away the carpet, revealing a block of text in a language you don't understand. Still, you can't seem to look away, and the words start shifting as you feel a pressure building in your head. The words shift into a shape: an arrow pointing south, into a staircase you now see." roomWest)]
 roomWestDeath = InspectedScene "The tentacles reach out and grab you before you can make another move, wrapping around your extremities and pulling you into the icy cold wall of movement. There are two eyes looking into yours, and you hear the strange gurgling language you heard coming from the tentacles before as your mind descends into madness. Then there is darkness." DeathScene
-centerRoomWest = Scene 8 "The icy sensation from the tentacles eases up as you step away from them, and you can calmly take in your surroundings now. To the south, a stairway goes down into the darkness. The carpet is frayed and stained, and the walls are covered in scratches; some look like words. Above you, a faint blue glow illuminates the room in a similar shade as the tentacles."
-    ["look", "inspect wall", "inspect words", "inspect floor", "inspect carpet", "inspect tentacles", "touch floor", "touch carpet", "peel carpet"]
-    (EmptyScene roomWest) roomWest stairsSouth (EmptyScene roomWest) 
-    [centerRoomWest,
-        (InspectedScene "The scratches on the wall are mostly unintelligible, but you make out a few disparate words: 'MADNESS', 'COLD', 'GET OUT', 'WHY'." centerRoomWest),
-        (InspectedScene "The scratches on the wall are mostly unintelligible, but you make out a few disparate words: 'MADNESS', 'COLD', 'GET OUT', 'WHY'." centerRoomWest),
-        (InspectedScene "The floor is still covered with carpet, which is particularly damp here." centerRoomWest),
-        (InspectedScene "The carpet is very damp in this room, and you see it giving way in some places." centerRoomWest),
-        (InspectedScene "From this distance, you can see the tentacles writhing a safe distance away, reaching forward but not far enough to touch you. The tentacles seem almost spectral from here, and there is something very unnerving about looking at them for too long." centerRoomWest),
-        (InspectedScene "You feel the damp carpet, it seems much looser than in the previous rooms you've seen." centerRoomWest),
-        (InspectedScene "You feel the damp carpet, it seems much looser than in the previous rooms you've seen." centerRoomWest),
-        (InspectedScene "You peel away the carpet, revealing a block of text in a language you don't understand. Still, you can't seem to look away, and the words start shifting as you feel a pressure building in your head. The words shift into a shape: an arrow pointing south, into a staircase you now see." centerRoomWest)]
-stairsSouth = Scene 9 "This staircase descends into darkness, where you hear faint rustling. To the east, you see an opening with a faint light, but further south the light doesn't reach, and you can't see what's ahead."
-    ["look", "inspect", "touch wall", "touch floor"]
+
+centerRoomWest = Scene1 8 "The icy sensation from the tentacles eases up as you step away from them, and you can calmly take in your surroundings now. To the south, a stairway goes down into the darkness. The carpet is frayed and stained, and the walls are covered in scratches; some look like words. Above you, a faint blue glow illuminates the room in a similar shade as the tentacles."
+    [(Action [(buildSentenceWrapper ["look"])]
+              (InspectedScene "The icy sensation from the tentacles eases up as you step away from them, and you can calmly take in your surroundings now. To the south, a stairway goes down into the darkness. The carpet is frayed and stained, and the walls are covered in scratches; some look like words. Above you, a faint blue glow illuminates the room in a similar shade as the tentacles." centerRoomWest)),
+     (Action [(buildSentenceWrapper ["inspect", "wall"]),
+              (buildSentenceWrapper ["inspect", "words"])]
+              (InspectedScene "The scratches on the wall are mostly unintelligible, but you make out a few disparate words: 'MADNESS', 'COLD', 'GET OUT', 'WHY'." roomWestDeath)),
+     (Action [(buildSentenceWrapper ["inspect", "carpet"]),
+              (buildSentenceWrapper ["inspect", "floor"])]
+              (InspectedScene "The floor is still covered with carpet, which is particularly damp here." roomWest)),
+     (Action [(buildSentenceWrapper ["inspect", "tentacles"])]
+              (InspectedScene "From this distance, you can see the tentacles writhing a safe distance away, reaching forward but not far enough to touch you. The tentacles seem almost spectral from here, and there is something very unnerving about looking at them for too long." centerRoomWest)),
+     (Action [(buildSentenceWrapper ["touch", "floor"]),
+              (buildSentenceWrapper ["touch", "carpet"])]
+              (InspectedScene "You feel the damp carpet, it seems much looser than in the previous rooms you've seen." roomWest)),
+     (Action [(buildSentenceWrapper ["peel", "carpet"])]
+              (InspectedScene "You peel away the carpet, revealing a block of text in a language you don't understand. Still, you can't seem to look away, and the words start shifting as you feel a pressure building in your head. The words shift into a shape: an arrow pointing south, into a staircase you now see." roomWest))]
+    (EmptyScene roomWest) roomWest stairsSouth (EmptyScene roomWest)
+
+stairsSouth = Scene1 9 "This staircase descends into darkness, where you hear faint rustling. To the east, you see an opening with a faint light, but further south the light doesn't reach, and you can't see what's ahead."
+    [(Action [(buildSentenceWrapper ["look"])]
+              (InspectedScene "This staircase descends into darkness, where you hear faint rustling. To the east, you see an opening with a faint light, but further south the light doesn't reach, and you can't see what's ahead." stairsSouth)),
+     (Action [(buildSentenceWrapper ["inspect"]),
+              (buildSentenceWrapper ["inspect", "darkness"]),
+              (buildSentenceWrapper ["inspect", "staircase"])]
+              (InspectedScene "It is too dark to see anything beyond the faint light to the east." stairsSouth)),
+     (Action [(buildSentenceWrapper ["touch", "wall"])]
+              (InspectedScene "The wall is cool, and feels like stone, a big change from the scratched up wooden walls from before." stairsSouth)),
+     (Action [(buildSentenceWrapper ["touch", "floor"])]
+              (InspectedScene "The floor of the staircase is wet, and moves further downwards." stairsSouth))]
     roomWest roomEast boulderHall (EmptyScene stairsSouth)
-    [stairsSouth,
-        (InspectedScene "It is too dark to see anything beyond the faint light to the east." stairsSouth),
-        (InspectedScene "The wall is cool, and feels like stone, a big change from the scratched up wooden walls from before." stairsSouth),
-        (InspectedScene "The floor of the staircase is wet, and moves further downwards." stairsSouth)]
 
 -- AREA 3 SCENES ** WILL ADD EXTRA ACTION OPTIONS TO AREA 5 ONCE WE GET ITEMS IN. 
 hallEast = Scene1 10 "The faint yellow light from the east gets brighter as you walk further down this hall. To the south is a closed door, where the yellow light filters in through the bottom, and further east is a dead end." 
@@ -348,21 +381,24 @@ allVerbTokens = [(TokenVerb "look" ["look"]),
                  (TokenVerb "move" ["move", "slide"])]
 
 allNounTokens :: [Token]
-allNounTokens = [(TokenNoun "floor" ["floor", "ground", "carpet", "carpeting"]),
-               (TokenNoun "wall" ["wall", "walls"]),
-               (TokenNoun "paint" ["paint"]),
-               (TokenNoun "door" ["door", "entrance"]),
-               (TokenNoun "window" ["window","glass"]),
-               (TokenNoun "board" ["board", "boards", "plank", "planks", "wood"]),
-               (TokenNoun "boulder" ["boulder", "boulders", "rock", "rocks", "stone", "stones"]),
-               (TokenNoun "painting" ["painting", "art", "frame"]),
-               (TokenNoun "table" ["table", "desk"]),
-               (TokenNoun "gem" ["gem", "jewel", "diamond","gemstone","crystal"]),
-               (TokenNoun "doorknob" ["doorknob", "knob", "handle"]),
-               (TokenNoun "tentacles" ["tentacles", "tentacle", "appendage"]),
-               (TokenNoun "vein" ["vein", "veins", "slime"]),
-               (TokenNoun "words" ["words", "word", "writing", "writings", "script", "scripts", "handwriting"]),
-               (TokenNoun "scratches" ["scratches", "scratchings"])]
+allNounTokens = [(TokenNoun "floor" ["floor", "ground"]),
+                 (TokenNoun "carpet" ["carpet", "carpeting"]),
+                 (TokenNoun "wall" ["wall", "walls"]),
+                 (TokenNoun "paint" ["paint"]),
+                 (TokenNoun "door" ["door", "entrance"]),
+                 (TokenNoun "window" ["window","glass"]),
+                 (TokenNoun "board" ["board", "boards", "plank", "planks", "wood"]),
+                 (TokenNoun "boulder" ["boulder", "boulders", "rock", "rocks", "stone", "stones"]),
+                 (TokenNoun "painting" ["painting", "art", "frame"]),
+                 (TokenNoun "table" ["table", "desk"]),
+                 (TokenNoun "gem" ["gem", "jewel", "diamond","gemstone","crystal"]),
+                 (TokenNoun "doorknob" ["doorknob", "knob", "handle"]),
+                 (TokenNoun "tentacles" ["tentacles", "tentacle", "appendage"]),
+                 (TokenNoun "vein" ["vein", "veins", "slime"]),
+                 (TokenNoun "words" ["words", "word", "writing", "writings", "script", "scripts", "handwriting"]),
+                 (TokenNoun "darkness" ["darkness"]),
+                 (TokenNoun "staircase" ["staircase", "stairs"]),
+                 (TokenNoun "scratches" ["scratches", "scratchings"])]
 
 -- Adapted from Laurence Emms "What The Functional" Website on Haskell programming.
 -- See https://whatthefunctional.wordpress.com/2018/03/10/making-a-text-adventure-in-haskell-part-2/
