@@ -115,12 +115,17 @@ sceneSouth = Scene "There is a wooden door in front of you. It looks heavy and o
               (InspectedScene "There is nothing special about the carpet here. It's just dirty." sceneSouth)),
      (Action [(buildSentenceWrapper ["open", "door"]),
               (buildSentenceWrapper ["turn", "doorknob"])]
-              (InspectedScene "You turn the doorknob, opening the door." firstDoorScene)),
+              (InspectedScene "You turn the doorknob, opening the door." goThroughDoorScene)),
      (Action [(buildSentenceWrapper ["kick", "door"])]
               (InspectedScene "You kick at the door to no avail. It's heavy and closed." sceneSouth)),
      (Action [(buildSentenceWrapper ["push", "door"])]
               (InspectedScene "The door does no budge under your weight." sceneSouth))]
      zorkMapStart sceneEast (SceneError "You can't walk through a closed door." sceneSouth) sceneWest
+
+goThroughDoorScene = Scene "You are in the open door."
+    [(Action [(buildSentenceWrapper ["look"])]
+             (InspectedScene "You are in the open door."  goThroughDoorScene))]
+    sceneSouth (SceneError "There is no path this way." goThroughDoorScene) firstDoorScene (SceneError "There is no path this way." goThroughDoorScene)
 
 sceneWest = Scene "There is a boarded up window in front of you. There are scratches on the boards, and the dim light in the room is filtering in from the cracks between the boards here."
     [(Action [(buildSentenceWrapper ["look"])]
@@ -164,7 +169,7 @@ firstDoorScene = Scene "A long hallway stretches ahead of you, spreading out to 
               (InspectedScene "The doorknob turns easily, but the door is still open." firstDoorScene)),
      (Action [(buildSentenceWrapper ["kick", "door"])]
               (InspectedScene "The door is very heavy, you feel a sharp pain on your foot, but can still move. What was the point of that?" firstDoorScene))]
-     sceneSouth (SceneError "There is no path this way." firstDoorScene) hallSouth (SceneError "There is no path this way." firstDoorScene)
+     goThroughDoorScene (SceneError "There is no path this way." firstDoorScene) hallSouth (SceneError "There is no path this way." firstDoorScene)
 
 firstDoorSceneDeath = InspectedScene "All too quickly, you feel an icy cold sensation rising from your feet up to your throat as you see dark tentacles materializing from the shadows, shooting up the hallway and enveloping you. You barely have a second to think before you feel an undeniable madness stirring in your mind as the tentacles shoot into your mouth, and then there is just all-possessing cold and darkness." DeathScene
 
