@@ -18,7 +18,6 @@ import Data.List.Split
 -- ALLTODOs for Game:
 -- TODO: Remove ^? characters that show up when entering delete. -- Dama
 -- TODO: "verb" commands that print list of available commands
--- EXTRA FOR FUN IMPROVEMENT THING: move NSEW movement into Actions
 
 
 lineDelimiters :: [Char]
