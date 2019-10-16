@@ -117,7 +117,7 @@ sceneSouth = Scene "There is a wooden door in front of you. It looks heavy and o
               (InspectedScene "You turn the doorknob, opening the door." firstDoorScene)),
      (Action [(buildSentenceWrapper ["kick", "door"])]
               (InspectedScene "You kick at the door to no avail. It's heavy and closed." sceneSouth)),
-     (Action [(buildSentenceWrapper ["puah", "door"])]
+     (Action [(buildSentenceWrapper ["push", "door"])]
               (InspectedScene "The door does no budge under your weight." sceneSouth))]
      zorkMapStart sceneEast (SceneError "You can't walk through a closed door." sceneSouth) sceneWest
 
