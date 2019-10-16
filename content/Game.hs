@@ -16,10 +16,7 @@ import TestUtils
 import Data.List.Split
 
 -- ALLTODOs for Game:
--- TODO: Remove ^? characters that show up when entering delete. -- Dama
 -- TODO: "verb" commands that print list of available commands
--- "SOMETHING EXTRA" TODO: Implement inventory with point values. These will be displayed at the end.
--- EXTRA FOR FUN IMPROVEMENT THING: move NSEW movement into Actions
 
 
 lineDelimiters :: [Char]
@@ -103,10 +100,10 @@ actOnInput line sentences (Scene description actions n e s w) action inventory
     | (fixdel(line) == "inventory")                                             = do
                                                                                     printInventory inventory
                                                                                     play (Scene description actions n e s w) "read" inventory
-    | sentencesMatch sentences [(buildSentenceWrapper ["go", "north"])]         = play n "not read" inventory
-    | sentencesMatch sentences [(buildSentenceWrapper ["go", "east"])]          = play e "not read" inventory
-    | sentencesMatch sentences [(buildSentenceWrapper ["go", "south"])]         = play s "not read" inventory
-    | sentencesMatch sentences [(buildSentenceWrapper ["go", "west"])]          = play w "not read" inventory
+    | sentencesMatch sentences [(buildSentenceWrapper ["go", "north"]),(buildSentenceWrapper ["north"])]         = play n "not read" inventory
+    | sentencesMatch sentences [(buildSentenceWrapper ["go", "east"]),(buildSentenceWrapper ["east"])]           = play e "not read" inventory
+    | sentencesMatch sentences [(buildSentenceWrapper ["go", "south"]),(buildSentenceWrapper ["south"])]         = play s "not read" inventory
+    | sentencesMatch sentences [(buildSentenceWrapper ["go", "west"]),(buildSentenceWrapper ["west"])]           = play w "not read" inventory
     | (action /= EmptyAction)                                                   = performAction action inventory
     | otherwise                                                                 = do
                                                                                     separatePrompts
@@ -184,7 +181,7 @@ printGameInformation :: IO()
 printGameInformation = do
                         putStrLn ""
                         putStrLn "***INFO***"
-                        putStrLn "Movement: Type 'look' to describe your surroundings. Type 'inventory' to check your current inventory. Type 'help' to repeat this message."
+                        putStrLn "Movement: Move around the scene by going 'north', 'south', 'east' or 'west'. Type 'look' to describe your surroundings. Type 'inventory' to check your current inventory. Type 'help' to repeat this message."
                         putStrLn ""
 
 printGameIntro :: IO()

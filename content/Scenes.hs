@@ -51,6 +51,7 @@ zorkMapStart = Scene "You are in a dusty, dimly lit room. The paint on the wall 
      (Action [(buildSentenceWrapper ["inspect", "wall"])]
               (InspectedScene "From here, you see nothing but dirt on the walls." zorkMapStart))]
     sceneNorth sceneEast sceneSouth sceneWest
+
 sceneNorth = Scene "The North wall of the room is barren, and the paint looks old. There is a old, worn painting on the wall."
     [(Action [(buildSentenceWrapper ["look"])]
               (InspectedScene "The North wall of the room is barren, and the paint looks old. There is an old, worn painting on the wall."  sceneNorth)),
@@ -164,6 +165,7 @@ firstDoorScene = Scene "A long hallway stretches ahead of you, spreading out to 
      (Action [(buildSentenceWrapper ["kick", "door"])]
               (InspectedScene "The door is very heavy, you feel a sharp pain on your foot, but can still move. What was the point of that?" firstDoorScene))]
      sceneSouth (SceneError "There is no path this way." firstDoorScene) hallSouth (SceneError "There is no path this way." firstDoorScene)
+
 firstDoorSceneDeath = InspectedScene "All too quickly, you feel an icy cold sensation rising from your feet up to your throat as you see dark tentacles materializing from the shadows, shooting up the hallway and enveloping you. You barely have a second to think before you feel an undeniable madness stirring in your mind as the tentacles shoot into your mouth, and then there is just all-possessing cold and darkness." DeathScene
 
 -- AREA 2 SCENES
@@ -200,6 +202,7 @@ roomWest = Scene "You walk into the blue-lit room, and you hear a squelching sou
      (Action [(buildSentenceWrapper ["peel", "carpet"])]
               (InspectedScene "You peel away the carpet, revealing a block of text in a language you don't understand. Still, you can't seem to look away, and the words start shifting as you feel a pressure building in your head. The words shift into a shape: an arrow pointing south, into a staircase you now see." roomWest))]
     (SceneError "There is no path this way." roomWest) roomWestDeath stairsSouth centerRoomWest
+
 roomWestDeath = InspectedScene "The tentacles reach out and grab you before you can make another move, wrapping around your extremities and pulling you into the icy cold wall of movement. There are two eyes looking into yours, and you hear the strange gurgling language you heard coming from the tentacles before as your mind descends into madness. Then there is darkness." DeathScene
 
 centerRoomWest = Scene "The icy sensation from the tentacles eases up as you step away from them, and you can calmly take in your surroundings now. To the south, a stairway goes down into the darkness. The carpet is frayed and stained, and the walls are covered in scratches; some look like words. Above you, a faint blue glow illuminates the room in a similar shade as the tentacles."
@@ -287,6 +290,7 @@ roomEast = Scene "This room has the same yellow light that was spreading into th
         (Action [(buildSentenceWrapper ["turn","doorknob"])]
             (InspectedScene "The doorknob turns freely." roomEast))]
     hallEast (SceneError "There is no path this way." roomEast) centerRoomEast stairsSouth
+
 centerRoomEast = Scene "At the center of this room, you see a table. A path back to the hall opens up to the north, and there is a staircase going down to the west."
     [(Action [(buildSentenceWrapper ["look"])] 
             (InspectedScene "At the center of this room, you see a table. A path back to the hall opens up to the north, and there is a staircase going down to the west." centerRoomEast)),
@@ -316,6 +320,7 @@ centerRoomEast = Scene "At the center of this room, you see a table. A path back
         (Action [(buildSentenceWrapper ["turn","doorknob"])]
             (InspectedScene "The doorknob turns freely." centerRoomEast))]
     hallEast (SceneError "There is no path this way." centerRoomEast) (SceneError "There is no path this way." centerRoomEast) stairsSouth
+
 roomEastDeath = InspectedScene "All too quickly, you feel an icy cold sensation rising from your feet up to your throat as you see dark tentacles materializing from the shadows, shooting up the hallway and enveloping you. You barely have a second to think before you feel an undeniable madness stirring in your mind as the tentacles shoot into your mouth, and then there is just all-possessing cold and darkness." DeathScene
 
 -- AREA 4
@@ -414,7 +419,9 @@ openWindowScene = Scene "With the boards gone, you see an open window that leads
         (Action [(buildSentenceWrapper ["climb","window"])]
             (InspectedScene "You climb out the window and feel the cool air of the outdoors." exitScene))]
     boulderLessHall exitScene (SceneError "There is no path this way." windowScene) roomSouth
+
 wallSceneDeath = InspectedScene "The blue eyes' gaze burns into the back of your skull, and you don't remember who you are anymore. You willingly step into the hole in the wall, feeling the icy cold sensation that was running up your arm now consume your entire body, and you embrace it. The eyes glint for a moment, and you hear distant screaming, then you are enveloped in darkness." DeathScene
+
 exitScene = ExitScene "Once outside, you turn and see that the window you just exited through slams shut. The structure you have just left seems to be an amalgamation of an old Victorian house and a cave, melded into each other, and the structure starts pulsating as the window closes. With you gone, the nightmarish structure recedes into the ground, leaving you standing in the middle of an empty clearing. You follow the path through the woods to safety, and the further you get from the clearing, the less you remember about what you've just experienced."
 
 allTokens :: [Token]
@@ -435,7 +442,11 @@ allVerbTokens = [(TokenVerb "look" ["look"]),
                  (TokenVerb "push" ["push"]),
                  (TokenVerb "move" ["move", "slide"]),
                  (TokenVerb "go" ["go", "walk", "move", "run", "skip", "slide", "moonwalk", "hop", "crabwalk"]),
-                 (TokenVerb "climb" ["climb","exit","leave"])]
+                 (TokenVerb "climb" ["climb","exit","leave"]),
+                 (TokenVerb "north" ["north", "North", "n", "N"]),
+                 (TokenVerb "west" ["west", "West", "w", "W"]),
+                 (TokenVerb "south" ["south", "South", "s", "S"]),
+                 (TokenVerb "east" ["east", "East", "e", "E"])]
 
 allNounTokens :: [Token]
 allNounTokens = [(TokenNoun "floor" ["floor", "ground"]),
