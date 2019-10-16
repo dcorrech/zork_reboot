@@ -16,7 +16,6 @@ import TestUtils
 import Data.List.Split
 
 -- ALLTODOs for Game:
--- TODO: Remove ^? characters that show up when entering delete. -- Dama
 -- TODO: "verb" commands that print list of available commands
 
 
@@ -182,7 +181,7 @@ printGameInformation :: IO()
 printGameInformation = do
                         putStrLn ""
                         putStrLn "***INFO***"
-                        putStrLn "Movement: Type 'look' to describe your surroundings. Type 'inventory' to check your current inventory. Type 'help' to repeat this message."
+                        putStrLn "Movement: Move around the scene by going 'north', 'south', 'east' or 'west'. Type 'look' to describe your surroundings. Type 'inventory' to check your current inventory. Type 'help' to repeat this message."
                         putStrLn ""
 
 printGameIntro :: IO()
