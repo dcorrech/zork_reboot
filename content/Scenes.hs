@@ -435,7 +435,11 @@ allVerbTokens = [(TokenVerb "look" ["look"]),
                  (TokenVerb "push" ["push"]),
                  (TokenVerb "move" ["move", "slide"]),
                  (TokenVerb "go" ["go", "walk", "move", "run", "skip", "slide", "moonwalk", "hop", "crabwalk"]),
-                 (TokenVerb "climb" ["climb","exit","leave"])]
+                 (TokenVerb "climb" ["climb","exit","leave"]),
+                 (TokenVerb "north" ["north", "North", "n", "N"]),
+                 (TokenVerb "west" ["west", "West", "w", "W"]),
+                 (TokenVerb "south" ["south", "South", "s", "S"]),
+                 (TokenVerb "east" ["east", "East", "e", "E"])]
 
 allNounTokens :: [Token]
 allNounTokens = [(TokenNoun "floor" ["floor", "ground"]),

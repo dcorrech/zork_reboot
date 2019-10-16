@@ -102,10 +102,10 @@ actOnInput line sentences (Scene description actions n e s w) action inventory
     | (fixdel(line) == "inventory")                                             = do
                                                                                     printInventory inventory
                                                                                     play (Scene description actions n e s w) "read" inventory
-    | sentencesMatch sentences [(buildSentenceWrapper ["go", "north"])]         = play n "not read" inventory
-    | sentencesMatch sentences [(buildSentenceWrapper ["go", "east"])]          = play e "not read" inventory
-    | sentencesMatch sentences [(buildSentenceWrapper ["go", "south"])]         = play s "not read" inventory
-    | sentencesMatch sentences [(buildSentenceWrapper ["go", "west"])]          = play w "not read" inventory
+    | sentencesMatch sentences [(buildSentenceWrapper ["go", "north"]),(buildSentenceWrapper ["north"])]         = play n "not read" inventory
+    | sentencesMatch sentences [(buildSentenceWrapper ["go", "east"]),(buildSentenceWrapper ["east"])]           = play e "not read" inventory
+    | sentencesMatch sentences [(buildSentenceWrapper ["go", "south"]),(buildSentenceWrapper ["south"])]         = play s "not read" inventory
+    | sentencesMatch sentences [(buildSentenceWrapper ["go", "west"]),(buildSentenceWrapper ["west"])]           = play w "not read" inventory
     | (action /= EmptyAction)                                                   = performAction action inventory
     | otherwise                                                                 = do
                                                                                     separatePrompts
