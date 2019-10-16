@@ -1,4 +1,4 @@
-# zork_reboot WIP
+# zork_reboot
 
 The aim of our project is to develop an in-depth, immersive, text-based interactive fiction game. The game will consist of a world within which players can move, explore the surroundings, interact with objects in the world through issuing short, text-based commands. As an example, players may be able to issue commands to move in particular directions, inspect particular objects more closely, pick up  objects, or read particular things. In order to progress in the game, players will need to move around the map and try to find a way out of the location they are stuck in. Players will find themselves thrust into the midst of a mysterious location with a unusual, interesting history and must explore the world to learn more about it. In particular, we hope to model our game after other text-based interactive fiction games such as Zork.
 
