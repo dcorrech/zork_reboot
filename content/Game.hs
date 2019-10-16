@@ -181,7 +181,7 @@ printGameInformation :: IO()
 printGameInformation = do
                         putStrLn ""
                         putStrLn "***INFO***"
-                        putStrLn "Movement: Move around the scene by going 'north', 'south', 'east' or 'west'. Type 'look' to describe your surroundings. Type 'inventory' to check your current inventory. Type 'help' to repeat this message."
+                        putStrLn "Movement: Move around the scene by going 'north', 'south', 'east' or 'west'. Type 'look' to describe your surroundings. Type 'inventory' to check your current inventory. Type 'inspect' to inspect items. Type 'help' to repeat this message."
                         putStrLn ""
 
 printGameIntro :: IO()
