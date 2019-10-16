@@ -13,14 +13,8 @@ import NaturalLanguageParser
 --Remove
 import TestUtils
 
-import Data.List.Split
-
 -- ALLTODOs for Game:
 -- TODO: "verb" commands that print list of available commands
-
-
-lineDelimiters :: [Char]
-lineDelimiters = [' ', '\t']
 
 -- Takes a given SceneMap, starts and ends the game.
 
@@ -139,7 +133,7 @@ sentencesMatch sentences1 sentences2 = [x | x <- sentences1, y <- sentences2, x 
 parseLineToSentence :: [Char] -> [Sentence]
 parseLineToSentence [] = []
 parseLineToSentence line = parseSentence tokenMatches
-    where processedLine = Data.List.Split.splitOneOf lineDelimiters line
+    where processedLine = words line
           tokenMatches = lexInput allTokens processedLine
 
 -- Returns str without instances of \DEL or characters directly preceding \DEL

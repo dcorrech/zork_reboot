@@ -9,3 +9,6 @@ The basic functionality of the natural language parser is adapted WhatTheFunctio
 - The ability to hold an inventory of objects and treasures picked up in the map.
 - The treasures add up to a total score upon completing the game, the more points, the better you did!
 - An escape route as well as multiple death scenes that terminate the game depending on what the player does in each scene.
+
+# How to run:
+Start GHCi, load the Game module, and then call command "go".
