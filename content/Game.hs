@@ -108,10 +108,14 @@ actOnInput _ _ _ _ _ = return ()
 performAction :: Action -> [Item] -> IO()
 performAction EmptyAction _                                         = return ()
 performAction (Action sentences nextScene) inventory                = play nextScene "read" inventory
-performAction (InventoryChange sentences item nextScene) inventory  = if (elem item inventory) then do
-                                                                                                      putStrLn "You've already picked this item up"
+performAction (InventoryChange sentences item nextScene) inventory  = if (item `elem` inventory) then do
+                                                                                                      separatePrompts
+                                                                                                      putStrLn "You've already picked this item up."
                                                                                                       play nextScene "read" inventory
-                                                                                               else play nextScene "read" (item : inventory)
+                                                                                                      else do
+                                                                                                        separatePrompts
+                                                                                                        putStrLn ("You've added " ++ (getId item) ++ " to your inventory.")
+                                                                                                        play nextScene "read" (item : inventory)
 
 findMatchingAction :: [Sentence] -> [Action] -> Action
 findMatchingAction [] [] = EmptyAction
@@ -152,6 +156,9 @@ delhelper (h1:t1) str
 removelast (h:t)
    | t == [] = t
    | otherwise = h:(removelast t)
+
+getId :: Item -> String
+getId (Treasure id points description) = id
 
 getInventoryValue :: [Item] -> Int
 getInventoryValue inventory = foldr (\x y -> getPointsFromItem(x) + y) 0 inventory

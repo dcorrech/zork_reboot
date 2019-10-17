@@ -47,7 +47,7 @@ zorkMapStart = Scene "You are in a dusty, dimly lit room. The paint on the wall 
               (InspectedScene "The statue is of a odd figure that appears to be eating human beings. Is the figure an octopus? Maybe a reptile? A human being? All three?" zorkMapStart)),
      (InventoryChange [(buildSentenceWrapper ["take", "statue"])]
               (Treasure "Statue" 1000 "A statue of some octopus, reptile, and human hybrid.")
-              (InspectedScene "You pick up the statue and put it in your bag."  zorkMapStart)),
+              zorkMapStart),
      (Action [(buildSentenceWrapper ["inspect", "wall"])]
               (InspectedScene "From here, you see nothing but dirt on the walls." zorkMapStart))]
     sceneNorth sceneEast sceneSouth sceneWest
@@ -285,7 +285,7 @@ roomEast = Scene "This room has the same yellow light that was spreading into th
             (InspectedScene "The table is metal, and bolted to the ground. On it is a blood-stained gem." centerRoomEast)),
         (InventoryChange [(buildSentenceWrapper ["take","gem"])]
             (Treasure "Blood-stained Gem" 1000 "The gem is a rich green hue, but is unlike any stone you've ever seen. It sparkles with a magnificent intensity and seems to be of cosmic-origin. It is shaped into a sharp point, almost like a stake. On its point is a smattering of blood.")
-            (InspectedScene "You pick up the gem, taking care to avoid touching the blood or its sharp edges. You place it in your bag." centerRoomEast)),
+            centerRoomEast),
         (Action [(buildSentenceWrapper ["close", "door"])]
             (InspectedScene "The door doesn't close." roomEast)),
         (Action [(buildSentenceWrapper ["slam","door"]), (buildSentenceWrapper ["force","door"])] 
@@ -313,7 +313,7 @@ centerRoomEast = Scene "At the center of this room, you see a table. A path back
             (InspectedScene "The table is metal, and bolted to the ground. On it is a blood-stained gem." centerRoomEast)),
         (InventoryChange [(buildSentenceWrapper ["take","gem"])]
             (Treasure "Blood-stained Gem" 1000 "The gem is a rich green hue, but is unlike any stone you've ever seen. It sparkles with a magnificent intensity and seems to be of cosmic-origin. It is shaped into a sharp point, almost like a stake. On its point is a smattering of blood.")
-            (InspectedScene "You pick up the gem, taking care to avoid touching the blood or its sharp edges. You place it in your bag." centerRoomEast)),
+            centerRoomEast),
         (Action [(buildSentenceWrapper ["inspect","gem"])]
             (InspectedScene "The gem is hefty, and has blood stains on its head." centerRoomEast)),
         (Action [(buildSentenceWrapper ["close", "door"])]
@@ -416,7 +416,7 @@ openWindowScene = Scene "With the boards gone, you see an open window that leads
               (InspectedScene "The knife is covered in fresh blood and, if your eyes don't deceive you, human flesh." openWindowScene)),
         (InventoryChange [(buildSentenceWrapper ["take", "knife"])]
               (Treasure "Ritual Knife" 1000 "A knife that appears to be used in rituals. It is freshly used.")
-              (InspectedScene "You wipe the knife on the ground before putting it in your bag."  openWindowScene)),
+              openWindowScene),
         (Action [(buildSentenceWrapper ["inspect","floor"])]
             (InspectedScene "The floor is the same stone as in the staircase, with greenish veins running up north starting where the boulders were before they disappeared." openWindowScene)),
         (Action [(buildSentenceWrapper ["inspect","window"]),(buildSentenceWrapper ["inspect","board"])]
