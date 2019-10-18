@@ -5,6 +5,9 @@ import NaturalLanguageLexer
 import TestUtils
 import Test.HUnit
 
+------- Tests ---------
+-- NOTE: Must download the Test.HUnit package to run.
+
 verbsInTokenListTest1 = TestCase (assertEqual "for (verbsInTokenList []),"
                                       []
                                       (verbsInTokenList []))
