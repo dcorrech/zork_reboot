@@ -1,13 +1,13 @@
 -- Scenes.hs
 -- Copyright Damasia Maria Correch & Jeffrey Miiller 2019
--- Starting point: a graph wih scenes, basically the map for players to explore
+-- Starting point: a graph wih scenes, basically the map for players to explore.
 
 module Scenes where
 
 import NaturalLanguageLexer
 import NaturalLanguageParser
 
--- Scene includes String (description of scene), [Action] for actions available in scene and 4 SceneMap for the adjacent scenes (N/E/S/W)
+-- Scene includes String (description of scene), [Action] for actions available in scene and 4 SceneMap for the adjacent scenes (N/E/S/W). InspectedScenes are the result of the user taking Actions in each Scene, having a description and a connection to their parent Scene.
 data SceneMap =   Scene String [Action] SceneMap SceneMap SceneMap SceneMap
                 | InspectedScene String SceneMap
                 | SceneError String SceneMap
@@ -23,6 +23,7 @@ instance Show SceneMap where
     show DeathScene = ""
     show NullScene = ""
 
+-- An Action can be an EmptyAction, a standard Action with a list of Sentences (possible commands from the user) and a corresponding SceneMap, or an InventoryChange, which has all the same as a standard Action as well as an Item to add to the inventory.
 data Action = EmptyAction
             | Action [Sentence] SceneMap
             | InventoryChange [Sentence] Item SceneMap
@@ -328,7 +329,7 @@ centerRoomEast = Scene "At the center of this room, you see a table. A path back
 
 roomEastDeath = InspectedScene "All too quickly, you feel an icy cold sensation rising from your feet up to your throat as you see dark tentacles materializing from the shadows, shooting up the hallway and enveloping you. You barely have a second to think before you feel an undeniable madness stirring in your mind as the tentacles shoot into your mouth, and then there is just all-possessing cold and darkness." DeathScene
 
--- AREA 4
+-- AREA 4 SCENES
 boulderHall = Scene "The bottom of the staircase flattens out, and you appear to have hit a dead end. There is a pile of boulders blocking the way forward, and the faintest light makes it through the cracks between the large rocks, providing enough light to see the formation, and the fact that this staircase is all made of stone, like a cavern."
     [(Action [(buildSentenceWrapper ["look"])] 
             (InspectedScene "The bottom of the staircase flattens out, and you appear to have hit a dead end. There is a pile of boulders blocking the way forward, and the faintest light makes it through the cracks between the large rocks, providing enough light to see the formation, and the fact that this staircase is all made of stone, like a cavern." boulderHall)),
@@ -429,9 +430,11 @@ wallSceneDeath = InspectedScene "The blue eyes' gaze burns into the back of your
 
 exitScene = ExitScene "Once outside, you turn and see that the window you just exited through slams shut. The structure you have just left seems to be an amalgamation of an old Victorian house and a cave, melded into each other, and the structure starts pulsating as the window closes. With you gone, the nightmarish structure recedes into the ground, leaving you standing in the middle of an empty clearing. You follow the path through the woods to safety, and the further you get from the clearing, the less you remember about what you've just experienced."
 
+-- List of all available tokens in the game; these are what the parser will recognize when typed by the user.
 allTokens :: [Token]
 allTokens = allVerbTokens ++ allNounTokens
 
+-- List of all verb tokens recognized by parser, and their synonyms.
 allVerbTokens :: [Token]
 allVerbTokens = [(TokenVerb "look" ["look"]),
                  (TokenVerb "inspect" ["inspect", "see", "view", "observe", "search", "examine"]),
@@ -453,6 +456,7 @@ allVerbTokens = [(TokenVerb "look" ["look"]),
                  (TokenVerb "south" ["south", "South", "s", "S"]),
                  (TokenVerb "east" ["east", "East", "e", "E"])]
 
+-- List of all noun tokens recognized by parser, and their synonyms.
 allNounTokens :: [Token]
 allNounTokens = [(TokenNoun "floor" ["floor", "ground"]),
                  (TokenNoun "carpet" ["carpet", "carpeting"]),
